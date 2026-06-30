@@ -1,0 +1,17 @@
+<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Virtual Creations portal mark">
+  <defs>
+    <linearGradient id="vcAurora" x1="14" y1="14" x2="106" y2="106" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#6BF0FF"></stop>
+      <stop offset="0.5" stop-color="#7B5BFF"></stop>
+      <stop offset="1" stop-color="#FF3DCB"></stop>
+    </linearGradient>
+  </defs>
+  
+  <circle cx="60" cy="60" r="46" stroke="url(#vcAurora)" stroke-width="6"></circle>
+  
+  <circle cx="60" cy="60" r="27" stroke="#19E3FF" stroke-width="4" opacity="0.9"></circle>
+  
+  <circle cx="60" cy="60" r="9" fill="#19E3FF"></circle>
+  
+  <circle cx="60" cy="14" r="6" fill="#FF3DCB"></circle>
+</svg>

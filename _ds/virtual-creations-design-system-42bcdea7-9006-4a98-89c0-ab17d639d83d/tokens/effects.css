@@ -1,0 +1,69 @@
+/* ============================================================
+   EFFECTS — radii, shadows, neon glows, blur, motion
+   ============================================================ */
+:root {
+  /* --- Corner radii ------------------------------------- */
+  --r-xs:   6px;
+  --r-sm:   10px;
+  --r-md:   16px;
+  --r-lg:   24px;
+  --r-xl:   32px;
+  --r-2xl:  44px;
+  --r-pill: 999px;
+
+  /* --- Elevation shadows -------------------------------- */
+  --shadow-sm:   0 2px 8px rgba(0,0,0,0.35);
+  --shadow-card: 0 16px 44px rgba(0,0,0,0.50);
+  --shadow-pop:  0 28px 70px rgba(0,0,0,0.62);
+
+  /* --- Neon glows (the brand's signature) --------------- */
+  --glow-cyan:    0 0 0 1px rgba(25,227,255,0.40), 0 0 28px rgba(25,227,255,0.35);
+  --glow-cyan-lg: 0 0 0 1px rgba(25,227,255,0.50), 0 0 56px rgba(25,227,255,0.45);
+  --glow-magenta: 0 0 0 1px rgba(255,61,203,0.40), 0 0 28px rgba(255,61,203,0.35);
+  --glow-violet:  0 0 0 1px rgba(123,91,255,0.40), 0 0 28px rgba(123,91,255,0.35);
+  --glow-lime:    0 0 0 1px rgba(182,255,60,0.40), 0 0 28px rgba(182,255,60,0.32);
+  --glow-text:    0 0 18px rgba(25,227,255,0.55);
+
+  /* --- Glass / blur ------------------------------------- */
+  --blur-glass: saturate(140%) blur(16px); /* @kind other */
+  --glass-fill: rgba(18,16,31,0.62); /* @kind color */
+
+  /* --- Grid / texture ----------------------------------- */
+  --grid-line: rgba(123,91,255,0.10); /* @kind color */
+
+  /* --- Motion ------------------------------------------- */
+  --dur-fast:  150ms; /* @kind other */
+  --dur:       320ms; /* @kind other */
+  --dur-slow:  600ms; /* @kind other */
+  --dur-reveal: 900ms; /* @kind other */
+  --ease-out:    cubic-bezier(0.16, 1, 0.30, 1);   /* @kind other */
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1); /* @kind other */
+  --ease-inout:  cubic-bezier(0.65, 0, 0.35, 1); /* @kind other */
+}
+
+/* ============================================================
+   Keyframes — reusable brand motion
+   ============================================================ */
+@keyframes vc-rise {
+  from { opacity: 0; transform: translateY(40px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes vc-pop {
+  0%   { opacity: 0; transform: scale(0.86); }
+  100% { opacity: 1; transform: scale(1); }
+}
+@keyframes vc-pulse-glow {
+  0%, 100% { box-shadow: var(--glow-cyan); }
+  50%      { box-shadow: var(--glow-cyan-lg); }
+}
+@keyframes vc-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-10px); }
+}
+@keyframes vc-sheen {
+  from { background-position: -200% 0; }
+  to   { background-position: 200% 0; }
+}
+@keyframes vc-spin {
+  to { transform: rotate(360deg); }
+}

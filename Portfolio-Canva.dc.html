@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="_ds/virtual-creations-design-system-42bcdea7-9006-4a98-89c0-ab17d639d83d/fonts/fonts.css">
+  <link rel="stylesheet" href="_ds/virtual-creations-design-system-42bcdea7-9006-4a98-89c0-ab17d639d83d/tokens/colors.css">
+  <link rel="stylesheet" href="_ds/virtual-creations-design-system-42bcdea7-9006-4a98-89c0-ab17d639d83d/tokens/typography.css">
+  <link rel="stylesheet" href="_ds/virtual-creations-design-system-42bcdea7-9006-4a98-89c0-ab17d639d83d/tokens/spacing.css">
+  <link rel="stylesheet" href="_ds/virtual-creations-design-system-42bcdea7-9006-4a98-89c0-ab17d639d83d/tokens/effects.css">
+  <link rel="stylesheet" href="_ds/virtual-creations-design-system-42bcdea7-9006-4a98-89c0-ab17d639d83d/tokens/base.css">
+  <link rel="stylesheet" href="_ds/virtual-creations-design-system-42bcdea7-9006-4a98-89c0-ab17d639d83d/styles.css">
+  <script src="_ds/virtual-creations-design-system-42bcdea7-9006-4a98-89c0-ab17d639d83d/_ds_bundle.js"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <meta name="ext-resource-dependency" content="assets/projects/empathy.png" data-resource-id="empathy">
+  <meta name="ext-resource-dependency" content="assets/projects/vault.png" data-resource-id="vault">
+  <meta name="ext-resource-dependency" content="assets/projects/hpgolf.png" data-resource-id="hpgolf">
+  <meta name="ext-resource-dependency" content="assets/projects/gambling.png" data-resource-id="gambling">
+  <meta name="ext-resource-dependency" content="assets/projects/climate.png" data-resource-id="climate">
+  <meta name="ext-resource-dependency" content="assets/projects/festo.gif" data-resource-id="festo">
+  <meta name="ext-resource-dependency" content="assets/projects/office.png" data-resource-id="office">
+  <meta name="ext-resource-dependency" content="assets/projects/cafe.png" data-resource-id="cafe">
+  <meta name="ext-resource-dependency" content="assets/projects/unreal-anim.png" data-resource-id="unrealAnim">
+  <style>
+    html, body { margin: 0; background: var(--bg-0); color: var(--ink-2); }
+    @keyframes vc-rise { from { transform: translateY(40px); } to { transform: none; } }
+    @keyframes vc-pop { from { transform: scale(0.92); } to { transform: none; } }
+    @keyframes vc-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+    @keyframes vc-drift { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
+    @keyframes vc-sheet-in { from { transform: translateY(40px) scale(0.985); } to { transform: none; } }
+    @media (prefers-reduced-motion: reduce) { * { animation-duration: 0.001ms !important; } }
+  </style>
+</helmet>
+
+<template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#19E3FF"></stop><stop offset="0.5" stop-color="#7B5BFF"></stop><stop offset="1" stop-color="#FF3DCB"></stop></linearGradient></defs><rect width="100" height="100" rx="18" fill="#0B0A14"></rect><rect x="30" y="30" width="40" height="40" rx="20" fill="url(#bg)"></rect><circle cx="50" cy="50" r="9" fill="#0B0A14"></circle></svg></template>
+
+<div style="min-height: 100vh; background: var(--grad-void); font-family: var(--font-sans); overflow-x: hidden; position: relative;">
+
+  <!-- holographic grid backdrop -->
+  <div style="position: fixed; inset: 0; pointer-events: none; z-index: 0; background-image: linear-gradient(var(--grid-line) 1px, transparent 1px), linear-gradient(90deg, var(--grid-line) 1px, transparent 1px); background-size: 44px 44px; mask-image: radial-gradient(120% 80% at 50% 0%, #000 30%, transparent 80%);"></div>
+
+  <!-- ===================== NAV ===================== -->
+  <header style="position: sticky; top: 0; z-index: 50; backdrop-filter: var(--blur-glass); -webkit-backdrop-filter: var(--blur-glass); background: var(--glass-fill); border-bottom: 1px solid var(--line);">
+    <nav style="max-width: var(--container); margin: 0 auto; padding: 16px var(--gutter); display: flex; align-items: center; justify-content: space-between; gap: 24px;">
+      <a href="#top" onClick="{{ goTop }}" style="display: flex; align-items: center; gap: 12px; text-decoration: none;">
+        <img src="assets/portal-mark.svg" alt="" style="width: 34px; height: 34px; filter: drop-shadow(0 0 10px rgba(25,227,255,0.5));">
+        <span style="font-family: var(--font-display); font-weight: 800; font-size: 15px; letter-spacing: -0.02em; color: var(--ink-1); line-height: 1.05;">MANASI’S<br><span style="color: var(--cyan);">VIRTUAL CREATIONS</span></span>
+      </a>
+      <div style="display: flex; align-items: center; gap: 4px;">
+        <a href="#work" onClick="{{ goWork }}" style="font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-2); text-decoration: none; padding: 10px 12px; border-radius: var(--r-pill);" style-hover="color: var(--cyan);">Work</a>
+        <a href="#about" onClick="{{ goAbout }}" style="font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-2); text-decoration: none; padding: 10px 12px; border-radius: var(--r-pill);" style-hover="color: var(--cyan);">About</a>
+        <a href="#experience" onClick="{{ goExperience }}" style="font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-2); text-decoration: none; padding: 10px 12px; border-radius: var(--r-pill);" style-hover="color: var(--cyan);">Experience</a>
+        <a href="mailto:manasiylodha@gmail.com" style="font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-on-bright); text-decoration: none; padding: 11px 20px; border-radius: var(--r-pill); background: var(--cyan); box-shadow: var(--glow-cyan); font-weight: 700; margin-left: 8px;" style-hover="box-shadow: var(--glow-cyan-lg);">Contact</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="top" style="position: relative; z-index: 1; max-width: var(--container); margin: 0 auto; padding: 0 var(--gutter);">
+
+    <!-- ===================== HERO ===================== -->
+    <section style="padding: clamp(72px, 12vw, 150px) 0 clamp(56px, 8vw, 100px); position: relative;">
+      <div style="position: absolute; top: -40px; left: 30%; width: 420px; height: 420px; border-radius: 50%; background: var(--grad-aurora); filter: blur(120px); opacity: 0.28; pointer-events: none; animation: vc-float 9s var(--ease-inout) infinite;"></div>
+
+      <div style="display: inline-flex; align-items: center; gap: 10px; padding: 8px 16px; border-radius: var(--r-pill); border: 1px solid var(--line-2); background: var(--bg-1); margin-bottom: 28px; animation: vc-pop 0.6s var(--ease-bounce) both;">
+        <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--lime); box-shadow: 0 0 10px var(--lime);"></span>
+        <span style="font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-2);">Gameplay &amp; XR Developer · London, UK</span>
+      </div>
+
+      <h1 style="font-family: var(--font-display); font-weight: 900; font-size: var(--fs-display); line-height: 0.94; letter-spacing: -0.03em; color: var(--ink-1); margin: 0 0 28px; max-width: 14ch; animation: vc-rise 0.8s var(--ease-out) both;">
+        Crafting virtual worlds with <span style="background: var(--grad-aurora); background-size: 200% auto; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; animation: vc-drift 8s linear infinite;">imagination</span> &amp; innovation.
+      </h1>
+
+      <p style="font-size: var(--fs-lead); line-height: 1.55; color: var(--ink-2); max-width: 60ch; margin: 0 0 40px; animation: vc-rise 0.8s var(--ease-out) 0.1s both;">
+        Hi, I’m Manasi. I build immersive experiences in Unreal Engine and Unity: AI-driven NPCs, full-body VR embodiment, and detailed real-time environments. These days I’m also teaching it, working as a Lecturer in Unreal Engine and game development in London. I love using this tech to tell stories and, when I can, to drive real change.
+      </p>
+
+      <div style="display: flex; flex-wrap: wrap; gap: 14px; animation: vc-rise 0.8s var(--ease-out) 0.2s both;">
+        <a href="#work" onClick="{{ goWork }}" style="display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-sans); font-weight: 700; font-size: 15px; color: var(--ink-on-bright); text-decoration: none; padding: 15px 28px; border-radius: var(--r-pill); background: var(--cyan); box-shadow: var(--glow-cyan);" style-hover="box-shadow: var(--glow-cyan-lg); transform: translateY(-2px);">
+          <i data-lucide="layout-grid" style="width: 18px; height: 18px;"></i> Explore my work
+        </a>
+        <a href="#about" onClick="{{ goAbout }}" style="display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-sans); font-weight: 700; font-size: 15px; color: var(--ink-1); text-decoration: none; padding: 15px 28px; border-radius: var(--r-pill); background: var(--bg-1); border: 1px solid var(--line-2);" style-hover="border-color: var(--cyan); color: var(--cyan);">
+          More about me
+        </a>
+      </div>
+
+      <!-- quick stats -->
+      <div style="display: flex; flex-wrap: wrap; gap: 40px; margin-top: 56px; animation: vc-rise 0.8s var(--ease-out) 0.3s both;">
+        <sc-for list="{{ stats }}" as="s" hint-placeholder-count="3">
+          <div>
+            <div style="font-family: var(--font-display); font-weight: 800; font-size: 34px; color: var(--ink-1); line-height: 1;">{{ s.value }}</div>
+            <div style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3); margin-top: 8px;">{{ s.label }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <!-- ===================== WORK ===================== -->
+    <section id="work" style="padding: 40px 0 var(--section-y); scroll-margin-top: 80px;">
+      <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; margin-bottom: 48px;">
+        <div>
+          <div style="font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--cyan); margin-bottom: 14px;">Selected Work</div>
+          <h2 style="font-family: var(--font-display); font-weight: 800; font-size: var(--fs-h1); line-height: 0.98; letter-spacing: -0.03em; color: var(--ink-1); margin: 0;">Immersive projects</h2>
+        </div>
+        <p style="font-size: 15px; color: var(--ink-2); max-width: 38ch; margin: 0;">Each one taught me something new. Tap any project to read what I built and why it mattered.</p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 24px;">
+        <sc-for list="{{ projects }}" as="p" hint-placeholder-count="9">
+          <div onClick="{{ p.onOpen }}" style="position: relative; border-radius: var(--r-lg); overflow: hidden; cursor: pointer; background: var(--bg-1); border: 1px solid var(--line); box-shadow: var(--shadow-card); aspect-ratio: 4 / 3; transition: transform var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out), border-color var(--dur) var(--ease-out);" style-hover="transform: translateY(-6px); border-color: var(--cyan); box-shadow: var(--glow-cyan-lg);">
+            {{ p.imgEl }}
+            <div style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(7,6,14,0.05) 0%, rgba(7,6,14,0.35) 45%, rgba(7,6,14,0.92) 100%);"></div>
+            <div style="position: absolute; top: 14px; left: 14px; display: flex; gap: 8px;">
+              <span style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; padding: 5px 10px; border-radius: var(--r-pill); background: var(--glass-fill); backdrop-filter: var(--blur-glass); -webkit-backdrop-filter: var(--blur-glass); border: 1px solid var(--line-2); color: var(--ink-1);">{{ p.engine }}</span>
+              <span style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; padding: 5px 10px; border-radius: var(--r-pill); background: {{ p.tagBg }}; color: var(--ink-on-bright); font-weight: 700;">{{ p.medium }}</span>
+            </div>
+            <div style="position: absolute; left: 18px; right: 18px; bottom: 18px;">
+              <div style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; color: var(--ink-3); margin-bottom: 6px;">{{ p.year }}</div>
+              <h3 style="font-family: var(--font-display); font-weight: 700; font-size: 21px; line-height: 1.08; letter-spacing: -0.02em; color: var(--ink-0); margin: 0;">{{ p.title }}</h3>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <!-- ===================== ABOUT ===================== -->
+    <section id="about" style="padding: var(--section-y) 0; scroll-margin-top: 80px;">
+      <div style="display: grid; grid-template-columns: 0.9fr 1.1fr; gap: clamp(32px, 6vw, 80px); align-items: start;">
+        <div style="position: relative;">
+          <div style="font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--magenta); margin-bottom: 14px;">About Me</div>
+          <h2 style="font-family: var(--font-display); font-weight: 800; font-size: var(--fs-h1); line-height: 0.98; letter-spacing: -0.03em; color: var(--ink-1); margin: 0 0 24px;">I’m Manasi Lodha.</h2>
+          <div style="border-radius: var(--r-xl); overflow: hidden; border: 1px solid var(--line-2); box-shadow: var(--shadow-pop); aspect-ratio: 4 / 5; background: var(--grad-void); position: relative;">
+            <img src="assets/manasi.jpeg" alt="Manasi Lodha testing a project in a Meta Quest headset" style="width: 100%; height: 100%; object-fit: cover; object-position: center 30%;">
+            <div style="position: absolute; inset: 0; background: linear-gradient(180deg, transparent 45%, rgba(7,6,14,0.72) 100%);"></div>
+            <div style="position: absolute; left: 20px; bottom: 20px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-2);">London, UK · Open to work</div>
+          </div>
+        </div>
+
+        <div style="padding-top: 8px;">
+          <p style="font-size: var(--fs-lead); line-height: 1.65; color: var(--ink-1); margin: 0 0 22px;">I’m a gameplay and XR developer based in London, happiest when I’m building interactive worlds that make people feel something.</p>
+          <p style="font-size: 16px; line-height: 1.7; color: var(--ink-2); margin: 0 0 18px;">Most of my work lives in Unreal Engine and Unity. I love the technical side, full-body inverse kinematics, AI-driven NPCs scripted in Yarn, XR interaction, haptics and spatial audio, but what really pulls me in is using all of it to tell a story or get a message across.</p>
+          <p style="font-size: 16px; line-height: 1.7; color: var(--ink-2); margin: 0 0 18px;">Right now I teach Unreal Engine and game development as a Lecturer at the University Campus of Esports in London. Before that I worked as a VR developer at ISRO and finished my MSc in Virtual Reality at Swansea University. Teaching has made me a sharper developer, you really learn a thing once you have to explain it clearly to someone else.</p>
+          <p style="font-size: 16px; line-height: 1.7; color: var(--ink-2); margin: 0 0 32px;">I’m always learning, and I’m steadily moving deeper into AR, mixed reality and digital twins. My goal is simple: work on projects that have real impact, and use immersive tech to create experiences that actually mean something.</p>
+
+          <div style="font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 16px;">What I work with</div>
+          <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 36px;">
+            <sc-for list="{{ skills }}" as="sk" hint-placeholder-count="9">
+              <span style="font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.04em; padding: 9px 15px; border-radius: var(--r-pill); background: var(--bg-1); border: 1px solid var(--line-2); color: var(--ink-1);">{{ sk }}</span>
+            </sc-for>
+          </div>
+
+          <a href="https://www.linkedin.com/in/manasi-lodha/" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-sans); font-weight: 700; font-size: 14px; color: var(--ink-1); text-decoration: none; padding: 13px 22px; border-radius: var(--r-pill); background: var(--bg-1); border: 1px solid var(--line-2);" style-hover="border-color: var(--cyan); color: var(--cyan);">
+            <i data-lucide="external-link" style="width: 18px; height: 18px;"></i> Connect on LinkedIn
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== EXPERIENCE + EDUCATION ===================== -->
+    <section id="experience" style="padding: 0 0 var(--section-y); scroll-margin-top: 80px;">
+      <div style="font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--cyan); margin-bottom: 14px;">Experience &amp; Education</div>
+      <h2 style="font-family: var(--font-display); font-weight: 800; font-size: var(--fs-h1); line-height: 0.98; letter-spacing: -0.03em; color: var(--ink-1); margin: 0 0 48px; max-width: 18ch;">The path so far</h2>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: clamp(28px, 5vw, 64px);">
+
+        <!-- work -->
+        <div>
+          <div style="font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--magenta); margin-bottom: 22px;">Work</div>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <sc-for list="{{ jobs }}" as="j" hint-placeholder-count="2">
+              <div style="position: relative; padding: 0 0 24px 26px; border-left: 1px solid var(--line-2);">
+                <span style="position: absolute; left: -5px; top: 5px; width: 9px; height: 9px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 10px var(--cyan);"></span>
+                <div style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 8px;">{{ j.period }}</div>
+                <h3 style="font-family: var(--font-display); font-weight: 700; font-size: 19px; line-height: 1.15; letter-spacing: -0.02em; color: var(--ink-1); margin: 0 0 4px;">{{ j.role }}</h3>
+                <div style="font-size: 14px; color: var(--cyan); margin-bottom: 12px;">{{ j.org }}</div>
+                <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px;">
+                  <sc-for list="{{ j.points }}" as="pt" hint-placeholder-count="3">
+                    <li style="position: relative; padding-left: 16px; font-size: 14px; line-height: 1.55; color: var(--ink-2);">
+                      <span style="position: absolute; left: 0; top: 8px; width: 5px; height: 5px; border-radius: 50%; background: var(--magenta);"></span>{{ pt }}
+                    </li>
+                  </sc-for>
+                </ul>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <!-- education -->
+        <div>
+          <div style="font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--violet); margin-bottom: 22px;">Education</div>
+          <div style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 40px;">
+            <sc-for list="{{ education }}" as="e" hint-placeholder-count="2">
+              <div style="position: relative; padding: 0 0 24px 26px; border-left: 1px solid var(--line-2);">
+                <span style="position: absolute; left: -5px; top: 5px; width: 9px; height: 9px; border-radius: 50%; background: var(--violet); box-shadow: 0 0 10px var(--violet);"></span>
+                <div style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 8px;">{{ e.period }}</div>
+                <h3 style="font-family: var(--font-display); font-weight: 700; font-size: 19px; line-height: 1.15; letter-spacing: -0.02em; color: var(--ink-1); margin: 0 0 4px;">{{ e.degree }}</h3>
+                <div style="font-size: 14px; color: var(--violet); margin-bottom: 10px;">{{ e.org }}</div>
+                <p style="font-size: 14px; line-height: 1.55; color: var(--ink-2); margin: 0;">{{ e.note }}</p>
+              </div>
+            </sc-for>
+          </div>
+
+          <!-- achievements -->
+          <div style="font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--lime); margin-bottom: 18px;">Achievements</div>
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <sc-for list="{{ achievements }}" as="a" hint-placeholder-count="4">
+              <div style="display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px; border-radius: var(--r-md); background: var(--bg-1); border: 1px solid var(--line);">
+                <span style="flex: none; margin-top: 2px; width: 22px; height: 22px; border-radius: 50%; background: var(--bg-2); display: inline-flex; align-items: center; justify-content: center; color: var(--lime);"><i data-lucide="{{ a.icon }}" style="width: 14px; height: 14px;"></i></span>
+                <span style="font-size: 14px; line-height: 1.5; color: var(--ink-2);">{{ a.text }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== TECHNICAL SKILLS ===================== -->
+    <section id="skills" style="padding: 0 0 var(--section-y); scroll-margin-top: 80px;">
+      <div style="font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--amber); margin-bottom: 14px;">Toolkit</div>
+      <h2 style="font-family: var(--font-display); font-weight: 800; font-size: var(--fs-h1); line-height: 0.98; letter-spacing: -0.03em; color: var(--ink-1); margin: 0 0 48px; max-width: 18ch;">Technical skills</h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px;">
+        <sc-for list="{{ techGroups }}" as="g" hint-placeholder-count="5">
+          <div style="padding: 24px; border-radius: var(--r-lg); background: var(--bg-1); border: 1px solid var(--line); box-shadow: var(--shadow-card);">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 18px;">
+              <span style="width: 30px; height: 30px; border-radius: 8px; background: var(--bg-2); display: inline-flex; align-items: center; justify-content: center; color: var(--cyan);"><i data-lucide="{{ g.icon }}" style="width: 17px; height: 17px;"></i></span>
+              <div style="font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-1);">{{ g.title }}</div>
+            </div>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+              <sc-for list="{{ g.items }}" as="it" hint-placeholder-count="4">
+                <span style="font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.02em; padding: 7px 12px; border-radius: var(--r-pill); background: var(--bg-2); border: 1px solid var(--line-2); color: var(--ink-2);">{{ it }}</span>
+              </sc-for>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <!-- ===================== CONTACT ===================== -->
+    <section id="contact" style="padding: 0 0 var(--section-y); scroll-margin-top: 80px;">
+      <div style="position: relative; border-radius: var(--r-2xl); overflow: hidden; border: 1px solid var(--line-2); padding: clamp(40px, 7vw, 88px) clamp(28px, 6vw, 72px); background: var(--bg-1);">
+        <div style="position: absolute; top: -120px; right: -60px; width: 380px; height: 380px; border-radius: 50%; background: var(--grad-aurora); filter: blur(130px); opacity: 0.3; pointer-events: none;"></div>
+        <div style="position: relative;">
+          <div style="font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--cyan); margin-bottom: 16px;">Let’s work together</div>
+          <h2 style="font-family: var(--font-display); font-weight: 900; font-size: var(--fs-h1); line-height: 0.96; letter-spacing: -0.03em; color: var(--ink-1); margin: 0 0 20px; max-width: 18ch;">Got an immersive idea? Let’s build it.</h2>
+          <p style="font-size: var(--fs-lead); line-height: 1.55; color: var(--ink-2); max-width: 52ch; margin: 0 0 36px;">I’m open to VR, AR and XR projects, collaborations and full-time roles. Drop me a line and let’s talk.</p>
+          <div style="display: flex; flex-wrap: wrap; gap: 14px; align-items: center;">
+            <a href="mailto:manasiylodha@gmail.com" style="display: inline-flex; align-items: center; gap: 12px; font-family: var(--font-sans); font-weight: 700; font-size: 16px; color: var(--ink-on-bright); text-decoration: none; padding: 17px 32px; border-radius: var(--r-pill); background: var(--cyan); box-shadow: var(--glow-cyan);" style-hover="box-shadow: var(--glow-cyan-lg); transform: translateY(-2px);">
+              <i data-lucide="mail" style="width: 20px; height: 20px;"></i> manasiylodha@gmail.com
+            </a>
+            <a href="tel:+447587314037" style="display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-sans); font-weight: 700; font-size: 15px; color: var(--ink-1); text-decoration: none; padding: 16px 26px; border-radius: var(--r-pill); background: var(--bg-2); border: 1px solid var(--line-2);" style-hover="border-color: var(--cyan); color: var(--cyan);">
+              <i data-lucide="phone" style="width: 18px; height: 18px;"></i> +44 7587 314037
+            </a>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 24px; margin-top: 32px; font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3);">
+            <span style="display: inline-flex; align-items: center; gap: 8px;"><i data-lucide="map-pin" style="width: 15px; height: 15px;"></i> London, UK</span>
+            <a href="https://www.linkedin.com/in/manasi-lodha/" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 8px; color: var(--ink-3); text-decoration: none;" style-hover="color: var(--cyan);"><i data-lucide="external-link" style="width: 15px; height: 15px;"></i> LinkedIn</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer style="position: relative; z-index: 1; border-top: 1px solid var(--line); padding: 40px var(--gutter); ">
+    <div style="max-width: var(--container); margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <img src="assets/portal-mark.svg" alt="" style="width: 28px; height: 28px;">
+        <span style="font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.1em; color: var(--ink-3);">© 2026 Manasi’s Virtual Creations</span>
+      </div>
+      <div style="display: flex; gap: 22px; font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase;">
+        <a href="https://www.linkedin.com/in/manasi-lodha/" target="_blank" rel="noopener" style="color: var(--ink-3); text-decoration: none;" style-hover="color: var(--cyan);">LinkedIn</a>
+        <a href="mailto:manasiylodha@gmail.com" style="color: var(--ink-3); text-decoration: none;" style-hover="color: var(--cyan);">Email</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===================== PROJECT DETAIL OVERLAY ===================== -->
+  <sc-if value="{{ hasOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeDetail }}" style="position: fixed; inset: 0; z-index: 100; background: rgba(7,6,14,0.78); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); display: flex; align-items: flex-start; justify-content: center; overflow-y: auto; padding: clamp(16px, 5vh, 60px) 16px;">
+      <div onClick="{{ stop }}" style="position: relative; width: 100%; max-width: 920px; background: var(--bg-1); border: 1px solid var(--line-2); border-radius: var(--r-xl); overflow: hidden; box-shadow: var(--shadow-pop); animation: vc-sheet-in 0.5s var(--ease-out) both;">
+        <button onClick="{{ closeDetail }}" aria-label="Close" style="position: absolute; top: 18px; right: 18px; z-index: 5; width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--line-2); background: var(--glass-fill); backdrop-filter: var(--blur-glass); -webkit-backdrop-filter: var(--blur-glass); color: var(--ink-1); cursor: pointer; display: flex; align-items: center; justify-content: center;" style-hover="border-color: var(--cyan); color: var(--cyan);">
+          <i data-lucide="x" style="width: 20px; height: 20px;"></i>
+        </button>
+        <div style="position: relative; aspect-ratio: 16 / 9; background: var(--grad-void);">
+          {{ openImgEl }}
+          
+          <div style="position: absolute; left: clamp(22px,4vw,40px); right: clamp(22px,4vw,40px); bottom: 26px;">
+            <div style="display: flex; gap: 8px; margin-bottom: 14px;">
+              <span style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; padding: 5px 11px; border-radius: var(--r-pill); background: var(--bg-2); border: 1px solid var(--line-2); color: var(--ink-1);">{{ open.engine }}</span>
+              <span style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; padding: 5px 11px; border-radius: var(--r-pill); background: {{ open.tagBg }}; color: var(--ink-on-bright); font-weight: 700;">{{ open.medium }}</span>
+              <span style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; padding: 5px 11px; border-radius: var(--r-pill); color: var(--ink-3);">{{ open.year }}</span>
+            </div>
+            <h3 style="font-family: var(--font-display); font-weight: 800; font-size: clamp(26px, 4vw, 42px); line-height: 1.02; letter-spacing: -0.03em; color: var(--ink-0); margin: 0;">{{ open.title }}</h3>
+          </div>
+        </div>
+        <div style="padding: clamp(24px,4vw,40px);">
+          <p style="font-family: var(--font-display); font-weight: 600; font-size: clamp(18px, 2.4vw, 24px); line-height: 1.3; letter-spacing: -0.02em; color: var(--cyan); margin: 0 0 24px;">{{ open.hook }}</p>
+          <p style="font-size: 17px; line-height: 1.7; color: var(--ink-2); margin: 0 0 18px;">{{ open.blurb }}</p>
+          <p style="font-size: 16px; line-height: 1.75; color: var(--ink-2); margin: 0 0 32px;">{{ open.body }}</p>
+          <div style="font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 14px;">Highlights</div>
+          <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+            <sc-for list="{{ open.tags }}" as="tag" hint-placeholder-count="4">
+              <span style="display: inline-flex; align-items: center; gap: 9px; font-family: var(--font-sans); font-size: 14px; padding: 10px 16px; border-radius: var(--r-pill); background: var(--bg-2); border: 1px solid var(--line); color: var(--ink-1);">
+                <span style="width: 7px; height: 7px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 8px var(--cyan);"></span>{{ tag }}
+              </span>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { open: null };
+
+  get rawProjects() {
+    const tagBg = {
+      cyan: 'var(--cyan)', magenta: 'var(--magenta)', violet: 'var(--violet)',
+      lime: 'var(--lime)', amber: 'var(--amber)',
+    };
+    const list = [
+      { id:'empathy', title:'Empathy Machine for Hard to Hear', engine:'Unity', medium:'VR', accent:'cyan', year:'2024', image:'assets/projects/empathy.png',
+        tags:['VR IK Embodiment','Meta Haptics','Yarn Dialogue','Reactive NPCs'],
+        hook:'Can VR help us experience the world through someone else\u2019s eyes?',
+        blurb:'A VR experience that drops you into a restaurant where you can\u2019t hear a word, built so people feel the daily reality of hard-of-hearing folks.',
+        body:'I built full-body inverse kinematics for presence, used Meta Haptics to simulate stress responses like a racing heartbeat, and scripted NPCs in Yarn so they react to your gestures. This one really mattered to me. It is proof that VR can be a tool for awareness, not just entertainment.' },
+      { id:'vault', title:'Vault Raiders: Save Verdantia', engine:'Unity', medium:'VR', accent:'magenta', year:'2024', image:'assets/projects/vault.png',
+        tags:['XR Interaction Toolkit','Hand Grab & Throw','Power-ups','Boss Fights'],
+        hook:'Ever battled a giant Teddy Monster in VR? Now is your chance.',
+        blurb:'An action-packed VR adventure where YOU are the hero. Battle a giant Teddy Monster, grab Monkey Bombs and Ice Bombs, and save the world one level at a time.',
+        body:'I designed dynamic hand interactions for grabbing and throwing, levels that run from castles to candy lands to icy boss fights, and immersive hazards like slippery floors and crumbling paths. Built in Unity with the XR Interaction Toolkit, with clean modular C# systems for enemy behaviour, inventory and interaction.' },
+      { id:'hpgolf', title:'Harry Potter Magical Mini-Golf', engine:'Unity', medium:'VR', accent:'violet', year:'2023', image:'assets/projects/hpgolf.png',
+        tags:['Animator System','Magical Portals','Teleportation','Spatial Audio'],
+        hook:'Easy to learn, difficult to master. Magical mini-golf across Hogwarts.',
+        blurb:'A VR mini-golf adventure through the wizarding world. Each hole recreates an iconic scene, and the Sorting Hat assigns your Hogwarts house at the end.',
+        body:'I built story-driven levels across Hogwarts, the Forbidden Forest and Hagrid\u2019s Hut. The Unity Animator drives moving trains, flying owls and magical portals, while physics interactions and spatial audio pull the whole thing together.' },
+      { id:'gambling', title:'Gambling Room', engine:'Unity', medium:'AI', accent:'amber', year:'2024', image:'assets/projects/gambling.png',
+        tags:['AI-Driven NPCs','Yarn Dialogue','Head-Tracking','Built-in Music Player'],
+        hook:'A realistic yet surreal world. Cinematic, reactive, alive.',
+        blurb:'A high-stakes VR gambling den brought to life with AI-driven NPCs, dynamic lighting and interactive elements. Cinematic and a little surreal.',
+        body:'The NPCs respond to your actions through Yarn dialogue and head-tracking, so they follow and react to you. I spent a lot of time on the dynamic lighting and added an in-game music player so players can set the mood themselves.' },
+      { id:'climate', title:'Climate Change Awareness', engine:'Unity', medium:'VR', accent:'lime', year:'2024', image:'assets/projects/climate.png',
+        tags:['Recycling Mini-Games','Ambisonic Audio','Recycled-Art Gallery','Educational'],
+        hook:'Every everyday choice shapes the planet. Feel it in VR.',
+        blurb:'An interactive VR project about sustainable choices. Sort waste, run the recycling lab, and see how everyday decisions shape the planet.',
+        body:'I made a Garbage Sorting game and a Recycling Lab that teach how materials get recycled, plus a gallery of upcycled products and a recycled lion sculpture. Ambisonic NPC audio and real sustainability facts help the message land.' },
+      { id:'festo', title:'Festo Mixed Reality Experience', engine:'Unity', medium:'MR', accent:'cyan', year:'2024', image:'assets/projects/festo.gif',
+        tags:['Mixed Reality','Passthrough','Spatial Interaction','Industrial Training'],
+        hook:'Where the digital and the physical share the same room.',
+        blurb:'A mixed-reality training app built for Festo, blending digital content into the real space for hands-on, spatial interaction on physical machinery.',
+        body:'This is where I moved from fully-virtual into mixed reality, anchoring interactive 3D content into the user\u2019s real environment with passthrough and gesture recognition. I used AR Foundation and the Meta XR SDK to overlay spatial UI onto real machines, and the prototype boosted measured training efficiency by 50 percent.' },
+      { id:'office', title:'Modern Office Interiors', engine:'Unreal', medium:'3D', accent:'violet', year:'2023', image:'assets/projects/office.png',
+        tags:['Material Craft','Themed Sections','Realistic Lighting','Environment Design'],
+        hook:'From lighting to materials, every detail meticulously crafted.',
+        blurb:'A meticulously crafted head-office environment with themed sections. Every detail, from lighting to materials, designed for a realistic, immersive space.',
+        body:'Built in Unreal Engine, I designed every detail of a head office and gave each section its own theme to balance aesthetics and function. A real study in environment design, material selection and lighting.' },
+      { id:'cafe', title:'Cafe Design', engine:'Unity', medium:'3D', accent:'amber', year:'2023', image:'assets/projects/cafe.png',
+        tags:['Interior Design','Intricate Detail'],
+        hook:'A cosy, intricately detailed virtual cafe.',
+        blurb:'A cosy cafe environment created in Unity with intricate interior detailing.',
+        body:'A focused interior-design study in Unity, with warm materials, considered lighting and lots of small intricate props.' },
+      { id:'unreal-anim', title:'Unreal Animation', engine:'Unreal', medium:'3D', accent:'magenta', year:'2024', image:'assets/projects/unreal-anim.png',
+        tags:['Character Animation','Cinematic','Environment Design'],
+        hook:'Storytelling through motion and atmosphere.',
+        blurb:'A cinematic scene of a tense woman on a ship. Character animation and environment design in Unreal Engine.',
+        body:'I designed and animated a cinematic scene including character animation and environment design, playing with mood, pacing and camera in Unreal Engine.' },
+    ];
+    return list.map(p => ({ ...p, tagBg: tagBg[p.accent] || 'var(--cyan)' }));
+  }
+
+  componentDidMount() {
+    this.renderIcons();
+  }
+  componentDidUpdate() {
+    this.renderIcons();
+  }
+  renderIcons() {
+    if (window.lucide) {
+      try { window.lucide.createIcons({ attrs: { 'stroke-width': 1.75 } }); } catch (e) {}
+    } else {
+      setTimeout(() => this.renderIcons(), 200);
+    }
+  }
+
+  scrollTo(id) {
+    const el = document.getElementById(id);
+    if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 70, behavior: 'smooth' });
+  }
+
+  renderVals() {
+    const imgStyle = { position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' };
+    const RES = {
+      'assets/projects/empathy.png': 'empathy', 'assets/projects/vault.png': 'vault',
+      'assets/projects/hpgolf.png': 'hpgolf', 'assets/projects/gambling.png': 'gambling',
+      'assets/projects/climate.png': 'climate', 'assets/projects/festo.gif': 'festo',
+      'assets/projects/office.png': 'office', 'assets/projects/cafe.png': 'cafe',
+      'assets/projects/unreal-anim.png': 'unrealAnim',
+    };
+    const resolve = (path) => (window.__resources && window.__resources[RES[path]]) || path;
+    const projects = this.rawProjects.map(p => ({
+      ...p,
+      imgEl: React.createElement('img', { src: resolve(p.image), alt: p.title, style: imgStyle }),
+      onOpen: () => { this.setState({ open: p }); document.body.style.overflow = 'hidden'; },
+    }));
+    const openImg = this.state.open && this.state.open.image
+      ? React.createElement('img', { src: resolve(this.state.open.image), alt: this.state.open.title, style: imgStyle })
+      : null;
+    const close = () => { this.setState({ open: null }); document.body.style.overflow = ''; };
+    return {
+      projects,
+      openImgEl: openImg,
+      open: this.state.open || {},
+      hasOpen: !!this.state.open,
+      closeDetail: close,
+      stop: (e) => e.stopPropagation(),
+      goTop: (e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); },
+      goWork: (e) => { e.preventDefault(); this.scrollTo('work'); },
+      goAbout: (e) => { e.preventDefault(); this.scrollTo('about'); },
+      goExperience: (e) => { e.preventDefault(); this.scrollTo('experience'); },
+      stats: [
+        { value: '9+', label: 'Immersive projects' },
+        { value: 'Unreal & Unity', label: 'Core engines' },
+        { value: 'VR / AR / XR', label: 'Focus areas' },
+      ],
+      skills: ['Unreal Engine', 'Unity', 'XR Interaction Toolkit', 'VR IK / Embodiment', 'AI NPCs (Yarn)', 'Mixed Reality', 'Spatial Audio', 'C# / C++', 'Environment Design'],
+      jobs: [
+        { period: '2024 \u2013 Present', role: 'Lecturer, Unreal Engine & Game Dev', org: 'University Campus of Esports, London',
+          points: [
+            'Deliver the UE5 curriculum covering real-time environments, Blueprint scripting, level design and interactive systems.',
+            'Guide students through iterative development, troubleshooting Blueprint and performance issues live across several projects at once.',
+            'Translate complex engine concepts for non-technical audiences, which has sharpened my own technical mastery.',
+          ] },
+        { period: 'Jul \u2013 Dec 2023', role: 'Virtual Reality Developer', org: 'Indian Space Research Organisation (ISRO)',
+          points: [
+            'Worked with 10+ scientists to create data-driven, high-fidelity simulations deployed on VR platforms.',
+            'Built player mechanics, environment interactions and performance-optimised scenes for portable VR headsets.',
+          ] },
+      ],
+      education: [
+        { period: '2024 \u2013 2025', degree: 'MSc Virtual Reality', org: 'Swansea University, UK',
+          note: 'Subject Representative. Research focused on real-time XR systems and user interaction design.' },
+        { period: '2020 \u2013 2024', degree: 'B.E. Artificial Intelligence & Data Science', org: 'University of Pune, India',
+          note: 'Built an AI/ML prediction model for urban planning, copyright registered with the Government of India (No. L-148561/2024).' },
+      ],
+      achievements: [
+        { icon: 'trophy', text: '1st Prize, NASA Space Apps Challenge (India level), for an XR-based space data visualisation solution.' },
+        { icon: 'badge-check', text: 'Government of India copyright registration for an original AI/ML urban simulation system (L-148561/2024).' },
+        { icon: 'star', text: 'Subject Representative for MSc VR at Swansea University, appointed for academic and leadership excellence.' },
+        { icon: 'file-badge', text: 'ISRO internship certification (2023) and a recommendation letter from the ISRO Chair.' },
+      ],
+      techGroups: [
+        { icon: 'gamepad-2', title: 'Game Engines', items: ['Unreal Engine UE4/UE5', 'Unity'] },
+        { icon: 'code', title: 'Languages', items: ['C++ (Unreal)', 'C# (Unity)', 'Python', 'Blueprint'] },
+        { icon: 'glasses', title: 'XR SDKs', items: ['Meta XR SDK', 'XR Interaction Toolkit', 'AR Foundation', 'VRIF / Final IK'] },
+        { icon: 'headset', title: 'Platforms', items: ['Meta Quest 3 / 2 / Pro', 'Oculus Rift / Go', 'PC VR', 'Mobile MR'] },
+        { icon: 'wrench', title: 'Other Tools', items: ['Git / GitHub', 'Perforce', 'Shapr3D', 'Vizard'] },
+      ],
+    };
+  }
+}
+</script>
+</body>
+</html>

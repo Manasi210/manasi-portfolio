@@ -1,0 +1,61 @@
+/* ============================================================
+   COLORS — Virtual Creations
+   Dark-first, immersive base + electric neon brand pops.
+   ============================================================ */
+:root {
+  /* --- Base / void --------------------------------------- */
+  --void:   #07060E;   /* deepest page backdrop */
+  --bg-0:   #0B0A14;   /* page background */
+  --bg-1:   #12101F;   /* card / panel */
+  --bg-2:   #1A1830;   /* raised surface */
+  --bg-3:   #262343;   /* hover / inset */
+  --line:   rgba(255,255,255,0.10);  /* hairline border */
+  --line-2: rgba(255,255,255,0.18);  /* stronger border */
+
+  /* --- Ink / text --------------------------------------- */
+  --ink-0:  #FFFFFF;
+  --ink-1:  #EEEBFF;   /* headings (near-white, faint violet) */
+  --ink-2:  #B6B3DA;   /* body (muted lavender-grey) */
+  --ink-3:  #817EAC;   /* captions / meta */
+  --ink-on-bright: #07060E;  /* text on neon fills */
+
+  /* --- Brand neons -------------------------------------- */
+  --cyan:        #19E3FF;  /* PRIMARY — electric cyan */
+  --cyan-bright: #6BF0FF;
+  --cyan-deep:   #00AFD4;
+  --magenta:     #FF3DCB;  /* secondary pop */
+  --magenta-bright: #FF7ADD;
+  --violet:      #7B5BFF;  /* tertiary pop */
+  --lime:        #B6FF3C;  /* energy / success accent */
+  --amber:       #FFB23D;  /* warm pop */
+
+  /* --- Engine / tech tag hues --------------------------- */
+  --tag-unity:  #E6E6F0;   /* Unity = clean monochrome */
+  --tag-unreal: #7B5BFF;   /* Unreal = violet */
+  --tag-vr:     #19E3FF;   /* VR = cyan */
+  --tag-ar:     #B6FF3C;   /* AR = lime */
+  --tag-ai:     #FF3DCB;   /* AI = magenta */
+
+  /* --- Semantic aliases --------------------------------- */
+  --primary:        var(--cyan);
+  --primary-deep:   var(--cyan-deep);
+  --accent:         var(--magenta);
+  --surface-page:   var(--bg-0);
+  --surface-card:   var(--bg-1);
+  --surface-raised: var(--bg-2);
+  --surface-inset:  var(--bg-3);
+  --border:         var(--line);
+  --border-strong:  var(--line-2);
+  --text-heading:   var(--ink-1);
+  --text-body:      var(--ink-2);
+  --text-muted:     var(--ink-3);
+  --success:        var(--lime);
+  --warning:        var(--amber);
+  --danger:         var(--magenta);
+
+  /* --- Signature gradients ------------------------------ */
+  --grad-aurora:  linear-gradient(120deg, #19E3FF 0%, #7B5BFF 50%, #FF3DCB 100%); /* @kind color */
+  --grad-cyan:    linear-gradient(135deg, #6BF0FF 0%, #19E3FF 55%, #00AFD4 100%); /* @kind color */
+  --grad-pop:     linear-gradient(135deg, #FF3DCB 0%, #FFB23D 100%); /* @kind color */
+  --grad-void:    radial-gradient(120% 90% at 50% -10%, #1A1830 0%, #0B0A14 60%, #07060E 100%); /* @kind color */
+}

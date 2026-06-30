@@ -1,0 +1,72 @@
+/* ============================================================
+   BASE — light resets + a few brand primitives.
+   Kept minimal; tokens carry the system.
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--text-body);
+  background: var(--surface-page);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  color: var(--text-heading);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tr-tight);
+  margin: 0;
+  text-wrap: balance;
+}
+
+p { margin: 0; text-wrap: pretty; }
+
+a { color: inherit; text-decoration: none; }
+
+::selection { background: var(--cyan); color: var(--ink-on-bright); }
+
+/* --- Mono kicker / eyebrow ----------------------------- */
+.vc-kicker {
+  font-family: var(--font-mono);
+  font-size: var(--fs-kicker);
+  letter-spacing: var(--tr-kicker);
+  text-transform: uppercase;
+  color: var(--primary);
+}
+
+/* --- Aurora gradient text ------------------------------ */
+.vc-grad-text {
+  background: var(--grad-aurora);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* --- Immersive grid backdrop --------------------------- */
+.vc-grid-bg {
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+
+/* --- Focus ring ---------------------------------------- */
+:where(button, a, input, select, textarea):focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
