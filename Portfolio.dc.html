@@ -32,16 +32,25 @@
     .vc-marquee-track { display: flex; animation: vc-marquee 28s linear infinite; width: max-content; }
     .vc-marquee-track:hover { animation-play-state: paused; }
     .vc-status-dot { animation: vc-pulse-ring 2.4s ease-out infinite; }
+    /* Custom cursor glow */
+    #vc-cursor { position: fixed; top: 0; left: 0; width: 28px; height: 28px; border-radius: 50%; background: radial-gradient(circle, rgba(25,227,255,0.55) 0%, transparent 70%); pointer-events: none; transform: translate(-50%,-50%); transition: width 0.25s, height 0.25s, opacity 0.25s; z-index: 9999; mix-blend-mode: screen; }
+    #vc-cursor-ring { position: fixed; top: 0; left: 0; width: 44px; height: 44px; border-radius: 50%; border: 1px solid rgba(25,227,255,0.35); pointer-events: none; transform: translate(-50%,-50%); transition: width 0.4s, height 0.4s, opacity 0.4s, border-color 0.3s; z-index: 9998; }
+    body:hover #vc-cursor { opacity: 1; }
     @media (min-width: 860px) { .vc-doodle { display: block !important; } }
     @media (max-width: 860px) {
       .vc-hero-grid { grid-template-columns: 1fr !important; }
       .vc-hero-photo { display: none !important; }
     }
     @media (prefers-reduced-motion: reduce) { * { animation-duration: 0.001ms !important; } }
+    @media (hover: none) { #vc-cursor, #vc-cursor-ring { display: none; } }
   </style>
 </helmet>
 
 <template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#19E3FF"/><stop offset="0.5" stop-color="#7B5BFF"/><stop offset="1" stop-color="#FF3DCB"/></linearGradient></defs><rect width="100" height="100" rx="18" fill="#0B0A14"/><rect x="30" y="30" width="40" height="40" rx="20" fill="url(#bg)"/><circle cx="50" cy="50" r="9" fill="#0B0A14"/></svg></template>
+
+<!-- custom cursor elements -->
+<div id="vc-cursor"></div>
+<div id="vc-cursor-ring"></div>
 
 <div style="min-height: 100vh; background: var(--grad-void); font-family: var(--font-sans); overflow-x: hidden; position: relative;">
 
@@ -113,7 +122,7 @@
       </div>
 
       <!-- 2-column hero layout: left = text, right = photo -->
-      <div class="vc-hero-grid" style="display: grid; grid-template-columns: 1fr 0.92fr; gap: clamp(32px, 5vw, 64px); align-items: center;">
+      <div class="vc-hero-grid" style="display: grid; grid-template-columns: 1fr 1.15fr; gap: clamp(32px, 5vw, 64px); align-items: center;">
 
         <!-- Left: all existing hero text -->
         <div>
@@ -185,7 +194,7 @@
           </div>
 
           <!-- the photo itself -->
-          <div style="border-radius: 28px; overflow: hidden; border: 1px solid rgba(25,227,255,0.25); box-shadow: 0 0 0 4px rgba(25,227,255,0.06), 0 40px 100px rgba(7,6,14,0.65), 0 0 80px rgba(25,227,255,0.12); aspect-ratio: 4 / 5; background: var(--grad-void); position: relative;">
+          <div style="border-radius: 28px; overflow: hidden; border: 1px solid rgba(25,227,255,0.25); box-shadow: 0 0 0 4px rgba(25,227,255,0.06), 0 40px 100px rgba(7,6,14,0.65), 0 0 80px rgba(25,227,255,0.12); aspect-ratio: 3 / 4; background: var(--grad-void); position: relative;">
             <img src="assets/manasi.jpeg" alt="Manasi Lodha in VR" style="width: 100%; height: 100%; object-fit: cover; object-position: center 25%;">
             <div style="position: absolute; inset: 0; background: linear-gradient(180deg, transparent 55%, rgba(7,6,14,0.75) 100%);"></div>
             <!-- name tag at bottom of photo -->
@@ -316,7 +325,7 @@
             </sc-for>
           </div>
 
-          <a href="https://www.linkedin.com/in/manasi-lodha/" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-sans); font-weight: 700; font-size: 14px; color: var(--ink-1); text-decoration: none; padding: 13px 22px; border-radius: var(--r-pill); background: var(--bg-1); border: 1px solid var(--line-2);" style-hover="border-color: var(--cyan); color: var(--cyan);">
+          <a href="https://www.linkedin.com/in/manasi-lodha/" onClick="{{ openLinkedIn }}" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-sans); font-weight: 700; font-size: 14px; color: var(--ink-1); text-decoration: none; padding: 13px 22px; border-radius: var(--r-pill); background: var(--bg-1); border: 1px solid var(--line-2);" style-hover="border-color: var(--cyan); color: var(--cyan);">
             <i data-lucide="external-link" style="width: 18px; height: 18px;"></i> Connect on LinkedIn
           </a>
         </div>
@@ -386,36 +395,28 @@
       <div style="font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--amber); margin-bottom: 14px; display: flex; align-items: center; gap: 10px;"><span style="display: inline-block; width: 28px; height: 2px; background: var(--amber); border-radius: 2px;"></span>Toolkit</div>
       <h2 style="font-family: var(--font-display); font-weight: 800; font-size: var(--fs-h1); line-height: 0.98; letter-spacing: -0.03em; color: var(--ink-1); margin: 0 0 48px; max-width: 18ch;">Technical <span style="color: var(--amber);">skills</span></h2>
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: clamp(24px, 4vw, 56px); align-items: start;">
-        <!-- Skill bars — left column -->
-        <div style="display: flex; flex-direction: column; gap: 22px;">
-          <sc-for list="{{ skillBars }}" as="sb" hint-placeholder-count="8">
-            <div>
-              <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px;">
-                <span style="font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.06em; color: var(--ink-1);">{{ sb.name }}</span>
-                <span style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; color: var(--ink-3);">{{ sb.pct }}%</span>
-              </div>
-              <div style="height: 5px; background: var(--bg-2); border-radius: 3px; overflow: hidden;">
-                <div class="vc-bar" style="height: 100%; width: {{ sb.width }}; background: {{ sb.color }}; border-radius: 3px; box-shadow: 0 0 10px {{ sb.color }}; animation-delay: {{ sb.delay }};"></div>
-              </div>
+        <sc-for list="{{ skillBarsLeft }}" as="sb" hint-placeholder-count="4">
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px;">
+              <span style="font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.06em; color: var(--ink-1);">{{ sb.name }}</span>
+              <span style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; color: var(--ink-3);">{{ sb.pct }}%</span>
             </div>
-          </sc-for>
-        </div>
-        <!-- Tool tag groups — right column -->
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-          <sc-for list="{{ techGroups }}" as="g" hint-placeholder-count="5">
-            <div style="padding: 20px; border-radius: var(--r-lg); background: var(--bg-1); border: 1px solid var(--line); box-shadow: var(--shadow-card);">
-              <div style="display: flex; align-items: center; gap: 9px; margin-bottom: 14px;">
-                <span style="width: 26px; height: 26px; border-radius: 7px; background: var(--bg-2); display: inline-flex; align-items: center; justify-content: center; color: var(--cyan);"><i data-lucide="{{ g.icon }}" style="width: 15px; height: 15px;"></i></span>
-                <div style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-2);">{{ g.title }}</div>
-              </div>
-              <div style="display: flex; flex-wrap: wrap; gap: 7px;">
-                <sc-for list="{{ g.items }}" as="it" hint-placeholder-count="3">
-                  <span style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.02em; padding: 6px 10px; border-radius: var(--r-pill); background: var(--bg-2); border: 1px solid var(--line-2); color: var(--ink-2);">{{ it }}</span>
-                </sc-for>
-              </div>
+            <div style="height: 5px; background: var(--bg-2); border-radius: 3px; overflow: hidden;">
+              <div class="vc-bar" style="height: 100%; width: {{ sb.width }}; background: {{ sb.color }}; border-radius: 3px; box-shadow: 0 0 10px {{ sb.color }}; animation-delay: {{ sb.delay }};"></div>
             </div>
-          </sc-for>
-        </div>
+          </div>
+        </sc-for>
+        <sc-for list="{{ skillBarsRight }}" as="sb" hint-placeholder-count="4">
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px;">
+              <span style="font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.06em; color: var(--ink-1);">{{ sb.name }}</span>
+              <span style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; color: var(--ink-3);">{{ sb.pct }}%</span>
+            </div>
+            <div style="height: 5px; background: var(--bg-2); border-radius: 3px; overflow: hidden;">
+              <div class="vc-bar" style="height: 100%; width: {{ sb.width }}; background: {{ sb.color }}; border-radius: 3px; box-shadow: 0 0 10px {{ sb.color }}; animation-delay: {{ sb.delay }};"></div>
+            </div>
+          </div>
+        </sc-for>
       </div>
     </section>
 
@@ -437,7 +438,7 @@
           </div>
           <div style="display: flex; flex-wrap: wrap; gap: 24px; margin-top: 32px; font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3);">
             <span style="display: inline-flex; align-items: center; gap: 8px;"><i data-lucide="map-pin" style="width: 15px; height: 15px;"></i> London, UK</span>
-            <a href="https://www.linkedin.com/in/manasi-lodha/" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 8px; color: var(--ink-3); text-decoration: none;" style-hover="color: var(--cyan);"><i data-lucide="external-link" style="width: 15px; height: 15px;"></i> LinkedIn</a>
+            <a href="https://www.linkedin.com/in/manasi-lodha/" onClick="{{ openLinkedIn }}" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 8px; color: var(--ink-3); text-decoration: none;" style-hover="color: var(--cyan);"><i data-lucide="external-link" style="width: 15px; height: 15px;"></i> LinkedIn</a>
           </div>
         </div>
       </div>
@@ -452,7 +453,7 @@
         <span style="font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.1em; color: var(--ink-3);">&copy; 2026 Manasi&rsquo;s Virtual Creations</span>
       </div>
       <div style="display: flex; gap: 22px; font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase;">
-        <a href="https://www.linkedin.com/in/manasi-lodha/" target="_blank" rel="noopener" style="color: var(--ink-3); text-decoration: none;" style-hover="color: var(--cyan);">LinkedIn</a>
+        <a href="https://www.linkedin.com/in/manasi-lodha/" onClick="{{ openLinkedIn }}" target="_blank" rel="noopener noreferrer" style="color: var(--ink-3); text-decoration: none;" style-hover="color: var(--cyan);">LinkedIn</a>
         <a href="mailto:manasiylodha@gmail.com" style="color: var(--ink-3); text-decoration: none;" style-hover="color: var(--cyan);">Email</a>
       </div>
     </div>
@@ -587,7 +588,7 @@ class Component extends DCLogic {
         blurb:'A VR experience that drops you into a restaurant where you can\u2019t hear a word, built so people feel the daily reality of hard-of-hearing folks.',
         body:'I built full-body inverse kinematics for presence, used Meta Haptics to simulate stress responses like a racing heartbeat, and scripted NPCs in Yarn so they react to your gestures. This one really mattered to me. It is proof that VR can be a tool for awareness, not just entertainment.' },
       { id:'vault', title:'Vault Raiders: Save Verdantia', engine:'Unity', medium:'VR', accent:'magenta', year:'2024', image:'assets/projects/vault.png',
-        gallery:['assets/projects/vault-raiders/1.png','assets/projects/vault-raiders/2.mp4'],
+        gallery:['assets/projects/vault-raiders/1.mp4'],
         tags:['XR Interaction Toolkit','Hand Grab & Throw','Power-ups','Boss Fights'],
         hook:'Ever battled a giant Teddy Monster in VR? Now is your chance.',
         blurb:'An action-packed VR adventure where YOU are the hero. Battle a giant Teddy Monster, grab Monkey Bombs and Ice Bombs, and save the world one level at a time.',
@@ -605,16 +606,11 @@ class Component extends DCLogic {
         blurb:'A high-stakes VR gambling den brought to life with AI-driven NPCs, dynamic lighting and interactive elements. Cinematic and a little surreal.',
         body:'The NPCs respond to your actions through Yarn dialogue and head-tracking, so they follow and react to you. I spent a lot of time on the dynamic lighting and added an in-game music player so players can set the mood themselves.' },
       { id:'climate', title:'Climate Change Awareness', engine:'Unity', medium:'VR', accent:'lime', year:'2024', image:'assets/projects/climate.png',
-        gallery:['assets/projects/climate-change/1.png','assets/projects/climate-change/2.png','assets/projects/climate-change/3.png','assets/projects/climate-change/4.png','assets/projects/climate-change/5.png','assets/projects/climate-change/6.png','assets/projects/climate-change/7.png','assets/projects/climate-change/8.png'],
+        gallery:['assets/projects/climate-change/cover.mp4','assets/projects/climate-change/1.png','assets/projects/climate-change/2.png','assets/projects/climate-change/3.png','assets/projects/climate-change/4.png','assets/projects/climate-change/5.png','assets/projects/climate-change/6.png','assets/projects/climate-change/7.png','assets/projects/climate-change/8.png'],
         tags:['Recycling Mini-Games','Ambisonic Audio','Recycled-Art Gallery','Educational'],
         hook:'Every everyday choice shapes the planet. Feel it in VR.',
         blurb:'An interactive VR project about sustainable choices. Sort waste, run the recycling lab, and see how everyday decisions shape the planet.',
         body:'I made a Garbage Sorting game and a Recycling Lab that teach how materials get recycled, plus a gallery of upcycled products and a recycled lion sculpture. Ambisonic NPC audio and real sustainability facts help the message land.' },
-      { id:'festo', title:'Festo Mixed Reality Experience', engine:'Unity', medium:'MR', accent:'cyan', year:'2024', image:'assets/projects/festo.gif',
-        tags:['Mixed Reality','Passthrough','Spatial Interaction','Industrial Training'],
-        hook:'Where the digital and the physical share the same room.',
-        blurb:'A mixed-reality training app built for Festo, blending digital content into the real space for hands-on, spatial interaction on physical machinery.',
-        body:'This is where I moved from fully-virtual into mixed reality, anchoring interactive 3D content into the user\u2019s real environment with passthrough and gesture recognition. I used AR Foundation and the Meta XR SDK to overlay spatial UI onto real machines, and the prototype boosted measured training efficiency by 50 percent.' },
       { id:'office', title:'Modern Office Interiors', engine:'Unreal', medium:'3D', accent:'violet', year:'2023', image:'assets/projects/modern-office/cover.png',
         gallery:['assets/projects/modern-office/1.png','assets/projects/modern-office/2.png','assets/projects/modern-office/3.png','assets/projects/modern-office/4.png','assets/projects/modern-office/5.png','assets/projects/modern-office/6.png','assets/projects/modern-office/7.png','assets/projects/modern-office/8.png','assets/projects/modern-office/9.png'],
         tags:['Material Craft','Themed Sections','Realistic Lighting','Environment Design'],
@@ -633,6 +629,11 @@ class Component extends DCLogic {
         hook:'Storytelling through motion and atmosphere.',
         blurb:'A cinematic scene of a tense woman on a ship. Character animation and environment design in Unreal Engine.',
         body:'I designed and animated a cinematic scene including character animation and environment design, playing with mood, pacing and camera in Unreal Engine.' },
+      { id:'festo', title:'Festo Mixed Reality Experience', engine:'Unity', medium:'MR', accent:'cyan', year:'2024', image:'',
+        tags:['Mixed Reality','Passthrough','Spatial Interaction','Industrial Training'],
+        hook:'Where the digital and the physical share the same room.',
+        blurb:'A mixed-reality training app built for Festo, blending digital content into the real space for hands-on, spatial interaction on physical machinery.',
+        body:'This is where I moved from fully-virtual into mixed reality, anchoring interactive 3D content into the user’s real environment with passthrough and gesture recognition. I used AR Foundation and the Meta XR SDK to overlay spatial UI onto real machines, and the prototype boosted measured training efficiency by 50 percent.' },
     ];
     return list.map(p => {
       const isVid = !!(p.image && (p.image.endsWith('.mp4') || p.image.endsWith('.mov')));
@@ -649,6 +650,7 @@ class Component extends DCLogic {
   componentDidMount() {
     this.renderIcons();
     this.initTilt();
+    this.initCursor();
   }
   componentDidUpdate() {
     this.renderIcons();
@@ -674,6 +676,29 @@ class Component extends DCLogic {
       });
     });
   }
+  initCursor() {
+    if (this._cursorInit) return;
+    this._cursorInit = true;
+    const dot = document.getElementById('vc-cursor');
+    const ring = document.getElementById('vc-cursor-ring');
+    if (!dot || !ring) return;
+    let rx = 0, ry = 0;
+    document.addEventListener('mousemove', (e) => {
+      dot.style.left = e.clientX + 'px';
+      dot.style.top = e.clientY + 'px';
+      rx += (e.clientX - rx) * 0.12;
+      ry += (e.clientY - ry) * 0.12;
+      ring.style.left = rx + 'px';
+      ring.style.top = ry + 'px';
+    });
+    const expand = () => { dot.style.width = '52px'; dot.style.height = '52px'; ring.style.borderColor = 'rgba(25,227,255,0.7)'; };
+    const shrink = () => { dot.style.width = '28px'; dot.style.height = '28px'; ring.style.borderColor = 'rgba(25,227,255,0.35)'; };
+    document.querySelectorAll('a, button, [data-tilt]').forEach(el => { el.addEventListener('mouseenter', expand); el.addEventListener('mouseleave', shrink); });
+    // RAF for smooth ring lag
+    const tick = () => { ring.style.left = rx + 'px'; ring.style.top = ry + 'px'; requestAnimationFrame(tick); };
+    requestAnimationFrame(tick);
+  }
+
   renderIcons() {
     if (window.lucide) {
       try { window.lucide.createIcons({ attrs: { 'stroke-width': 1.75 } }); } catch (e) {}
@@ -723,16 +748,18 @@ class Component extends DCLogic {
       return { vidSrc: isVid ? src : '', imgSrc: isVid ? '' : src };
     });
 
-    const skillBars = [
-      { name: 'Unity',         pct: 95, color: 'var(--cyan)',    delay: '0s'   },
-      { name: 'Unreal Engine', pct: 88, color: 'var(--violet)',  delay: '0.1s' },
-      { name: 'C#',            pct: 92, color: 'var(--magenta)', delay: '0.15s'},
-      { name: 'Blueprints',    pct: 85, color: 'var(--amber)',   delay: '0.2s' },
-      { name: 'VR / XR',       pct: 93, color: 'var(--lime)',    delay: '0.25s'},
-      { name: 'Meta XR SDK',   pct: 82, color: 'var(--cyan)',    delay: '0.3s' },
-      { name: 'Environment Art',pct: 80, color: 'var(--violet)', delay: '0.35s'},
-      { name: 'Git / Perforce',pct: 78, color: 'var(--magenta)',delay: '0.4s' },
+    const allBars = [
+      { name: 'Unity',          pct: 95, color: 'var(--cyan)',    delay: '0s'   },
+      { name: 'C#',             pct: 92, color: 'var(--magenta)', delay: '0.05s'},
+      { name: 'VR / XR',        pct: 93, color: 'var(--lime)',    delay: '0.1s' },
+      { name: 'Full-Body IK',   pct: 87, color: 'var(--cyan)',    delay: '0.15s'},
+      { name: 'Unreal Engine',  pct: 88, color: 'var(--violet)',  delay: '0.2s' },
+      { name: 'Blueprints',     pct: 85, color: 'var(--amber)',   delay: '0.25s'},
+      { name: 'Meta XR SDK',    pct: 82, color: 'var(--violet)',  delay: '0.3s' },
+      { name: 'Environment Art',pct: 80, color: 'var(--magenta)', delay: '0.35s'},
     ].map(s => ({ ...s, width: s.pct + '%' }));
+    const skillBarsLeft = allBars.slice(0, 4);
+    const skillBarsRight = allBars.slice(4);
 
     return {
       filters,
@@ -774,7 +801,9 @@ class Component extends DCLogic {
         { label: 'Real-Time Rendering', dot: 'var(--cyan)' },
       ],
       skills: ['Unreal Engine', 'Unity', 'XR Interaction Toolkit', 'VR IK / Embodiment', 'AI NPCs (Yarn)', 'Mixed Reality', 'Spatial Audio', 'C# / C++', 'Environment Design'],
-      skillBars,
+      skillBarsLeft,
+      skillBarsRight,
+      openLinkedIn: (e) => { e.preventDefault(); window.open('https://www.linkedin.com/in/manasi-lodha/', '_blank', 'noopener,noreferrer'); },
       jobs: [
         { period: '2024 \u2013 Present', role: 'Lecturer, Unreal Engine & Game Dev', org: 'University Campus of Esports, London',
           points: [
@@ -799,13 +828,6 @@ class Component extends DCLogic {
         { icon: 'badge-check', text: 'Government of India copyright registration for an original AI/ML urban simulation system (L-148561/2024).' },
         { icon: 'star', text: 'Subject Representative for MSc VR at Swansea University, appointed for academic and leadership excellence.' },
         { icon: 'file-badge', text: 'ISRO internship certification (2023) and a recommendation letter from the ISRO Chair.' },
-      ],
-      techGroups: [
-        { icon: 'gamepad-2', title: 'Game Engines', items: ['Unreal Engine UE4/UE5', 'Unity'] },
-        { icon: 'code', title: 'Languages', items: ['C++ (Unreal)', 'C# (Unity)', 'Python', 'Blueprint'] },
-        { icon: 'glasses', title: 'XR SDKs', items: ['Meta XR SDK', 'XR Interaction Toolkit', 'AR Foundation', 'VRIF / Final IK'] },
-        { icon: 'headset', title: 'Platforms', items: ['Meta Quest 3 / 2 / Pro', 'Oculus Rift / Go', 'PC VR', 'Mobile MR'] },
-        { icon: 'wrench', title: 'Other Tools', items: ['Git / GitHub', 'Perforce', 'Shapr3D', 'Vizard'] },
       ],
     };
   }
