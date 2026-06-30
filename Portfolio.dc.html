@@ -25,8 +25,13 @@
     @keyframes vc-drift { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
     @keyframes vc-sheet-in { from { transform: translateY(40px) scale(0.985); } to { transform: none; } }
     @keyframes vc-bar-in { from { width: 0 !important; } to {} }
+    @keyframes vc-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    @keyframes vc-pulse-ring { 0%,100%{box-shadow:0 0 0 0 rgba(25,227,255,0.4)} 50%{box-shadow:0 0 0 12px rgba(25,227,255,0)} }
     .vc-tilt-card { will-change: transform; transform-style: preserve-3d; }
     .vc-bar { animation: vc-bar-in 1.2s cubic-bezier(0.22,1,0.36,1) both; }
+    .vc-marquee-track { display: flex; animation: vc-marquee 28s linear infinite; width: max-content; }
+    .vc-marquee-track:hover { animation-play-state: paused; }
+    .vc-status-dot { animation: vc-pulse-ring 2.4s ease-out infinite; }
     @media (min-width: 860px) { .vc-doodle { display: block !important; } }
     @media (max-width: 860px) {
       .vc-hero-grid { grid-template-columns: 1fr !important; }
@@ -108,7 +113,7 @@
       </div>
 
       <!-- 2-column hero layout: left = text, right = photo -->
-      <div class="vc-hero-grid" style="display: grid; grid-template-columns: 1fr 0.72fr; gap: clamp(32px, 6vw, 72px); align-items: center;">
+      <div class="vc-hero-grid" style="display: grid; grid-template-columns: 1fr 0.92fr; gap: clamp(32px, 5vw, 64px); align-items: center;">
 
         <!-- Left: all existing hero text -->
         <div>
@@ -180,7 +185,7 @@
           </div>
 
           <!-- the photo itself -->
-          <div style="border-radius: 28px; overflow: hidden; border: 1px solid var(--line-2); box-shadow: 0 0 0 1px var(--line), 0 32px 80px rgba(7,6,14,0.55), 0 0 60px rgba(25,227,255,0.08); aspect-ratio: 3 / 4; background: var(--grad-void); position: relative;">
+          <div style="border-radius: 28px; overflow: hidden; border: 1px solid rgba(25,227,255,0.25); box-shadow: 0 0 0 4px rgba(25,227,255,0.06), 0 40px 100px rgba(7,6,14,0.65), 0 0 80px rgba(25,227,255,0.12); aspect-ratio: 4 / 5; background: var(--grad-void); position: relative;">
             <img src="assets/manasi.jpeg" alt="Manasi Lodha in VR" style="width: 100%; height: 100%; object-fit: cover; object-position: center 25%;">
             <div style="position: absolute; inset: 0; background: linear-gradient(180deg, transparent 55%, rgba(7,6,14,0.75) 100%);"></div>
             <!-- name tag at bottom of photo -->
@@ -189,7 +194,7 @@
                 <div style="font-family: var(--font-display); font-weight: 700; font-size: 18px; color: var(--ink-0); letter-spacing: -0.02em;">Manasi Lodha</div>
                 <div style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--cyan); margin-top: 3px;">XR Developer</div>
               </div>
-              <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--lime); box-shadow: 0 0 10px var(--lime);"></span>
+              <span class="vc-status-dot" style="width: 9px; height: 9px; border-radius: 50%; background: var(--lime); box-shadow: 0 0 10px var(--lime);"></span>
             </div>
           </div>
         </div>
@@ -197,12 +202,32 @@
       </div><!-- end 2-col -->
     </section>
 
+    <!-- ===================== MARQUEE STRIP ===================== -->
+    <div style="position: relative; overflow: hidden; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 14px 0; margin-bottom: 0; background: var(--bg-1);">
+      <div class="vc-marquee-track">
+        <sc-for list="{{ marqueeItems }}" as="mi" hint-placeholder-count="16">
+          <span style="display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3); white-space: nowrap; padding: 0 28px;">
+            <span style="width: 5px; height: 5px; border-radius: 50%; background: {{ mi.dot }}; box-shadow: 0 0 8px {{ mi.dot }};"></span>
+            {{ mi.label }}
+          </span>
+        </sc-for>
+        <!-- duplicate for seamless loop -->
+        <sc-for list="{{ marqueeItems }}" as="mi" hint-placeholder-count="16">
+          <span style="display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3); white-space: nowrap; padding: 0 28px;">
+            <span style="width: 5px; height: 5px; border-radius: 50%; background: {{ mi.dot }}; box-shadow: 0 0 8px {{ mi.dot }};"></span>
+            {{ mi.label }}
+          </span>
+        </sc-for>
+      </div>
+    </div>
+
     <!-- ===================== WORK ===================== -->
-    <section id="work" style="padding: 40px 0 var(--section-y); scroll-margin-top: 80px;">
+    <section id="work" style="padding: 60px 0 var(--section-y); scroll-margin-top: 80px; position: relative;">
+      <div style="position: absolute; top: 80px; right: -100px; width: 340px; height: 340px; border-radius: 50%; background: var(--grad-aurora); filter: blur(130px); opacity: 0.14; pointer-events: none;"></div>
       <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; margin-bottom: 52px;">
         <div>
-          <div style="font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--cyan); margin-bottom: 14px;">Selected Work</div>
-          <h2 style="font-family: var(--font-display); font-weight: 800; font-size: var(--fs-h1); line-height: 0.98; letter-spacing: -0.03em; color: var(--ink-1); margin: 0;">Immersive projects</h2>
+          <div style="font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--cyan); margin-bottom: 14px; display: flex; align-items: center; gap: 10px;"><span style="display: inline-block; width: 28px; height: 2px; background: var(--cyan); border-radius: 2px;"></span>Selected Work</div>
+          <h2 style="font-family: var(--font-display); font-weight: 800; font-size: var(--fs-h1); line-height: 0.98; letter-spacing: -0.03em; color: var(--ink-1); margin: 0;">Immersive <span style="background: var(--grad-aurora); background-size: 200% auto; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; animation: vc-drift 8s linear infinite;">projects</span></h2>
         </div>
         <!-- Category filter pills -->
         <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
@@ -300,8 +325,8 @@
 
     <!-- ===================== EXPERIENCE + EDUCATION ===================== -->
     <section id="experience" style="padding: 0 0 var(--section-y); scroll-margin-top: 80px;">
-      <div style="font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--cyan); margin-bottom: 14px;">Experience &amp; Education</div>
-      <h2 style="font-family: var(--font-display); font-weight: 800; font-size: var(--fs-h1); line-height: 0.98; letter-spacing: -0.03em; color: var(--ink-1); margin: 0 0 48px; max-width: 18ch;">The path so far</h2>
+      <div style="font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--cyan); margin-bottom: 14px; display: flex; align-items: center; gap: 10px;"><span style="display: inline-block; width: 28px; height: 2px; background: var(--cyan); border-radius: 2px;"></span>Experience &amp; Education</div>
+      <h2 style="font-family: var(--font-display); font-weight: 800; font-size: var(--fs-h1); line-height: 0.98; letter-spacing: -0.03em; color: var(--ink-1); margin: 0 0 48px; max-width: 18ch;">The path <span style="color: var(--violet);">so far</span></h2>
 
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: clamp(28px, 5vw, 64px);">
 
@@ -358,8 +383,8 @@
 
     <!-- ===================== TECHNICAL SKILLS ===================== -->
     <section id="skills" style="padding: 0 0 var(--section-y); scroll-margin-top: 80px;">
-      <div style="font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--amber); margin-bottom: 14px;">Toolkit</div>
-      <h2 style="font-family: var(--font-display); font-weight: 800; font-size: var(--fs-h1); line-height: 0.98; letter-spacing: -0.03em; color: var(--ink-1); margin: 0 0 48px; max-width: 18ch;">Technical skills</h2>
+      <div style="font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--amber); margin-bottom: 14px; display: flex; align-items: center; gap: 10px;"><span style="display: inline-block; width: 28px; height: 2px; background: var(--amber); border-radius: 2px;"></span>Toolkit</div>
+      <h2 style="font-family: var(--font-display); font-weight: 800; font-size: var(--fs-h1); line-height: 0.98; letter-spacing: -0.03em; color: var(--ink-1); margin: 0 0 48px; max-width: 18ch;">Technical <span style="color: var(--amber);">skills</span></h2>
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: clamp(24px, 4vw, 56px); align-items: start;">
         <!-- Skill bars — left column -->
         <div style="display: flex; flex-direction: column; gap: 22px;">
@@ -561,7 +586,7 @@ class Component extends DCLogic {
         hook:'Can VR help us experience the world through someone else\u2019s eyes?',
         blurb:'A VR experience that drops you into a restaurant where you can\u2019t hear a word, built so people feel the daily reality of hard-of-hearing folks.',
         body:'I built full-body inverse kinematics for presence, used Meta Haptics to simulate stress responses like a racing heartbeat, and scripted NPCs in Yarn so they react to your gestures. This one really mattered to me. It is proof that VR can be a tool for awareness, not just entertainment.' },
-      { id:'vault', title:'Vault Raiders: Save Verdantia', engine:'Unity', medium:'VR', accent:'magenta', year:'2024', image:'assets/projects/vault-raiders/cover.mp4',
+      { id:'vault', title:'Vault Raiders: Save Verdantia', engine:'Unity', medium:'VR', accent:'magenta', year:'2024', image:'assets/projects/vault.png',
         gallery:['assets/projects/vault-raiders/1.png','assets/projects/vault-raiders/2.mp4'],
         tags:['XR Interaction Toolkit','Hand Grab & Throw','Power-ups','Boss Fights'],
         hook:'Ever battled a giant Teddy Monster in VR? Now is your chance.',
@@ -579,7 +604,7 @@ class Component extends DCLogic {
         hook:'A realistic yet surreal world. Cinematic, reactive, alive.',
         blurb:'A high-stakes VR gambling den brought to life with AI-driven NPCs, dynamic lighting and interactive elements. Cinematic and a little surreal.',
         body:'The NPCs respond to your actions through Yarn dialogue and head-tracking, so they follow and react to you. I spent a lot of time on the dynamic lighting and added an in-game music player so players can set the mood themselves.' },
-      { id:'climate', title:'Climate Change Awareness', engine:'Unity', medium:'VR', accent:'lime', year:'2024', image:'assets/projects/climate-change/cover.mp4',
+      { id:'climate', title:'Climate Change Awareness', engine:'Unity', medium:'VR', accent:'lime', year:'2024', image:'assets/projects/climate.png',
         gallery:['assets/projects/climate-change/1.png','assets/projects/climate-change/2.png','assets/projects/climate-change/3.png','assets/projects/climate-change/4.png','assets/projects/climate-change/5.png','assets/projects/climate-change/6.png','assets/projects/climate-change/7.png','assets/projects/climate-change/8.png'],
         tags:['Recycling Mini-Games','Ambisonic Audio','Recycled-Art Gallery','Educational'],
         hook:'Every everyday choice shapes the planet. Feel it in VR.',
@@ -602,7 +627,7 @@ class Component extends DCLogic {
         hook:'A cosy, intricately detailed virtual cafe.',
         blurb:'A cosy cafe environment created in Unity with intricate interior detailing.',
         body:'A focused interior-design study in Unity, with warm materials, considered lighting and lots of small intricate props.' },
-      { id:'unreal-anim', title:'Unreal Animation', engine:'Unreal', medium:'3D', accent:'magenta', year:'2024', image:'assets/projects/unreal-animation/cover.mp4',
+      { id:'unreal-anim', title:'Unreal Animation', engine:'Unreal', medium:'3D', accent:'magenta', year:'2024', image:'assets/projects/unreal-anim.png',
         gallery:['assets/projects/unreal-animation/1.mp4'],
         tags:['Character Animation','Cinematic','Environment Design'],
         hook:'Storytelling through motion and atmosphere.',
@@ -729,6 +754,24 @@ class Component extends DCLogic {
         { value: '9+', label: 'Immersive projects' },
         { value: 'Unreal & Unity', label: 'Core engines' },
         { value: 'VR / AR / XR', label: 'Focus areas' },
+      ],
+      marqueeItems: [
+        { label: 'Unity', dot: 'var(--cyan)' },
+        { label: 'Unreal Engine', dot: 'var(--violet)' },
+        { label: 'C#', dot: 'var(--magenta)' },
+        { label: 'VR / XR', dot: 'var(--lime)' },
+        { label: 'Blueprints', dot: 'var(--amber)' },
+        { label: 'Meta Quest', dot: 'var(--cyan)' },
+        { label: 'Full-Body IK', dot: 'var(--magenta)' },
+        { label: 'Haptics', dot: 'var(--violet)' },
+        { label: 'AI NPCs', dot: 'var(--amber)' },
+        { label: 'Mixed Reality', dot: 'var(--lime)' },
+        { label: 'Spatial Audio', dot: 'var(--cyan)' },
+        { label: 'Environment Art', dot: 'var(--violet)' },
+        { label: 'Yarn Dialogue', dot: 'var(--magenta)' },
+        { label: 'AR Foundation', dot: 'var(--lime)' },
+        { label: 'Inverse Kinematics', dot: 'var(--amber)' },
+        { label: 'Real-Time Rendering', dot: 'var(--cyan)' },
       ],
       skills: ['Unreal Engine', 'Unity', 'XR Interaction Toolkit', 'VR IK / Embodiment', 'AI NPCs (Yarn)', 'Mixed Reality', 'Spatial Audio', 'C# / C++', 'Environment Design'],
       skillBars,
