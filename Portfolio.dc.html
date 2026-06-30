@@ -37,8 +37,8 @@
     @keyframes chibi-jump    { 0%{transform:translateY(0) scaleX(1.1) scaleY(0.9) scaleX(var(--flip,1))} 20%{transform:translateY(-18px) scaleX(0.9) scaleY(1.1) scaleX(var(--flip,1))} 45%{transform:translateY(-52px) scaleX(0.95) scaleY(1.05) scaleX(var(--flip,1))} 70%{transform:translateY(-18px) scaleX(var(--flip,1))} 85%{transform:translateY(-6px) scaleX(1.05) scaleY(0.95) scaleX(var(--flip,1))} 100%{transform:translateY(0) scaleX(var(--flip,1))} }
     @keyframes chibi-sleep   { 0%,100%{transform:rotate(0deg) scaleX(var(--flip,1))} 50%{transform:rotate(12deg) translateY(4px) scaleX(var(--flip,1))} }
     @keyframes chibi-zzz     { 0%{opacity:0;transform:translate(0,0) scale(0.5)} 30%{opacity:1} 100%{opacity:0;transform:translate(6px,-22px) scale(1.2)} }
-    #vc-chibi               { position:fixed; top:0; left:0; width:96px; pointer-events:none; z-index:9997; opacity:0; transition:opacity 0.5s; transform-origin:bottom center; }
-    #vc-chibi img           { width:100%; display:block; mix-blend-mode:screen; image-rendering:auto; }
+    #vc-chibi               { position:fixed; top:0; left:0; width:110px; pointer-events:none; z-index:9997; opacity:0; transition:opacity 0.5s; transform-origin:bottom center; }
+    #vc-chibi img           { width:100%; display:block; image-rendering:auto; filter:drop-shadow(0 4px 14px rgba(25,227,255,0.4)); }
     #vc-chibi .chibi-zzz-wrap { position:absolute; top:-10px; right:-4px; display:none; }
     #vc-chibi .chibi-zzz-wrap span { position:absolute; font-family:var(--font-mono); font-size:13px; color:#c1ff3c; font-weight:700; animation:chibi-zzz 2s ease-out infinite; }
     #vc-chibi .chibi-zzz-wrap span:nth-child(2){animation-delay:0.7s;font-size:10px;top:8px;left:8px}
@@ -60,7 +60,7 @@
     @media (max-width: 860px) {
       .vc-hero-grid { grid-template-columns: 1fr !important; }
       .vc-hero-photo { display: flex !important; justify-content: center; margin-top: 40px; }
-      #vc-holo-card { width: min(290px, 88vw) !important; }
+      #vc-holo-card { width: min(340px, 88vw) !important; }
       .vc-about-grid { grid-template-columns: 1fr !important; }
       .vc-exp-grid { grid-template-columns: 1fr !important; }
       .vc-skills-grid { grid-template-columns: 1fr !important; }
@@ -82,7 +82,7 @@
 <div id="vc-cursor-ring"></div>
 <!-- chibi cursor companion -->
 <div id="vc-chibi" data-state="idle">
-  <img src="assets/manasi-chibi.png" alt="Manasi chibi">
+  <img src="assets/manasi-chibi-cutout.png" alt="Manasi chibi">
   <div class="chibi-zzz-wrap">
     <span>z</span><span>z</span><span>z</span>
   </div>
@@ -202,7 +202,7 @@
           <div style="position: absolute; inset: -24px; border-radius: 32px; background: radial-gradient(ellipse at 50% 50%, rgba(25,227,255,0.14) 0%, rgba(123,91,255,0.10) 50%, transparent 75%); filter: blur(24px); pointer-events: none; animation: vc-float 6s ease-in-out infinite;"></div>
 
           <!-- THE CARD -->
-          <div id="vc-holo-card" style="position: relative; width: 290px; border-radius: 22px; transform-style: preserve-3d; will-change: transform; cursor: none;">
+          <div id="vc-holo-card" style="position: relative; width: 340px; border-radius: 22px; transform-style: preserve-3d; will-change: transform; cursor: none;">
 
             <!-- subtle static border glow -->
             <div style="position: absolute; inset: -1px; border-radius: 23px; background: linear-gradient(135deg, rgba(25,227,255,0.5), rgba(123,91,255,0.4), rgba(255,61,203,0.4)); opacity: 0.6; z-index: 0;"></div>
@@ -227,7 +227,7 @@
               </div>
 
               <!-- figure area — cutout floats here, parallaxes on mouse -->
-              <div style="position: relative; height: 300px; overflow: hidden; margin: 8px 0 0;">
+              <div style="position: relative; height: 340px; overflow: hidden; margin: 8px 0 0;">
                 <!-- glow behind figure -->
                 <div style="position: absolute; bottom: 0; left: 10%; right: 10%; height: 60%; background: radial-gradient(ellipse at 50% 80%, rgba(25,227,255,0.2) 0%, rgba(123,91,255,0.12) 45%, transparent 70%); pointer-events: none; z-index: 1;"></div>
                 <!-- sparkle star top-right -->
