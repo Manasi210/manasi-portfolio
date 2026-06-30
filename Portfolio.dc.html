@@ -17,6 +17,7 @@
   <link rel="stylesheet" href="_ds/virtual-creations-design-system-42bcdea7-9006-4a98-89c0-ab17d639d83d/styles.css">
   <script src="_ds/virtual-creations-design-system-42bcdea7-9006-4a98-89c0-ab17d639d83d/_ds_bundle.js"></script>
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
   <style>
     html, body { margin: 0; background: var(--bg-0); color: var(--ink-2); }
     @keyframes vc-rise { from { transform: translateY(40px); } to { transform: none; } }
@@ -30,25 +31,13 @@
     @keyframes vc-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     .vc-tilt-card { will-change: transform; transform-style: preserve-3d; }
     .vc-bar { animation: vc-bar-in 1.2s cubic-bezier(0.22,1,0.36,1) both; }
-    /* chibi animations */
-    @keyframes chibi-idle    { 0%,100%{transform:translateY(0) rotate(0deg) scaleX(var(--flip,1))} 40%{transform:translateY(-7px) rotate(-1.5deg) scaleX(var(--flip,1))} 70%{transform:translateY(-3px) rotate(1deg) scaleX(var(--flip,1))} }
-    @keyframes chibi-walk    { 0%,100%{transform:translateY(0) rotate(-4deg) scaleX(var(--flip,1))} 25%{transform:translateY(-5px) rotate(2deg) scaleX(var(--flip,1))} 50%{transform:translateY(0) rotate(-3deg) scaleX(var(--flip,1))} 75%{transform:translateY(-5px) rotate(3deg) scaleX(var(--flip,1))} }
-    @keyframes chibi-run     { 0%,100%{transform:translateY(0) rotate(-6deg) scaleX(var(--flip,1))} 25%{transform:translateY(-8px) rotate(4deg) scaleX(var(--flip,1))} 50%{transform:translateY(-2px) rotate(-5deg) scaleX(var(--flip,1))} 75%{transform:translateY(-9px) rotate(5deg) scaleX(var(--flip,1))} }
-    @keyframes chibi-jump    { 0%{transform:translateY(0) scaleX(1.1) scaleY(0.9) scaleX(var(--flip,1))} 20%{transform:translateY(-18px) scaleX(0.9) scaleY(1.1) scaleX(var(--flip,1))} 45%{transform:translateY(-52px) scaleX(0.95) scaleY(1.05) scaleX(var(--flip,1))} 70%{transform:translateY(-18px) scaleX(var(--flip,1))} 85%{transform:translateY(-6px) scaleX(1.05) scaleY(0.95) scaleX(var(--flip,1))} 100%{transform:translateY(0) scaleX(var(--flip,1))} }
-    @keyframes chibi-sleep   { 0%,100%{transform:rotate(0deg) scaleX(var(--flip,1))} 50%{transform:rotate(12deg) translateY(4px) scaleX(var(--flip,1))} }
-    @keyframes chibi-zzz     { 0%{opacity:0;transform:translate(0,0) scale(0.5)} 30%{opacity:1} 100%{opacity:0;transform:translate(6px,-22px) scale(1.2)} }
-    #vc-chibi               { position:fixed; top:0; left:0; width:110px; pointer-events:none; z-index:9997; opacity:0; transition:opacity 0.5s; transform-origin:bottom center; }
-    #vc-chibi img           { width:100%; display:block; image-rendering:auto; filter:drop-shadow(0 4px 14px rgba(25,227,255,0.4)); }
-    #vc-chibi .chibi-zzz-wrap { position:absolute; top:-10px; right:-4px; display:none; }
-    #vc-chibi .chibi-zzz-wrap span { position:absolute; font-family:var(--font-mono); font-size:13px; color:#c1ff3c; font-weight:700; animation:chibi-zzz 2s ease-out infinite; }
-    #vc-chibi .chibi-zzz-wrap span:nth-child(2){animation-delay:0.7s;font-size:10px;top:8px;left:8px}
-    #vc-chibi .chibi-zzz-wrap span:nth-child(3){animation-delay:1.4s;font-size:8px;top:16px;left:16px}
-    #vc-chibi[data-state=idle]  img { animation:chibi-idle  1.8s ease-in-out infinite; }
-    #vc-chibi[data-state=walk]  img { animation:chibi-walk  0.5s ease-in-out infinite; }
-    #vc-chibi[data-state=run]   img { animation:chibi-run   0.3s ease-in-out infinite; }
-    #vc-chibi[data-state=jump]  img { animation:chibi-jump  0.7s cubic-bezier(0.33,1,0.68,1) forwards; }
-    #vc-chibi[data-state=sleep] img { animation:chibi-sleep 2.5s ease-in-out infinite; }
-    #vc-chibi[data-state=sleep] .chibi-zzz-wrap { display:block; }
+    /* 3d chibi canvas */
+    #vc-chibi-3d { position:fixed;inset:0;pointer-events:none;z-index:9990;opacity:0;transition:opacity 0.6s; }
+    @keyframes chibi-zzz { 0%{opacity:0;transform:translate(0,0) scale(0.5)} 40%{opacity:1} 100%{opacity:0;transform:translate(8px,-28px) scale(1.3)} }
+    #vc-zzz { position:fixed;pointer-events:none;z-index:9991;display:none; }
+    #vc-zzz span { position:absolute;font-family:var(--font-mono);font-size:14px;color:#c1ff3c;font-weight:800;animation:chibi-zzz 2.2s ease-out infinite; }
+    #vc-zzz span:nth-child(2){animation-delay:0.75s;font-size:11px;top:10px;left:10px}
+    #vc-zzz span:nth-child(3){animation-delay:1.5s;font-size:8px;top:20px;left:20px}
     .vc-marquee-track { display: flex; animation: vc-marquee 28s linear infinite; width: max-content; }
     .vc-marquee-track:hover { animation-play-state: paused; }
     .vc-status-dot { animation: vc-pulse-ring 2.4s ease-out infinite; }
@@ -65,7 +54,7 @@
       .vc-exp-grid { grid-template-columns: 1fr !important; }
       .vc-skills-grid { grid-template-columns: 1fr !important; }
       nav .vc-nav-links { display: none !important; }
-      #vc-chibi { display: none !important; }
+      #vc-chibi-3d, #vc-zzz { display: none !important; }
     }
     @media (max-width: 540px) {
       #vc-holo-card { width: 92vw !important; }
@@ -80,13 +69,9 @@
 <!-- custom cursor elements -->
 <div id="vc-cursor"></div>
 <div id="vc-cursor-ring"></div>
-<!-- chibi cursor companion -->
-<div id="vc-chibi" data-state="idle">
-  <img src="assets/manasi-chibi-cutout.png" alt="Manasi chibi">
-  <div class="chibi-zzz-wrap">
-    <span>z</span><span>z</span><span>z</span>
-  </div>
-</div>
+<!-- 3D chibi canvas -->
+<canvas id="vc-chibi-3d"></canvas>
+<div id="vc-zzz"><span>z</span><span>z</span><span>z</span></div>
 
 <div style="min-height: 100vh; background: var(--grad-void); font-family: var(--font-sans); overflow-x: hidden; position: relative;">
 
@@ -750,6 +735,7 @@ class Component extends DCLogic {
     this.initTilt();
     this.initHoloCard();
     this.initCursor();
+    this.initChibi3D();
   }
   componentDidUpdate() {
     this.renderIcons();
@@ -851,105 +837,182 @@ class Component extends DCLogic {
       requestAnimationFrame(tick2);
     }
   }
+  initChibi3D() {
+    if (this._chibi3D) return;
+    if (!window.THREE) { setTimeout(() => this.initChibi3D(), 300); return; }
+    this._chibi3D = true;
+    const T = window.THREE;
+    const cvs = document.getElementById('vc-chibi-3d');
+    const zzz = document.getElementById('vc-zzz');
+    if (!cvs) return;
+    const W = () => innerWidth, H = () => innerHeight;
+    const renderer = new T.WebGLRenderer({ canvas: cvs, alpha: true, antialias: true });
+    renderer.setClearColor(0,0); renderer.setPixelRatio(Math.min(devicePixelRatio,2)); renderer.setSize(W(),H());
+    const scene = new T.Scene();
+    const cam = new T.OrthographicCamera(-W()/2,W()/2,H()/2,-H()/2,-1000,1000);
+    cam.position.z = 200; scene.add(cam);
+    const SC = 0.52; // world-unit scale: character ~220u tall → ~114px
+    // materials
+    const P = (c,s=10) => new T.MeshPhongMaterial({color:c,shininess:s});
+    const B = (c) => new T.MeshBasicMaterial({color:c});
+    const mSkin=P(0xD4946A,20), mHair=P(0x100808,5), mJacket=P(0xEADDC2,18),
+          mPants=P(0x111120,5), mShoe=P(0xF2F2F2,35), mHset=P(0xF6F6F6,45),
+          mVisor=P(0x1a1a30,8), mEye=P(0x1a0a04,5), mHL=B(0xffffff),
+          mCheek=P(0xE07060,0), mGold=P(0xD4AF37,60), mCtrl=P(0xE8E8E8,25);
+    const root = new T.Group(); root.scale.setScalar(SC); scene.add(root);
+    const mk = (geo,mat,px=0,py=0,pz=0,rx=0,ry=0,rz=0,parent=root) => {
+      const m=new T.Mesh(geo,mat); m.position.set(px,py,pz); m.rotation.set(rx,ry,rz); parent.add(m); return m;
+    };
+    // ── HEAD ──
+    const headG=new T.Group(); headG.position.y=108; root.add(headG);
+    mk(new T.SphereGeometry(46,22,22),mSkin,0,0,0,0,0,0,headG);
+    // eyes
+    mk(new T.SphereGeometry(10,12,12),mEye,-17,-2,42,0,0,0,headG);
+    mk(new T.SphereGeometry(10,12,12),mEye, 17,-2,42,0,0,0,headG);
+    mk(new T.SphereGeometry(4,8,8),mHL,-13,2,50,0,0,0,headG);
+    mk(new T.SphereGeometry(4,8,8),mHL, 21,2,50,0,0,0,headG);
+    // eyelashes (thin flat box)
+    mk(new T.BoxGeometry(22,3,2),mHair,-17,8,50,0,0,0,headG);
+    mk(new T.BoxGeometry(22,3,2),mHair, 17,8,50,0,0,0,headG);
+    // cheeks
+    const chkL=mk(new T.SphereGeometry(11,8,8),mCheek,-30,-12,37,0,0,0,headG); chkL.scale.set(1,.45,.5);
+    const chkR=mk(new T.SphereGeometry(11,8,8),mCheek, 30,-12,37,0,0,0,headG); chkR.scale.set(1,.45,.5);
+    // nose + mouth
+    mk(new T.SphereGeometry(4,8,8),mSkin,0,-8,48,0,0,0,headG);
+    mk(new T.TorusGeometry(6,1.5,6,12,Math.PI),mCheek,0,-18,44,0,0,0,headG);
+    // ── HAIR ──
+    const hairG=new T.Group(); hairG.position.y=108; root.add(hairG);
+    const bun=mk(new T.SphereGeometry(40,14,14),mHair,2,42,-14,0,0,0,hairG); bun.scale.set(1.2,.7,1);
+    // side curls ring
+    [[-46,0,-12],[-43,16,-16],[-40,-16,-14],[46,0,-12],[43,16,-16],[40,-16,-14],
+     [-24,-28,-18],[24,-28,-18],[-8,-30,-16],[8,-30,-16]].forEach(([x,y,z])=>{
+       mk(new T.SphereGeometry(18,10,10),mHair,x,y,z,0,0,0,hairG);
+    });
+    // front bangs
+    mk(new T.SphereGeometry(18,10,10),mHair,-22,22,34,0,0,.3,hairG);
+    mk(new T.SphereGeometry(18,10,10),mHair, 22,22,34,0,0,-.3,hairG);
+    mk(new T.SphereGeometry(16,10,10),mHair, 0,28,36,0,0,0,hairG);
+    // ── VR HEADSET ──
+    const hsetG=new T.Group(); hsetG.position.set(0,158,16); hsetG.rotation.x=-.18; root.add(hsetG);
+    mk(new T.BoxGeometry(90,26,34),mHset,0,0,0,0,0,0,hsetG);
+    mk(new T.BoxGeometry(68,15,6),mVisor,0,0,18,0,0,0,hsetG);
+    [-24,0,24].forEach(x=>mk(new T.CylinderGeometry(4.5,4.5,8,10),mVisor,x,0,21,0,0,0,hsetG));
+    mk(new T.TorusGeometry(44,3,6,24),mHset,0,0,0,0,Math.PI/2,0,hsetG);
+    // ── BODY ──
+    const bodyG=new T.Group(); bodyG.position.y=34; root.add(bodyG);
+    mk(new T.CylinderGeometry(26,24,64,14),mPants);
+    mk(new T.CylinderGeometry(32,30,62,14),mJacket);
+    // lapels
+    const lL=mk(new T.BoxGeometry(9,36,8),mJacket,-11,4,30); lL.rotation.z=.18;
+    const lR=mk(new T.BoxGeometry(9,36,8),mJacket, 11,4,30); lR.rotation.z=-.18;
+    // necklace
+    const nkl=mk(new T.TorusGeometry(9,1.5,6,20),mGold,0,16,30); nkl.rotation.x=Math.PI/2;
+    mk(new T.CylinderGeometry(2.5,2.5,10,8),mGold,0,7,30);
+    // ── LEFT ARM (controller) ──
+    const aLG=new T.Group(); aLG.position.set(-35,54,0); aLG.rotation.z=.4; root.add(aLG);
+    mk(new T.CylinderGeometry(9,8,32,10),mJacket,0,-16,0,0,0,0,aLG);
+    mk(new T.CylinderGeometry(8,7,26,10),mSkin,  0,-40,0,0,0,0,aLG);
+    mk(new T.SphereGeometry(9,10,10),mSkin,       0,-56,0,0,0,0,aLG);
+    const ctrlG=new T.Group(); ctrlG.position.set(0,-66,0); aLG.add(ctrlG);
+    mk(new T.CylinderGeometry(9,8,20,12),mCtrl,0,-10,0,0,0,0,ctrlG);
+    const ring3d=mk(new T.TorusGeometry(7,2,8,18),mCtrl,0,2,0,0,0,0,ctrlG); ring3d.rotation.x=Math.PI/2;
+    // ── RIGHT ARM (raised) ──
+    const aRG=new T.Group(); aRG.position.set(35,54,0); aRG.rotation.z=-1.2; aRG.rotation.x=-.25; root.add(aRG);
+    mk(new T.CylinderGeometry(9,8,32,10),mJacket,0,-16,0,0,0,0,aRG);
+    mk(new T.CylinderGeometry(8,7,26,10),mSkin,  0,-40,0,0,0,0,aRG);
+    mk(new T.SphereGeometry(9,10,10),mSkin,       0,-56,0,0,0,0,aRG);
+    // ── LEGS ──
+    const lLG=new T.Group(); lLG.position.set(-14,-2,0); root.add(lLG);
+    const lRG=new T.Group(); lRG.position.set( 14,-2,0); root.add(lRG);
+    [lLG,lRG].forEach(g=>{
+      mk(new T.CylinderGeometry(11,10,38,10),mPants,0,-19,0,0,0,0,g);
+      mk(new T.CylinderGeometry(10,9,28,10), mPants,0,-48,0,0,0,0,g);
+      const sh=mk(new T.BoxGeometry(19,10,30),mShoe,0,-65,7,0,0,0,g);
+    });
+    // ── LIGHTS ──
+    scene.add(new T.AmbientLight(0xffffff,.8));
+    const kL=new T.DirectionalLight(0xffffff,1.1); kL.position.set(1.5,3,4); scene.add(kL);
+    const fL=new T.DirectionalLight(0x19E3FF,.55); fL.position.set(-2,1,3); scene.add(fL);
+    const rL=new T.DirectionalLight(0xFF3DCB,.25); rL.position.set(0,-1,-2); scene.add(rL);
+    // ── STATE MACHINE ──
+    let tx=W()/2,ty=H()/2,cx=tx,cy=ty,prevCx=cx;
+    let state='idle',facing=1,t=0,jPhase=0,frame=0;
+    let sleepTmr=null,shown=false;
+    const resetSleep=()=>{clearTimeout(sleepTmr);sleepTmr=setTimeout(()=>{state='sleep';if(zzz)zzz.style.display='block';},6000);};
+    document.addEventListener('mousemove',e=>{
+      tx=e.clientX;ty=e.clientY;
+      if(!shown){shown=true;cvs.style.opacity='1';}
+      if(state==='sleep'){state='idle';if(zzz)zzz.style.display='none';}
+      resetSleep();
+    });
+    document.addEventListener('mouseleave',()=>{cvs.style.opacity='0';});
+    const animate=()=>{
+      requestAnimationFrame(animate);
+      t+=0.05;frame++;
+      cx+=(tx-cx)*.065; cy+=(ty-cy)*.065;
+      const vx=cx-prevCx; const spd=Math.abs(vx); prevCx=cx;
+      if(state!=='jump'&&state!=='sleep'){
+        if(spd>5) state='run';
+        else if(spd>1) state='walk';
+        else state='idle';
+      }
+      // random jump every ~5s while idle
+      if(state==='idle'&&frame%300===0){state='jump';jPhase=0;}
+      // facing
+      if(Math.abs(vx)>.4){const nf=vx>0?1:-1;if(nf!==facing){facing=nf;root.rotation.y=facing===-1?Math.PI:0;}}
+      // position (ortho: 1 world unit = 1 screen px)
+      root.position.x=cx-W()/2;
+      root.position.y=-(cy-H()/2)+72*SC;
+      // zzz follows chibi
+      if(zzz&&state==='sleep'){zzz.style.left=(cx+14)+'px';zzz.style.top=(cy-120)+'px';}
+      // animation
+      const ws=state==='run'?5.2:2.4;
+      if(state==='walk'||state==='run'){
+        lLG.rotation.x= Math.sin(t*ws)*.75; lRG.rotation.x=-Math.sin(t*ws)*.75;
+        aLG.rotation.x= Math.sin(t*ws+Math.PI)*.3;
+        root.position.y+=Math.abs(Math.sin(t*ws))*8;
+        root.rotation.z=Math.sin(t*ws*.5)*.045*facing;
+        aRG.rotation.z=-1.2+Math.sin(t*ws)*.15;
+      }else if(state==='idle'){
+        lLG.rotation.x=0;lRG.rotation.x=0;aLG.rotation.x=0;
+        root.position.y+=Math.sin(t*1.4)*5;
+        root.rotation.z=Math.sin(t*1.1)*.015;
+        hsetG.rotation.x=-.18+Math.sin(t*.9)*.06;
+        aRG.rotation.z=-1.2;
+      }else if(state==='jump'){
+        jPhase+=.055;
+        root.position.y+=Math.sin(jPhase*Math.PI)*100;
+        root.rotation.z=Math.sin(jPhase*Math.PI)*.2*facing;
+        lLG.rotation.x=lRG.rotation.x=-Math.abs(Math.sin(jPhase*Math.PI))*.65;
+        if(jPhase>=1){state='idle';jPhase=0;resetSleep();}
+      }else if(state==='sleep'){
+        root.rotation.z+=(0.55*facing-root.rotation.z)*.04;
+        root.position.y+=Math.sin(t*.5)*2;
+      }
+      renderer.render(scene,cam);
+    };
+    animate();
+    window.addEventListener('resize',()=>{
+      renderer.setSize(W(),H());
+      cam.left=-W()/2;cam.right=W()/2;cam.top=H()/2;cam.bottom=-H()/2;
+      cam.updateProjectionMatrix();
+    });
+  }
   initCursor() {
     if (this._cursorInit) return;
     this._cursorInit = true;
-    const dot   = document.getElementById('vc-cursor');
-    const ring  = document.getElementById('vc-cursor-ring');
-    const chibi = document.getElementById('vc-chibi');
+    const dot  = document.getElementById('vc-cursor');
+    const ring = document.getElementById('vc-cursor-ring');
     if (!dot || !ring) return;
-
-    let mx = 0, my = 0, rx = 0, ry = 0;
-    let cx = 0, cy = 0;          // chibi smoothed position
-    let prevMx = 0, prevMy = 0;  // last frame mouse
-    let lastMoveTime = 0;
-    let chibiFacing = 1;          // 1 = right, -1 = left
-    let chibiState = 'idle';
-    let jumpTimer = null;
-    let sleepTimer = null;
-
-    const setState = (s) => {
-      if (!chibi) return;
-      if (chibiState === s) return;
-      chibiState = s;
-      chibi.dataset.state = s;
-      // re-trigger animation by cloning img
-      const img = chibi.querySelector('img');
-      if (img) { img.style.animation = 'none'; void img.offsetWidth; img.style.animation = ''; }
-    };
-
-    const scheduleJump = () => {
-      if (jumpTimer) clearTimeout(jumpTimer);
-      const delay = 4000 + Math.random() * 8000;
-      jumpTimer = setTimeout(() => {
-        if (chibiState === 'idle') {
-          setState('jump');
-          setTimeout(() => { if (chibiState === 'jump') setState('idle'); scheduleJump(); }, 750);
-        } else { scheduleJump(); }
-      }, delay);
-    };
-
-    const resetSleep = () => {
-      if (sleepTimer) clearTimeout(sleepTimer);
-      sleepTimer = setTimeout(() => setState('sleep'), 6000);
-    };
-
-    document.addEventListener('mousemove', (e) => {
+    let mx=0, my=0, rx=0, ry=0;
+    document.addEventListener('mousemove', e => {
       mx = e.clientX; my = e.clientY;
-      dot.style.left = mx + 'px'; dot.style.top = my + 'px';
-      if (chibi && chibi.style.opacity !== '1') { chibi.style.opacity = '1'; scheduleJump(); }
-      lastMoveTime = Date.now();
-      resetSleep();
+      dot.style.left = mx+'px'; dot.style.top = my+'px';
     });
-
-    document.addEventListener('mouseleave', () => {
-      if (chibi) chibi.style.opacity = '0';
-    });
-
     const expand = () => { dot.style.width='52px'; dot.style.height='52px'; ring.style.borderColor='rgba(25,227,255,0.7)'; };
     const shrink = () => { dot.style.width='28px'; dot.style.height='28px'; ring.style.borderColor='rgba(25,227,255,0.35)'; };
-    document.querySelectorAll('a, button, [data-tilt]').forEach(el => {
-      el.addEventListener('mouseenter', expand); el.addEventListener('mouseleave', shrink);
-    });
-
-    const tick = () => {
-      // cursor ring lag
-      rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
-      ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
-
-      if (chibi) {
-        // chibi lags behind cursor
-        cx += (mx - cx) * 0.06; cy += (my - cy) * 0.06;
-
-        // velocity
-        const vx = mx - prevMx, vy = my - prevMy;
-        const speed = Math.sqrt(vx * vx + vy * vy);
-        prevMx = mx; prevMy = my;
-
-        // facing direction
-        if (Math.abs(vx) > 1.5) {
-          const newFacing = vx > 0 ? 1 : -1;
-          if (newFacing !== chibiFacing) {
-            chibiFacing = newFacing;
-            chibi.style.setProperty('--flip', chibiFacing);
-            chibi.querySelector('img').style.transform = chibiFacing === -1 ? 'scaleX(-1)' : 'scaleX(1)';
-          }
-        }
-
-        // state from speed (don't override jump/sleep)
-        if (chibiState !== 'jump' && chibiState !== 'sleep') {
-          if (speed > 14)     setState('run');
-          else if (speed > 3) setState('walk');
-          else                setState('idle');
-        }
-
-        // position: chibi stands on cursor, slightly to the side
-        chibi.style.left = (cx + 12) + 'px';
-        chibi.style.top  = (cy - chibi.offsetHeight + 10) + 'px';
-      }
-
-      requestAnimationFrame(tick);
-    };
+    document.querySelectorAll('a,button,[data-tilt]').forEach(el => { el.addEventListener('mouseenter',expand); el.addEventListener('mouseleave',shrink); });
+    const tick = () => { rx+=(mx-rx)*0.12; ry+=(my-ry)*0.12; ring.style.left=rx+'px'; ring.style.top=ry+'px'; requestAnimationFrame(tick); };
     requestAnimationFrame(tick);
   }
 
