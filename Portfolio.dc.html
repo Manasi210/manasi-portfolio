@@ -309,7 +309,10 @@
 </x-dc>
 <script type="text/x-dc" data-dc-script>
 class Component extends DCLogic {
-  state = { open: null };
+  state = {
+    open: null,
+    currentSlide: 0
+  };
 
   get rawProjects() {
     const tagBg = {
@@ -317,27 +320,32 @@ class Component extends DCLogic {
       lime: 'var(--lime)', amber: 'var(--amber)',
     };
     const list = [
-      { id:'empathy', title:'Empathy Machine for Hard to Hear', engine:'Unity', medium:'VR', accent:'cyan', year:'2024', image:'assets/projects/empathy.png',
+      { id:'empathy', title:'Empathy Machine for Hard to Hear', engine:'Unity', medium:'VR', accent:'cyan', year:'2024', image:'assets/projects/empathy/cover.png',
+        gallery:['assets/projects/empathy/1.mov'],
         tags:['VR IK Embodiment','Meta Haptics','Yarn Dialogue','Reactive NPCs'],
         hook:'Can VR help us experience the world through someone else\u2019s eyes?',
         blurb:'A VR experience that drops you into a restaurant where you can\u2019t hear a word, built so people feel the daily reality of hard-of-hearing folks.',
         body:'I built full-body inverse kinematics for presence, used Meta Haptics to simulate stress responses like a racing heartbeat, and scripted NPCs in Yarn so they react to your gestures. This one really mattered to me. It is proof that VR can be a tool for awareness, not just entertainment.' },
-      { id:'vault', title:'Vault Raiders: Save Verdantia', engine:'Unity', medium:'VR', accent:'magenta', year:'2024', image:'assets/projects/vault.png',
+      { id:'vault', title:'Vault Raiders: Save Verdantia', engine:'Unity', medium:'VR', accent:'magenta', year:'2024', image:'assets/projects/vault-raiders/cover.png',
+        gallery:['assets/projects/vault-raiders/1.png','assets/projects/vault-raiders/2.mp4'],
         tags:['XR Interaction Toolkit','Hand Grab & Throw','Power-ups','Boss Fights'],
         hook:'Ever battled a giant Teddy Monster in VR? Now is your chance.',
         blurb:'An action-packed VR adventure where YOU are the hero. Battle a giant Teddy Monster, grab Monkey Bombs and Ice Bombs, and save the world one level at a time.',
         body:'I designed dynamic hand interactions for grabbing and throwing, levels that run from castles to candy lands to icy boss fights, and immersive hazards like slippery floors and crumbling paths. Built in Unity with the XR Interaction Toolkit, with clean modular C# systems for enemy behaviour, inventory and interaction.' },
-      { id:'hpgolf', title:'Harry Potter Magical Mini-Golf', engine:'Unity', medium:'VR', accent:'violet', year:'2023', image:'assets/projects/hpgolf.png',
+      { id:'hpgolf', title:'Harry Potter Magical Mini-Golf', engine:'Unity', medium:'VR', accent:'violet', year:'2023', image:'assets/projects/harry-potter-mini-golf/cover.png',
+        gallery:['assets/projects/harry-potter-mini-golf/1.png','assets/projects/harry-potter-mini-golf/2.png','assets/projects/harry-potter-mini-golf/3.png','assets/projects/harry-potter-mini-golf/4.png','assets/projects/harry-potter-mini-golf/5.png','assets/projects/harry-potter-mini-golf/6.png','assets/projects/harry-potter-mini-golf/7.png','assets/projects/harry-potter-mini-golf/8.png'],
         tags:['Animator System','Magical Portals','Teleportation','Spatial Audio'],
         hook:'Easy to learn, difficult to master. Magical mini-golf across Hogwarts.',
         blurb:'A VR mini-golf adventure through the wizarding world. Each hole recreates an iconic scene, and the Sorting Hat assigns your Hogwarts house at the end.',
         body:'I built story-driven levels across Hogwarts, the Forbidden Forest and Hagrid\u2019s Hut. The Unity Animator drives moving trains, flying owls and magical portals, while physics interactions and spatial audio pull the whole thing together.' },
-      { id:'gambling', title:'Gambling Room', engine:'Unity', medium:'AI', accent:'amber', year:'2024', image:'assets/projects/gambling.png',
+      { id:'gambling', title:'Gambling Room', engine:'Unity', medium:'AI', accent:'amber', year:'2024', image:'assets/projects/gambling-room/cover.png',
+        gallery:['assets/projects/gambling-room/1.png','assets/projects/gambling-room/2.png','assets/projects/gambling-room/3.png','assets/projects/gambling-room/4.png','assets/projects/gambling-room/5.png','assets/projects/gambling-room/6.png','assets/projects/gambling-room/7.png','assets/projects/gambling-room/8.png','assets/projects/gambling-room/9.png','assets/projects/gambling-room/10.png'],
         tags:['AI-Driven NPCs','Yarn Dialogue','Head-Tracking','Built-in Music Player'],
         hook:'A realistic yet surreal world. Cinematic, reactive, alive.',
         blurb:'A high-stakes VR gambling den brought to life with AI-driven NPCs, dynamic lighting and interactive elements. Cinematic and a little surreal.',
         body:'The NPCs respond to your actions through Yarn dialogue and head-tracking, so they follow and react to you. I spent a lot of time on the dynamic lighting and added an in-game music player so players can set the mood themselves.' },
-      { id:'climate', title:'Climate Change Awareness', engine:'Unity', medium:'VR', accent:'lime', year:'2024', image:'assets/projects/climate.png',
+      { id:'climate', title:'Climate Change Awareness', engine:'Unity', medium:'VR', accent:'lime', year:'2024', image:'assets/projects/climate-change/cover.png',
+        gallery:['assets/projects/climate-change/1.png','assets/projects/climate-change/2.png','assets/projects/climate-change/3.png','assets/projects/climate-change/4.png','assets/projects/climate-change/5.png','assets/projects/climate-change/6.png','assets/projects/climate-change/7.png','assets/projects/climate-change/8.png'],
         tags:['Recycling Mini-Games','Ambisonic Audio','Recycled-Art Gallery','Educational'],
         hook:'Every everyday choice shapes the planet. Feel it in VR.',
         blurb:'An interactive VR project about sustainable choices. Sort waste, run the recycling lab, and see how everyday decisions shape the planet.',
@@ -347,17 +355,20 @@ class Component extends DCLogic {
         hook:'Where the digital and the physical share the same room.',
         blurb:'A mixed-reality training app built for Festo, blending digital content into the real space for hands-on, spatial interaction on physical machinery.',
         body:'This is where I moved from fully-virtual into mixed reality, anchoring interactive 3D content into the user\u2019s real environment with passthrough and gesture recognition. I used AR Foundation and the Meta XR SDK to overlay spatial UI onto real machines, and the prototype boosted measured training efficiency by 50 percent.' },
-      { id:'office', title:'Modern Office Interiors', engine:'Unreal', medium:'3D', accent:'violet', year:'2023', image:'assets/projects/office.png',
+      { id:'office', title:'Modern Office Interiors', engine:'Unreal', medium:'3D', accent:'violet', year:'2023', image:'assets/projects/modern-office/cover.png',
+        gallery:['assets/projects/modern-office/1.png','assets/projects/modern-office/2.png','assets/projects/modern-office/3.png','assets/projects/modern-office/4.png','assets/projects/modern-office/5.png','assets/projects/modern-office/6.png','assets/projects/modern-office/7.png','assets/projects/modern-office/8.png','assets/projects/modern-office/9.png'],
         tags:['Material Craft','Themed Sections','Realistic Lighting','Environment Design'],
         hook:'From lighting to materials, every detail meticulously crafted.',
         blurb:'A meticulously crafted head-office environment with themed sections. Every detail, from lighting to materials, designed for a realistic, immersive space.',
         body:'Built in Unreal Engine, I designed every detail of a head office and gave each section its own theme to balance aesthetics and function. A real study in environment design, material selection and lighting.' },
-      { id:'cafe', title:'Cafe Design', engine:'Unity', medium:'3D', accent:'amber', year:'2023', image:'assets/projects/cafe.png',
+      { id:'cafe', title:'Cafe Design', engine:'Unity', medium:'3D', accent:'amber', year:'2023', image:'assets/projects/cafe-design/cover.png',
+        gallery:['assets/projects/cafe-design/1.png','assets/projects/cafe-design/2.png','assets/projects/cafe-design/3.png','assets/projects/cafe-design/4.png','assets/projects/cafe-design/5.png','assets/projects/cafe-design/6.png','assets/projects/cafe-design/7.png','assets/projects/cafe-design/8.png'],
         tags:['Interior Design','Intricate Detail'],
         hook:'A cosy, intricately detailed virtual cafe.',
         blurb:'A cosy cafe environment created in Unity with intricate interior detailing.',
         body:'A focused interior-design study in Unity, with warm materials, considered lighting and lots of small intricate props.' },
-      { id:'unreal-anim', title:'Unreal Animation', engine:'Unreal', medium:'3D', accent:'magenta', year:'2024', image:'assets/projects/unreal-anim.png',
+      { id:'unreal-anim', title:'Unreal Animation', engine:'Unreal', medium:'3D', accent:'magenta', year:'2024', image:'assets/projects/unreal-animation/cover.png',
+        gallery:['assets/projects/unreal-animation/1.mp4'],
         tags:['Character Animation','Cinematic','Environment Design'],
         hook:'Storytelling through motion and atmosphere.',
         blurb:'A cinematic scene of a tense woman on a ship. Character animation and environment design in Unreal Engine.',
@@ -388,12 +399,50 @@ class Component extends DCLogic {
   renderVals() {
     const projects = this.rawProjects.map(p => ({
       ...p,
-      onOpen: () => { this.setState({ open: p }); document.body.style.overflow = 'hidden'; },
+      onOpen: () => { this.setState({open: p, currentSlide: 0});document.body.style.overflow = 'hidden'; },
     }));
     const close = () => { this.setState({ open: null }); document.body.style.overflow = ''; };
+    const nextSlide = () => {
+
+    if (!this.state.open?.gallery?.length) return;
+
+    const total = this.state.open.gallery.length;
+
+    this.setState({
+        currentSlide: (this.state.currentSlide + 1) % total
+    });
+
+};
+
+const prevSlide = () => {
+
+    if (!this.state.open?.gallery?.length) return;
+
+    const total = this.state.open.gallery.length;
+
+    this.setState({
+        currentSlide: (this.state.currentSlide - 1 + total) % total
+    });
+
+};
+
+const prevSlide = () => {
+
+    const total = this.state.open.gallery.length;
+
+    this.setState({
+        currentSlide:
+        (this.state.currentSlide-1+total)%total
+    });
+
+};
     return {
       projects,
       open: this.state.open || {},
+      currentSlide:this.state.currentSlide,
+
+      nextSlide,
+      prevSlide,
       hasOpen: !!this.state.open,
       closeDetail: close,
       stop: (e) => e.stopPropagation(),
