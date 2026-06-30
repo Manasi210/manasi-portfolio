@@ -215,11 +215,11 @@
       <!-- FEATURED card — full width, cinematic -->
       <sc-if value="{{ hasFeatured }}" hint-placeholder-val="{{ true }}">
         <div class="vc-tilt-card" data-tilt onClick="{{ featuredProject.onOpen }}" style="position: relative; border-radius: var(--r-xl); overflow: hidden; cursor: pointer; background: var(--bg-1); border: 1px solid var(--line); box-shadow: var(--shadow-card); height: clamp(320px, 50vw, 560px); margin-bottom: 24px; transition: border-color 0.35s ease, box-shadow 0.35s ease;" style-hover="border-color: var(--cyan); box-shadow: 0 0 0 1px var(--cyan), 0 0 60px rgba(25,227,255,0.22);">
-          <sc-if value="{{ featuredProject.isVideo }}" hint-placeholder-val="{{ false }}">
-            <video src="{{ featuredProject.image }}" autoplay muted loop playsinline style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;"></video>
+          <sc-if value="{{ featuredProject.coverVid }}" hint-placeholder-val="{{ false }}">
+            <video src="{{ featuredProject.coverVid }}" autoplay muted loop playsinline style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;"></video>
           </sc-if>
-          <sc-if value="{{ !featuredProject.isVideo }}" hint-placeholder-val="{{ true }}">
-            <img src="{{ featuredProject.image }}" alt="{{ featuredProject.title }}" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;">
+          <sc-if value="{{ featuredProject.coverImg }}" hint-placeholder-val="{{ false }}">
+            <img src="{{ featuredProject.coverImg }}" alt="{{ featuredProject.title }}" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;">
           </sc-if>
           <!-- gradient overlay: light top-right, dark bottom-left -->
           <div style="position: absolute; inset: 0; background: linear-gradient(135deg, rgba(7,6,14,0.08) 0%, rgba(7,6,14,0.18) 30%, rgba(7,6,14,0.88) 72%, rgba(7,6,14,0.97) 100%);"></div>
@@ -234,7 +234,6 @@
             </div>
             <h3 style="font-family: var(--font-display); font-weight: 900; font-size: clamp(26px, 4.5vw, 56px); line-height: 1.0; letter-spacing: -0.03em; color: var(--ink-0); margin: 0 0 12px;">{{ featuredProject.title }}</h3>
             <p style="font-size: clamp(14px, 1.5vw, 17px); line-height: 1.55; color: rgba(255,255,255,0.68); margin: 0 0 24px; max-width: 52ch;">{{ featuredProject.hook }}</p>
-            <span style="display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-mono); font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--cyan); padding: 11px 24px; border-radius: var(--r-pill); border: 1px solid rgba(25,227,255,0.4); background: rgba(25,227,255,0.08);">View Case Study →</span>
           </div>
         </div>
       </sc-if>
@@ -243,11 +242,11 @@
       <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 460px), 1fr)); gap: 24px;">
         <sc-for list="{{ gridProjects }}" as="p" hint-placeholder-count="8">
           <div class="vc-tilt-card" data-tilt onClick="{{ p.onOpen }}" style="position: relative; border-radius: var(--r-xl); overflow: hidden; cursor: pointer; background: var(--bg-1); border: 1px solid var(--line); box-shadow: var(--shadow-card); height: clamp(260px, 36vw, 400px); transition: border-color 0.35s ease, box-shadow 0.35s ease;" style-hover="border-color: var(--cyan); box-shadow: 0 0 0 1px var(--cyan), 0 0 48px rgba(25,227,255,0.2);">
-            <sc-if value="{{ p.isVideo }}" hint-placeholder-val="{{ false }}">
-              <video src="{{ p.image }}" autoplay muted loop playsinline style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;"></video>
+            <sc-if value="{{ p.coverVid }}" hint-placeholder-val="{{ false }}">
+              <video src="{{ p.coverVid }}" autoplay muted loop playsinline style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;"></video>
             </sc-if>
-            <sc-if value="{{ !p.isVideo }}" hint-placeholder-val="{{ true }}">
-              <img src="{{ p.image }}" alt="{{ p.title }}" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;">
+            <sc-if value="{{ p.coverImg }}" hint-placeholder-val="{{ false }}">
+              <img src="{{ p.coverImg }}" alt="{{ p.title }}" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;">
             </sc-if>
             <div style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(7,6,14,0.04) 0%, rgba(7,6,14,0.22) 40%, rgba(7,6,14,0.94) 100%);"></div>
             <!-- top badges -->
@@ -260,7 +259,6 @@
               <div style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; color: rgba(255,255,255,0.38); margin-bottom: 6px;">{{ p.year }}</div>
               <h3 style="font-family: var(--font-display); font-weight: 800; font-size: clamp(18px, 2.4vw, 26px); line-height: 1.1; letter-spacing: -0.02em; color: var(--ink-0); margin: 0 0 8px;">{{ p.title }}</h3>
               <p style="font-size: 13px; line-height: 1.5; color: rgba(255,255,255,0.6); margin: 0 0 14px;">{{ p.hook }}</p>
-              <span style="font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--cyan);">View Case Study →</span>
             </div>
           </div>
         </sc-for>
@@ -448,11 +446,11 @@
 
 <sc-if value="{{ $index == currentSlide }}">
 
-<sc-if value="{{ media.isVid }}" hint-placeholder-val="{{ false }}">
-<video src="{{ media.src }}" controls autoplay muted loop playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"></video>
+<sc-if value="{{ media.vidSrc }}" hint-placeholder-val="{{ false }}">
+<video src="{{ media.vidSrc }}" controls autoplay muted loop playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"></video>
 </sc-if>
-<sc-if value="{{ !media.isVid }}" hint-placeholder-val="{{ true }}">
-<img src="{{ media.src }}" alt="{{ open.title }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+<sc-if value="{{ media.imgSrc }}" hint-placeholder-val="{{ false }}">
+<img src="{{ media.imgSrc }}" alt="{{ open.title }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
 </sc-if>
 
 </sc-if>
@@ -604,18 +602,23 @@ class Component extends DCLogic {
         hook:'A cosy, intricately detailed virtual cafe.',
         blurb:'A cosy cafe environment created in Unity with intricate interior detailing.',
         body:'A focused interior-design study in Unity, with warm materials, considered lighting and lots of small intricate props.' },
-      { id:'unreal-anim', title:'Unreal Animation', engine:'Unreal', medium:'3D', accent:'magenta', year:'2024', image:'assets/projects/unreal-animation/cover.png',
+      { id:'unreal-anim', title:'Unreal Animation', engine:'Unreal', medium:'3D', accent:'magenta', year:'2024', image:'assets/projects/unreal-animation/cover.mp4',
         gallery:['assets/projects/unreal-animation/1.mp4'],
         tags:['Character Animation','Cinematic','Environment Design'],
         hook:'Storytelling through motion and atmosphere.',
         blurb:'A cinematic scene of a tense woman on a ship. Character animation and environment design in Unreal Engine.',
         body:'I designed and animated a cinematic scene including character animation and environment design, playing with mood, pacing and camera in Unreal Engine.' },
     ];
-    return list.map(p => ({
-      ...p,
-      tagBg: tagBg[p.accent] || 'var(--cyan)',
-      isVideo: !!(p.image && (p.image.endsWith('.mp4') || p.image.endsWith('.mov'))),
-    }));
+    return list.map(p => {
+      const isVid = !!(p.image && (p.image.endsWith('.mp4') || p.image.endsWith('.mov')));
+      return {
+        ...p,
+        tagBg: tagBg[p.accent] || 'var(--cyan)',
+        isVideo: isVid,
+        coverImg: isVid ? '' : (p.image || ''),
+        coverVid: isVid ? (p.image || '') : '',
+      };
+    });
   }
 
   componentDidMount() {
@@ -689,11 +692,11 @@ class Component extends DCLogic {
       this.setState({ currentSlide: (this.state.currentSlide - 1 + total) % total });
     };
 
-    // Build gallery media objects with precomputed isVid flag
-    const openGallery = (this.state.open?.gallery || []).map(src => ({
-      src,
-      isVid: src.endsWith('.mp4') || src.endsWith('.mov'),
-    }));
+    // Build gallery media objects with precomputed path strings
+    const openGallery = (this.state.open?.gallery || []).map(src => {
+      const isVid = src.endsWith('.mp4') || src.endsWith('.mov');
+      return { vidSrc: isVid ? src : '', imgSrc: isVid ? '' : src };
+    });
 
     const skillBars = [
       { name: 'Unity',         pct: 95, color: 'var(--cyan)',    delay: '0s'   },
