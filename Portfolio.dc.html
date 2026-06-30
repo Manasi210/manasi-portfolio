@@ -24,6 +24,9 @@
     @keyframes vc-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
     @keyframes vc-drift { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
     @keyframes vc-sheet-in { from { transform: translateY(40px) scale(0.985); } to { transform: none; } }
+    @keyframes vc-bar-in { from { width: 0 !important; } to {} }
+    .vc-tilt-card { will-change: transform; transform-style: preserve-3d; }
+    .vc-bar { animation: vc-bar-in 1.2s cubic-bezier(0.22,1,0.36,1) both; }
     @media (prefers-reduced-motion: reduce) { * { animation-duration: 0.001ms !important; } }
   </style>
 </helmet>
@@ -92,26 +95,68 @@
 
     <!-- ===================== WORK ===================== -->
     <section id="work" style="padding: 40px 0 var(--section-y); scroll-margin-top: 80px;">
-      <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; margin-bottom: 48px;">
+      <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; margin-bottom: 52px;">
         <div>
           <div style="font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--cyan); margin-bottom: 14px;">Selected Work</div>
           <h2 style="font-family: var(--font-display); font-weight: 800; font-size: var(--fs-h1); line-height: 0.98; letter-spacing: -0.03em; color: var(--ink-1); margin: 0;">Immersive projects</h2>
         </div>
-        <p style="font-size: 15px; color: var(--ink-2); max-width: 38ch; margin: 0;">Each one taught me something new. Tap any project to read what I built and why it mattered.</p>
+        <!-- Category filter pills -->
+        <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
+          <sc-for list="{{ filters }}" as="f" hint-placeholder-count="5">
+            <button onClick="{{ f.onSelect }}" style="font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; padding: 9px 20px; border-radius: var(--r-pill); border: 1px solid var(--line-2); background: {{ f.bg }}; color: {{ f.col }}; cursor: pointer; transition: all 0.25s var(--ease-out);">{{ f.label }}</button>
+          </sc-for>
+        </div>
       </div>
 
-      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 24px;">
-        <sc-for list="{{ projects }}" as="p" hint-placeholder-count="9">
-          <div onClick="{{ p.onOpen }}" style="position: relative; border-radius: var(--r-lg); overflow: hidden; cursor: pointer; background: var(--bg-1); border: 1px solid var(--line); box-shadow: var(--shadow-card); aspect-ratio: 4 / 3; transition: transform var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out), border-color var(--dur) var(--ease-out);" style-hover="transform: translateY(-6px); border-color: var(--cyan); box-shadow: var(--glow-cyan-lg);">
-            <sc-if value="{{ p.image }}" hint-placeholder-val="{{ false }}"><img src="{{ p.image }}" alt="{{ p.title }}" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;"></sc-if>
-            <div style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(7,6,14,0.05) 0%, rgba(7,6,14,0.35) 45%, rgba(7,6,14,0.92) 100%);"></div>
-            <div style="position: absolute; top: 14px; left: 14px; display: flex; gap: 8px;">
-              <span style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; padding: 5px 10px; border-radius: var(--r-pill); background: var(--glass-fill); backdrop-filter: var(--blur-glass); -webkit-backdrop-filter: var(--blur-glass); border: 1px solid var(--line-2); color: var(--ink-1);">{{ p.engine }}</span>
-              <span style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; padding: 5px 10px; border-radius: var(--r-pill); background: {{ p.tagBg }}; color: var(--ink-on-bright); font-weight: 700;">{{ p.medium }}</span>
+      <!-- FEATURED card — full width, cinematic -->
+      <sc-if value="{{ hasFeatured }}" hint-placeholder-val="{{ true }}">
+        <div class="vc-tilt-card" data-tilt onClick="{{ featuredProject.onOpen }}" style="position: relative; border-radius: var(--r-xl); overflow: hidden; cursor: pointer; background: var(--bg-1); border: 1px solid var(--line); box-shadow: var(--shadow-card); height: clamp(320px, 50vw, 560px); margin-bottom: 24px; transition: border-color 0.35s ease, box-shadow 0.35s ease;" style-hover="border-color: var(--cyan); box-shadow: 0 0 0 1px var(--cyan), 0 0 60px rgba(25,227,255,0.22);">
+          <sc-if value="{{ featuredProject.isVideo }}" hint-placeholder-val="{{ false }}">
+            <video src="{{ featuredProject.image }}" autoplay muted loop playsinline style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;"></video>
+          </sc-if>
+          <sc-if value="{{ !featuredProject.isVideo }}" hint-placeholder-val="{{ true }}">
+            <img src="{{ featuredProject.image }}" alt="{{ featuredProject.title }}" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;">
+          </sc-if>
+          <!-- gradient overlay: light top-right, dark bottom-left -->
+          <div style="position: absolute; inset: 0; background: linear-gradient(135deg, rgba(7,6,14,0.08) 0%, rgba(7,6,14,0.18) 30%, rgba(7,6,14,0.88) 72%, rgba(7,6,14,0.97) 100%);"></div>
+          <!-- aurora accent glow -->
+          <div style="position: absolute; top: -60px; right: -40px; width: 320px; height: 320px; border-radius: 50%; background: var(--grad-aurora); filter: blur(90px); opacity: 0.18; pointer-events: none;"></div>
+          <!-- content -->
+          <div style="position: absolute; left: clamp(24px, 5%, 56px); bottom: clamp(28px, 5%, 52px); right: clamp(24px, 30%, 56px);">
+            <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px;">
+              <span style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; padding: 6px 13px; border-radius: var(--r-pill); background: var(--glass-fill); backdrop-filter: var(--blur-glass); -webkit-backdrop-filter: var(--blur-glass); border: 1px solid var(--line-2); color: var(--ink-1);">{{ featuredProject.engine }}</span>
+              <span style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; padding: 6px 13px; border-radius: var(--r-pill); background: {{ featuredProject.tagBg }}; color: var(--ink-on-bright); font-weight: 700;">{{ featuredProject.medium }}</span>
+              <span style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; padding: 6px 13px; border-radius: var(--r-pill); color: rgba(255,255,255,0.45);">{{ featuredProject.year }}</span>
             </div>
-            <div style="position: absolute; left: 18px; right: 18px; bottom: 18px;">
-              <div style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; color: var(--ink-3); margin-bottom: 6px;">{{ p.year }}</div>
-              <h3 style="font-family: var(--font-display); font-weight: 700; font-size: 21px; line-height: 1.08; letter-spacing: -0.02em; color: var(--ink-0); margin: 0;">{{ p.title }}</h3>
+            <h3 style="font-family: var(--font-display); font-weight: 900; font-size: clamp(26px, 4.5vw, 56px); line-height: 1.0; letter-spacing: -0.03em; color: var(--ink-0); margin: 0 0 12px;">{{ featuredProject.title }}</h3>
+            <p style="font-size: clamp(14px, 1.5vw, 17px); line-height: 1.55; color: rgba(255,255,255,0.68); margin: 0 0 24px; max-width: 52ch;">{{ featuredProject.hook }}</p>
+            <span style="display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-mono); font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--cyan); padding: 11px 24px; border-radius: var(--r-pill); border: 1px solid rgba(25,227,255,0.4); background: rgba(25,227,255,0.08);">View Case Study →</span>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- GRID of remaining projects — 2-column, tall cards -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 460px), 1fr)); gap: 24px;">
+        <sc-for list="{{ gridProjects }}" as="p" hint-placeholder-count="8">
+          <div class="vc-tilt-card" data-tilt onClick="{{ p.onOpen }}" style="position: relative; border-radius: var(--r-xl); overflow: hidden; cursor: pointer; background: var(--bg-1); border: 1px solid var(--line); box-shadow: var(--shadow-card); height: clamp(260px, 36vw, 400px); transition: border-color 0.35s ease, box-shadow 0.35s ease;" style-hover="border-color: var(--cyan); box-shadow: 0 0 0 1px var(--cyan), 0 0 48px rgba(25,227,255,0.2);">
+            <sc-if value="{{ p.isVideo }}" hint-placeholder-val="{{ false }}">
+              <video src="{{ p.image }}" autoplay muted loop playsinline style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;"></video>
+            </sc-if>
+            <sc-if value="{{ !p.isVideo }}" hint-placeholder-val="{{ true }}">
+              <img src="{{ p.image }}" alt="{{ p.title }}" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;">
+            </sc-if>
+            <div style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(7,6,14,0.04) 0%, rgba(7,6,14,0.22) 40%, rgba(7,6,14,0.94) 100%);"></div>
+            <!-- top badges -->
+            <div style="position: absolute; top: 18px; left: 18px; display: flex; gap: 8px; flex-wrap: wrap;">
+              <span style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; padding: 5px 11px; border-radius: var(--r-pill); background: var(--glass-fill); backdrop-filter: var(--blur-glass); -webkit-backdrop-filter: var(--blur-glass); border: 1px solid var(--line-2); color: var(--ink-1);">{{ p.engine }}</span>
+              <span style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; padding: 5px 11px; border-radius: var(--r-pill); background: {{ p.tagBg }}; color: var(--ink-on-bright); font-weight: 700;">{{ p.medium }}</span>
+            </div>
+            <!-- bottom content -->
+            <div style="position: absolute; left: 22px; right: 22px; bottom: 22px;">
+              <div style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; color: rgba(255,255,255,0.38); margin-bottom: 6px;">{{ p.year }}</div>
+              <h3 style="font-family: var(--font-display); font-weight: 800; font-size: clamp(18px, 2.4vw, 26px); line-height: 1.1; letter-spacing: -0.02em; color: var(--ink-0); margin: 0 0 8px;">{{ p.title }}</h3>
+              <p style="font-size: 13px; line-height: 1.5; color: rgba(255,255,255,0.6); margin: 0 0 14px;">{{ p.hook }}</p>
+              <span style="font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--cyan);">View Case Study →</span>
             </div>
           </div>
         </sc-for>
@@ -213,20 +258,37 @@
     <section id="skills" style="padding: 0 0 var(--section-y); scroll-margin-top: 80px;">
       <div style="font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--amber); margin-bottom: 14px;">Toolkit</div>
       <h2 style="font-family: var(--font-display); font-weight: 800; font-size: var(--fs-h1); line-height: 0.98; letter-spacing: -0.03em; color: var(--ink-1); margin: 0 0 48px; max-width: 18ch;">Technical skills</h2>
-      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px;">
-        <sc-for list="{{ techGroups }}" as="g" hint-placeholder-count="5">
-          <div style="padding: 24px; border-radius: var(--r-lg); background: var(--bg-1); border: 1px solid var(--line); box-shadow: var(--shadow-card);">
-            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 18px;">
-              <span style="width: 30px; height: 30px; border-radius: 8px; background: var(--bg-2); display: inline-flex; align-items: center; justify-content: center; color: var(--cyan);"><i data-lucide="{{ g.icon }}" style="width: 17px; height: 17px;"></i></span>
-              <div style="font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-1);">{{ g.title }}</div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: clamp(24px, 4vw, 56px); align-items: start;">
+        <!-- Skill bars — left column -->
+        <div style="display: flex; flex-direction: column; gap: 22px;">
+          <sc-for list="{{ skillBars }}" as="sb" hint-placeholder-count="8">
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px;">
+                <span style="font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.06em; color: var(--ink-1);">{{ sb.name }}</span>
+                <span style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; color: var(--ink-3);">{{ sb.pct }}%</span>
+              </div>
+              <div style="height: 5px; background: var(--bg-2); border-radius: 3px; overflow: hidden;">
+                <div class="vc-bar" style="height: 100%; width: {{ sb.width }}; background: {{ sb.color }}; border-radius: 3px; box-shadow: 0 0 10px {{ sb.color }}; animation-delay: {{ sb.delay }};"></div>
+              </div>
             </div>
-            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-              <sc-for list="{{ g.items }}" as="it" hint-placeholder-count="4">
-                <span style="font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.02em; padding: 7px 12px; border-radius: var(--r-pill); background: var(--bg-2); border: 1px solid var(--line-2); color: var(--ink-2);">{{ it }}</span>
-              </sc-for>
+          </sc-for>
+        </div>
+        <!-- Tool tag groups — right column -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+          <sc-for list="{{ techGroups }}" as="g" hint-placeholder-count="5">
+            <div style="padding: 20px; border-radius: var(--r-lg); background: var(--bg-1); border: 1px solid var(--line); box-shadow: var(--shadow-card);">
+              <div style="display: flex; align-items: center; gap: 9px; margin-bottom: 14px;">
+                <span style="width: 26px; height: 26px; border-radius: 7px; background: var(--bg-2); display: inline-flex; align-items: center; justify-content: center; color: var(--cyan);"><i data-lucide="{{ g.icon }}" style="width: 15px; height: 15px;"></i></span>
+                <div style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-2);">{{ g.title }}</div>
+              </div>
+              <div style="display: flex; flex-wrap: wrap; gap: 7px;">
+                <sc-for list="{{ g.items }}" as="it" hint-placeholder-count="3">
+                  <span style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.02em; padding: 6px 10px; border-radius: var(--r-pill); background: var(--bg-2); border: 1px solid var(--line-2); color: var(--ink-2);">{{ it }}</span>
+                </sc-for>
+              </div>
             </div>
-          </div>
-        </sc-for>
+          </sc-for>
+        </div>
       </div>
     </section>
 
@@ -282,27 +344,11 @@
 
 <sc-if value="{{ loop.index == currentSlide }}">
 
-<sc-if value="{{ media.endsWith('.mp4') || media.endsWith('.mov') }}">
-
-<video
-src="{{ media }}"
-controls
-autoplay
-muted
-loop
-playsinline
-style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
-</video>
-
+<sc-if value="{{ media.isVid }}" hint-placeholder-val="{{ false }}">
+<video src="{{ media.src }}" controls autoplay muted loop playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"></video>
 </sc-if>
-
-<sc-if value="{{ !(media.endsWith('.mp4') || media.endsWith('.mov')) }}">
-
-<img
-src="{{ media }}"
-alt="{{ open.title }}"
-style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
-
+<sc-if value="{{ !media.isVid }}" hint-placeholder-val="{{ true }}">
+<img src="{{ media.src }}" alt="{{ open.title }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
 </sc-if>
 
 </sc-if>
@@ -397,7 +443,8 @@ z-index:5;">
 class Component extends DCLogic {
   state = {
     open: null,
-    currentSlide: 0
+    currentSlide: 0,
+    activeFilter: 'All',
   };
 
   get rawProjects() {
@@ -460,14 +507,40 @@ class Component extends DCLogic {
         blurb:'A cinematic scene of a tense woman on a ship. Character animation and environment design in Unreal Engine.',
         body:'I designed and animated a cinematic scene including character animation and environment design, playing with mood, pacing and camera in Unreal Engine.' },
     ];
-    return list.map(p => ({ ...p, tagBg: tagBg[p.accent] || 'var(--cyan)' }));
+    return list.map(p => ({
+      ...p,
+      tagBg: tagBg[p.accent] || 'var(--cyan)',
+      isVideo: !!(p.image && (p.image.endsWith('.mp4') || p.image.endsWith('.mov'))),
+    }));
   }
 
   componentDidMount() {
     this.renderIcons();
+    this.initTilt();
   }
   componentDidUpdate() {
     this.renderIcons();
+    this.initTilt();
+  }
+
+  initTilt() {
+    document.querySelectorAll('[data-tilt]').forEach(card => {
+      if (card._tiltInit) return;
+      card._tiltInit = true;
+      card.addEventListener('mouseenter', () => {
+        card.style.transition = 'transform 0.15s ease';
+      });
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const rotX = (((e.clientY - rect.top) / rect.height) - 0.5) * -12;
+        const rotY = (((e.clientX - rect.left) / rect.width) - 0.5) * 12;
+        card.style.transform = `perspective(1100px) rotateX(${rotX}deg) rotateY(${rotY}deg) translateY(-8px) scale(1.015)`;
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transition = 'transform 0.65s cubic-bezier(0.23,1,0.32,1)';
+        card.style.transform = 'perspective(1100px) rotateX(0deg) rotateY(0deg) translateY(0) scale(1)';
+      });
+    });
   }
   renderIcons() {
     if (window.lucide) {
@@ -483,41 +556,59 @@ class Component extends DCLogic {
   }
 
   renderVals() {
-    const projects = this.rawProjects.map(p => ({
+    const activeFilter = this.state.activeFilter || 'All';
+    const filterLabels = ['All', 'VR', 'MR', 'AI', '3D'];
+
+    const allProjects = this.rawProjects.map(p => ({
       ...p,
-      onOpen: () => { this.setState({open: p, currentSlide: 0});document.body.style.overflow = 'hidden'; },
+      onOpen: () => { this.setState({ open: p, currentSlide: 0 }); document.body.style.overflow = 'hidden'; },
     }));
+
+    const filtered = activeFilter === 'All' ? allProjects : allProjects.filter(p => p.medium === activeFilter);
+
+    const filters = filterLabels.map(f => ({
+      label: f,
+      bg: f === activeFilter ? 'var(--cyan)' : 'var(--bg-1)',
+      col: f === activeFilter ? 'var(--ink-on-bright)' : 'var(--ink-2)',
+      onSelect: () => this.setState({ activeFilter: f }),
+    }));
+
     const close = () => { this.setState({ open: null }); document.body.style.overflow = ''; };
     const nextSlide = () => {
+      if (!this.state.open?.gallery?.length) return;
+      const total = this.state.open.gallery.length;
+      this.setState({ currentSlide: (this.state.currentSlide + 1) % total });
+    };
+    const prevSlide = () => {
+      if (!this.state.open?.gallery?.length) return;
+      const total = this.state.open.gallery.length;
+      this.setState({ currentSlide: (this.state.currentSlide - 1 + total) % total });
+    };
 
-    if (!this.state.open?.gallery?.length) return;
+    // Build gallery media objects with precomputed isVid flag
+    const openGallery = (this.state.open?.gallery || []).map(src => ({
+      src,
+      isVid: src.endsWith('.mp4') || src.endsWith('.mov'),
+    }));
 
-    const total = this.state.open.gallery.length;
-
-    this.setState({
-        currentSlide: (this.state.currentSlide + 1) % total
-    });
-
-};
-
-const prevSlide = () => {
-
-    if (!this.state.open?.gallery?.length) return;
-
-    const total = this.state.open.gallery.length;
-
-    this.setState({
-        currentSlide: (this.state.currentSlide - 1 + total) % total
-    });
-
-};
-
+    const skillBars = [
+      { name: 'Unity',         pct: 95, color: 'var(--cyan)',    delay: '0s'   },
+      { name: 'Unreal Engine', pct: 88, color: 'var(--violet)',  delay: '0.1s' },
+      { name: 'C#',            pct: 92, color: 'var(--magenta)', delay: '0.15s'},
+      { name: 'Blueprints',    pct: 85, color: 'var(--amber)',   delay: '0.2s' },
+      { name: 'VR / XR',       pct: 93, color: 'var(--lime)',    delay: '0.25s'},
+      { name: 'Meta XR SDK',   pct: 82, color: 'var(--cyan)',    delay: '0.3s' },
+      { name: 'Environment Art',pct: 80, color: 'var(--violet)', delay: '0.35s'},
+      { name: 'Git / Perforce',pct: 78, color: 'var(--magenta)',delay: '0.4s' },
+    ].map(s => ({ ...s, width: s.pct + '%' }));
 
     return {
-      projects,
-      open: this.state.open || {},
-      currentSlide:this.state.currentSlide,
-
+      filters,
+      hasFeatured: filtered.length > 0,
+      featuredProject: filtered[0] || {},
+      gridProjects: filtered.slice(1),
+      open: { ...(this.state.open || {}), gallery: openGallery },
+      currentSlide: this.state.currentSlide,
       nextSlide,
       prevSlide,
       hasOpen: !!this.state.open,
@@ -533,6 +624,7 @@ const prevSlide = () => {
         { value: 'VR / AR / XR', label: 'Focus areas' },
       ],
       skills: ['Unreal Engine', 'Unity', 'XR Interaction Toolkit', 'VR IK / Embodiment', 'AI NPCs (Yarn)', 'Mixed Reality', 'Spatial Audio', 'C# / C++', 'Environment Design'],
+      skillBars,
       jobs: [
         { period: '2024 \u2013 Present', role: 'Lecturer, Unreal Engine & Game Dev', org: 'University Campus of Esports, London',
           points: [
