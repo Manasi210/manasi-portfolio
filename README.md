@@ -1,6 +1,6 @@
 # Manasi's Virtual Creations — Portfolio
 
-**Live site:** [manasilodha.com](https://manasilodha.com)
+**Live site:**  https://manasi210.github.io/manasi-portfolio/
 
 XR / VR developer portfolio built with a custom dc-runtime component framework. Showcases immersive projects in Unity and Unreal Engine — from full-body VR embodiment to AI-driven NPCs and mixed reality training apps.
 
