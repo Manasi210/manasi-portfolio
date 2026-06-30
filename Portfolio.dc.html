@@ -41,7 +41,7 @@
     @keyframes chibi-wave  { 0%,100%{transform:rotate(-8deg)} 50%{transform:rotate(8deg)} }
     .vc-chibi-deco { position:absolute; pointer-events:none; }
     .vc-chibi-deco img { display:block; filter:drop-shadow(0 4px 16px rgba(25,227,255,0.35)); }
-    #vc-chibi { position:fixed;top:0;left:0;pointer-events:none;z-index:9990;opacity:0;transition:opacity .5s;will-change:transform; }
+    #vc-chibi { position:fixed;bottom:32px;left:0;pointer-events:none;z-index:9990;opacity:1;will-change:left,top; }
     #vc-chibi img { display:block;width:100%;filter:drop-shadow(0 6px 18px rgba(25,227,255,0.45)); }
     #vc-chibi-zzz { position:fixed;pointer-events:none;z-index:9991;display:none; }
     #vc-chibi-zzz span { position:absolute;font-family:var(--font-mono);font-size:13px;color:#c1ff3c;font-weight:800;animation:chibi-zzz 2s ease-out infinite; }
@@ -867,31 +867,115 @@ class Component extends DCLogic {
     const el  = document.getElementById('vc-chibi');
     const zzz = document.getElementById('vc-chibi-zzz');
     if (!el) return;
+
+    const SIZE = 90; // px width of chibi
+    const FLOOR_OFFSET = 32; // px from bottom of viewport
+
     const ANIMS = {
-      idle:  { name:'chibi-idle',  dur:'2.4s',  timing:'ease-in-out',                    iter:'infinite' },
-      walk:  { name:'chibi-walk',  dur:'0.55s', timing:'linear',                          iter:'infinite' },
-      run:   { name:'chibi-run',   dur:'0.3s',  timing:'linear',                          iter:'infinite' },
-      jump:  { name:'chibi-jump',  dur:'0.7s',  timing:'cubic-bezier(0.22,1,0.36,1)',     iter:'1'        },
-      sleep: { name:'chibi-sleep', dur:'3.2s',  timing:'ease-in-out',                    iter:'infinite' },
+      idle:  { name:'chibi-idle',  dur:'2.4s',  timing:'ease-in-out', iter:'infinite' },
+      walk:  { name:'chibi-walk',  dur:'0.52s', timing:'linear',      iter:'infinite' },
+      run:   { name:'chibi-run',   dur:'0.28s', timing:'linear',      iter:'infinite' },
+      jump:  { name:'chibi-jump',  dur:'0.72s', timing:'cubic-bezier(0.22,1,0.36,1)', iter:'1' },
+      sleep: { name:'chibi-sleep', dur:'3.2s',  timing:'ease-in-out', iter:'infinite' },
     };
-    let tx=innerWidth/2, ty=innerHeight/2, cx=tx, cy=ty, prevCx=cx;
-    let state='idle', facing=1, frame=0, jumpLock=false, shown=false, sleepTmr=null;
-    const applyAnim = s => { const a=ANIMS[s]; el.style.animation=`${a.name} ${a.dur} ${a.timing} ${a.iter}`; };
-    const setFacing = f => { if(f===facing)return; facing=f; el.querySelector('img').style.transform=f===-1?'scaleX(-1)':'scaleX(1)'; };
-    const resetSleep = () => { clearTimeout(sleepTmr); sleepTmr=setTimeout(()=>{ state='sleep'; applyAnim('sleep'); if(zzz){zzz.style.display='block';zzz.style.left=(cx+28)+'px';zzz.style.top=(cy-100)+'px';} },6000); };
-    document.addEventListener('mousemove',e=>{ tx=e.clientX;ty=e.clientY; if(!shown){shown=true;el.style.opacity='1';} if(state==='sleep'){state='idle';applyAnim('idle');if(zzz)zzz.style.display='none';} resetSleep(); });
-    document.addEventListener('mouseleave',()=>{ el.style.opacity='0'; });
-    applyAnim('idle'); resetSleep();
-    const tick=()=>{ requestAnimationFrame(tick); frame++;
-      cx+=(tx-cx)*0.065; cy+=(ty-cy)*0.065;
-      const vx=cx-prevCx, spd=Math.abs(vx); prevCx=cx;
-      if(state!=='jump'&&state!=='sleep'){ const next=spd>5?'run':spd>1.2?'walk':'idle'; if(next!==state){state=next;applyAnim(state);} }
-      if(spd>0.5) setFacing(vx>0?1:-1);
-      if(!jumpLock&&state==='idle'&&frame%480===0){ state='jump';applyAnim('jump');jumpLock=true; setTimeout(()=>{state='idle';applyAnim('idle');jumpLock=false;resetSleep();},720); }
-      el.style.left=(cx-50)+'px'; el.style.top=(cy-100)+'px';
-      if(zzz&&state==='sleep'){zzz.style.left=(cx+28)+'px';zzz.style.top=(cy-100)+'px';}
+
+    let cx = innerWidth * 0.15;
+    let facing = 1;        // 1 = right, -1 = left
+    let speed  = 1.4;      // px per frame
+    let state  = 'walk';
+    let frame  = 0;
+    let jumpLock = false;
+    let sleepTmr = null;
+    let behaviorTmr = null;
+
+    el.style.opacity = '1';
+    el.style.width = SIZE + 'px';
+
+    const applyAnim = s => {
+      const a = ANIMS[s];
+      el.style.animation = `${a.name} ${a.dur} ${a.timing} ${a.iter}`;
+    };
+    const setFacing = f => {
+      if (f === facing) return;
+      facing = f;
+      el.querySelector('img').style.transform = f === -1 ? 'scaleX(-1)' : 'scaleX(1)';
+    };
+    const setY = () => {
+      el.style.top  = (innerHeight - SIZE - FLOOR_OFFSET) + 'px';
+      if (zzz && state === 'sleep') {
+        zzz.style.top  = (innerHeight - SIZE - FLOOR_OFFSET - 60) + 'px';
+        zzz.style.left = (cx + SIZE * 0.6) + 'px';
+      }
+    };
+
+    // Behaviour scheduler: picks random actions every few seconds
+    const scheduleBehavior = () => {
+      clearTimeout(behaviorTmr);
+      const delay = 2200 + Math.random() * 4000;
+      behaviorTmr = setTimeout(() => {
+        if (state === 'sleep') return scheduleBehavior();
+        const roll = Math.random();
+        if (roll < 0.15 && !jumpLock) {
+          // jump
+          jumpLock = true;
+          state = 'jump'; applyAnim('jump');
+          setTimeout(() => { state = 'walk'; applyAnim('walk'); jumpLock = false; scheduleBehavior(); }, 730);
+          return;
+        } else if (roll < 0.30) {
+          // pause / idle
+          state = 'idle'; applyAnim('idle');
+          setTimeout(() => { state = 'walk'; applyAnim('walk'); scheduleBehavior(); }, 1800 + Math.random() * 1200);
+          return;
+        } else if (roll < 0.45) {
+          // turn around
+          setFacing(-facing);
+          scheduleBehavior();
+          return;
+        } else if (roll < 0.60) {
+          // run burst
+          state = 'run'; speed = 3.2; applyAnim('run');
+          setTimeout(() => { state = 'walk'; speed = 1.4; applyAnim('walk'); scheduleBehavior(); }, 1400 + Math.random() * 800);
+          return;
+        }
+        scheduleBehavior();
+      }, delay);
+    };
+
+    // Sleep after 12s of page inactivity; wake on any user interaction
+    const resetSleep = () => {
+      clearTimeout(sleepTmr);
+      if (state === 'sleep') { state = 'walk'; applyAnim('walk'); if (zzz) zzz.style.display = 'none'; scheduleBehavior(); }
+      sleepTmr = setTimeout(() => {
+        state = 'sleep'; applyAnim('sleep');
+        if (zzz) { zzz.style.display = 'block'; }
+      }, 12000);
+    };
+    ['mousemove','scroll','keydown','touchstart'].forEach(ev => document.addEventListener(ev, resetSleep, { passive: true }));
+    resetSleep();
+
+    applyAnim('walk');
+    scheduleBehavior();
+    setY();
+
+    const tick = () => {
+      requestAnimationFrame(tick);
+      frame++;
+      if (frame % 6 === 0) setY(); // recheck floor on scroll
+
+      if (state === 'walk' || state === 'run') {
+        cx += speed * facing;
+        // bounce off edges
+        if (cx <= 0)               { cx = 0;                    setFacing(1);  }
+        if (cx >= innerWidth - SIZE){ cx = innerWidth - SIZE;    setFacing(-1); }
+      }
+
+      el.style.left = cx + 'px';
+      if (zzz && state === 'sleep') {
+        zzz.style.left = (cx + SIZE * 0.6) + 'px';
+      }
     };
     requestAnimationFrame(tick);
+    window.addEventListener('resize', setY);
   }
   initCursor() {
     if (this._cursorInit) return;
