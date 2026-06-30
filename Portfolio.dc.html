@@ -31,22 +31,6 @@
     @keyframes vc-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     .vc-tilt-card { will-change: transform; transform-style: preserve-3d; }
     .vc-bar { animation: vc-bar-in 1.2s cubic-bezier(0.22,1,0.36,1) both; }
-    /* chibi cursor companion */
-    @keyframes chibi-idle  { 0%,100%{transform:translateY(0) rotate(0deg)} 45%{transform:translateY(-9px) rotate(-2deg)} 75%{transform:translateY(-4px) rotate(1.5deg)} }
-    @keyframes chibi-walk  { 0%,100%{transform:translateY(0) rotate(-5deg)} 25%{transform:translateY(-6px) rotate(3deg)} 50%{transform:translateY(-1px) rotate(-4deg)} 75%{transform:translateY(-6px) rotate(4deg)} }
-    @keyframes chibi-run   { 0%,100%{transform:translateY(0) rotate(-7deg)} 25%{transform:translateY(-10px) rotate(5deg)} 50%{transform:translateY(-2px) rotate(-6deg)} 75%{transform:translateY(-10px) rotate(6deg)} }
-    @keyframes chibi-jump  { 0%{transform:translateY(0) scaleY(0.88) scaleX(1.08)} 25%{transform:translateY(-20px) scaleY(1.08)} 55%{transform:translateY(-60px) scaleY(1.05)} 78%{transform:translateY(-16px)} 90%{transform:translateY(-4px) scaleY(0.94)} 100%{transform:translateY(0) scaleY(1)} }
-    @keyframes chibi-sleep { 0%,100%{transform:rotate(0deg) translateY(0)} 50%{transform:rotate(16deg) translateY(5px)} }
-    @keyframes chibi-zzz   { 0%{opacity:0;transform:translate(0,0) scale(0.4)} 35%{opacity:1} 100%{opacity:0;transform:translate(7px,-24px) scale(1.2)} }
-    @keyframes chibi-wave  { 0%,100%{transform:rotate(-8deg)} 50%{transform:rotate(8deg)} }
-    .vc-chibi-deco { position:absolute; pointer-events:none; }
-    .vc-chibi-deco img { display:block; filter:drop-shadow(0 4px 16px rgba(25,227,255,0.35)); }
-    #vc-chibi { position:fixed;bottom:32px;left:0;pointer-events:none;z-index:9990;opacity:1;will-change:left,top; }
-    #vc-chibi img { display:block;width:100%;filter:drop-shadow(0 6px 18px rgba(25,227,255,0.45)); }
-    #vc-chibi-zzz { position:fixed;pointer-events:none;z-index:9991;display:none; }
-    #vc-chibi-zzz span { position:absolute;font-family:var(--font-mono);font-size:13px;color:#c1ff3c;font-weight:800;animation:chibi-zzz 2s ease-out infinite; }
-    #vc-chibi-zzz span:nth-child(2){animation-delay:.7s;font-size:10px;top:9px;left:9px}
-    #vc-chibi-zzz span:nth-child(3){animation-delay:1.4s;font-size:7px;top:18px;left:18px}
     .vc-marquee-track { display: flex; animation: vc-marquee 28s linear infinite; width: max-content; }
     .vc-marquee-track:hover { animation-play-state: paused; }
     .vc-status-dot { animation: vc-pulse-ring 2.4s ease-out infinite; }
@@ -63,7 +47,6 @@
       .vc-exp-grid { grid-template-columns: 1fr !important; }
       .vc-skills-grid { grid-template-columns: 1fr !important; }
       nav .vc-nav-links { display: none !important; }
-      #vc-chibi, #vc-chibi-zzz, .vc-chibi-deco { display: none !important; }
     }
     @media (max-width: 540px) {
       #vc-holo-card { width: 92vw !important; }
@@ -78,12 +61,6 @@
 <!-- custom cursor elements -->
 <div id="vc-cursor"></div>
 <div id="vc-cursor-ring"></div>
-<!-- 3D chibi canvas -->
-<!-- chibi cursor companion -->
-<div id="vc-chibi" style="width:100px;">
-  <img src="assets/manasi-chibi-cutout.png" alt="">
-</div>
-<div id="vc-chibi-zzz"><span>z</span><span>z</span><span>z</span></div>
 
 <div style="min-height: 100vh; background: var(--grad-void); font-family: var(--font-sans); overflow-x: hidden; position: relative;">
 
@@ -297,11 +274,7 @@
     </section>
 
     <!-- ===================== MARQUEE STRIP ===================== -->
-    <div style="position: relative; overflow: visible; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 14px 0; margin-bottom: 0; background: var(--bg-1);">
-      <!-- deco chibi sticker: waving on marquee strip -->
-      <div class="vc-chibi-deco" style="right:clamp(16px,6vw,80px);top:-58px;width:72px;animation:chibi-wave 1.6s ease-in-out infinite;transform-origin:bottom center;">
-        <img src="assets/manasi-chibi-cutout.png" alt="" style="width:72px;filter:drop-shadow(0 4px 16px rgba(193,255,60,0.45));">
-      </div>
+    <div style="position: relative; overflow: hidden; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 14px 0; margin-bottom: 0; background: var(--bg-1);">
       <div class="vc-marquee-track">
         <sc-for list="{{ marqueeItems }}" as="mi" hint-placeholder-count="16">
           <span style="display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3); white-space: nowrap; padding: 0 28px;">
@@ -389,11 +362,7 @@
     </section>
 
     <!-- ===================== ABOUT ===================== -->
-    <section id="about" style="padding: var(--section-y) 0; scroll-margin-top: 80px; position: relative;">
-      <!-- deco chibi sticker: idle float -->
-      <div class="vc-chibi-deco" style="left:clamp(0px,1vw,12px);top:16px;width:56px;animation:chibi-idle 3s ease-in-out infinite;">
-        <img src="assets/manasi-chibi-cutout.png" alt="" style="width:56px;filter:drop-shadow(0 3px 12px rgba(25,227,255,0.5)) hue-rotate(160deg);">
-      </div>
+    <section id="about" style="padding: var(--section-y) 0; scroll-margin-top: 80px;">
       <div class="vc-about-grid" style="display: grid; grid-template-columns: 0.9fr 1.1fr; gap: clamp(32px, 6vw, 80px); align-items: start;">
         <div style="position: relative;">
           <div style="font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--magenta); margin-bottom: 14px;">About Me</div>
@@ -527,11 +496,7 @@
     </section>
 
     <!-- ===================== CONTACT ===================== -->
-    <section id="contact" style="padding: 0 0 var(--section-y); scroll-margin-top: 80px; position: relative;">
-      <!-- deco chibi sticker: sleeping in corner -->
-      <div class="vc-chibi-deco" style="right:clamp(12px,4vw,60px);top:-40px;width:64px;animation:chibi-sleep 3.6s ease-in-out infinite;transform-origin:bottom center;">
-        <img src="assets/manasi-chibi-cutout.png" alt="" style="width:64px;filter:drop-shadow(0 3px 14px rgba(255,61,203,0.4)) hue-rotate(270deg);">
-      </div>
+    <section id="contact" style="padding: 0 0 var(--section-y); scroll-margin-top: 80px;">
       <div style="position: relative; border-radius: var(--r-2xl); overflow: hidden; border: 1px solid var(--line-2); padding: clamp(40px, 7vw, 88px) clamp(28px, 6vw, 72px); background: var(--bg-1);">
         <div style="position: absolute; top: -120px; right: -60px; width: 380px; height: 380px; border-radius: 50%; background: var(--grad-aurora); filter: blur(130px); opacity: 0.3; pointer-events: none;"></div>
         <div style="position: relative;">
@@ -759,7 +724,6 @@ class Component extends DCLogic {
     this.initTilt();
     this.initHoloCard();
     this.initCursor();
-    this.initChibi();
   }
   componentDidUpdate() {
     this.renderIcons();
@@ -860,122 +824,6 @@ class Component extends DCLogic {
       };
       requestAnimationFrame(tick2);
     }
-  }
-  initChibi() {
-    if (this._chibiInit) return;
-    this._chibiInit = true;
-    const el  = document.getElementById('vc-chibi');
-    const zzz = document.getElementById('vc-chibi-zzz');
-    if (!el) return;
-
-    const SIZE = 90; // px width of chibi
-    const FLOOR_OFFSET = 32; // px from bottom of viewport
-
-    const ANIMS = {
-      idle:  { name:'chibi-idle',  dur:'2.4s',  timing:'ease-in-out', iter:'infinite' },
-      walk:  { name:'chibi-walk',  dur:'0.52s', timing:'linear',      iter:'infinite' },
-      run:   { name:'chibi-run',   dur:'0.28s', timing:'linear',      iter:'infinite' },
-      jump:  { name:'chibi-jump',  dur:'0.72s', timing:'cubic-bezier(0.22,1,0.36,1)', iter:'1' },
-      sleep: { name:'chibi-sleep', dur:'3.2s',  timing:'ease-in-out', iter:'infinite' },
-    };
-
-    let cx = innerWidth * 0.15;
-    let facing = 1;        // 1 = right, -1 = left
-    let speed  = 1.4;      // px per frame
-    let state  = 'walk';
-    let frame  = 0;
-    let jumpLock = false;
-    let sleepTmr = null;
-    let behaviorTmr = null;
-
-    el.style.opacity = '1';
-    el.style.width = SIZE + 'px';
-
-    const applyAnim = s => {
-      const a = ANIMS[s];
-      el.style.animation = `${a.name} ${a.dur} ${a.timing} ${a.iter}`;
-    };
-    const setFacing = f => {
-      if (f === facing) return;
-      facing = f;
-      el.querySelector('img').style.transform = f === -1 ? 'scaleX(-1)' : 'scaleX(1)';
-    };
-    const setY = () => {
-      el.style.top  = (innerHeight - SIZE - FLOOR_OFFSET) + 'px';
-      if (zzz && state === 'sleep') {
-        zzz.style.top  = (innerHeight - SIZE - FLOOR_OFFSET - 60) + 'px';
-        zzz.style.left = (cx + SIZE * 0.6) + 'px';
-      }
-    };
-
-    // Behaviour scheduler: picks random actions every few seconds
-    const scheduleBehavior = () => {
-      clearTimeout(behaviorTmr);
-      const delay = 2200 + Math.random() * 4000;
-      behaviorTmr = setTimeout(() => {
-        if (state === 'sleep') return scheduleBehavior();
-        const roll = Math.random();
-        if (roll < 0.15 && !jumpLock) {
-          // jump
-          jumpLock = true;
-          state = 'jump'; applyAnim('jump');
-          setTimeout(() => { state = 'walk'; applyAnim('walk'); jumpLock = false; scheduleBehavior(); }, 730);
-          return;
-        } else if (roll < 0.30) {
-          // pause / idle
-          state = 'idle'; applyAnim('idle');
-          setTimeout(() => { state = 'walk'; applyAnim('walk'); scheduleBehavior(); }, 1800 + Math.random() * 1200);
-          return;
-        } else if (roll < 0.45) {
-          // turn around
-          setFacing(-facing);
-          scheduleBehavior();
-          return;
-        } else if (roll < 0.60) {
-          // run burst
-          state = 'run'; speed = 3.2; applyAnim('run');
-          setTimeout(() => { state = 'walk'; speed = 1.4; applyAnim('walk'); scheduleBehavior(); }, 1400 + Math.random() * 800);
-          return;
-        }
-        scheduleBehavior();
-      }, delay);
-    };
-
-    // Sleep after 12s of page inactivity; wake on any user interaction
-    const resetSleep = () => {
-      clearTimeout(sleepTmr);
-      if (state === 'sleep') { state = 'walk'; applyAnim('walk'); if (zzz) zzz.style.display = 'none'; scheduleBehavior(); }
-      sleepTmr = setTimeout(() => {
-        state = 'sleep'; applyAnim('sleep');
-        if (zzz) { zzz.style.display = 'block'; }
-      }, 12000);
-    };
-    ['mousemove','scroll','keydown','touchstart'].forEach(ev => document.addEventListener(ev, resetSleep, { passive: true }));
-    resetSleep();
-
-    applyAnim('walk');
-    scheduleBehavior();
-    setY();
-
-    const tick = () => {
-      requestAnimationFrame(tick);
-      frame++;
-      if (frame % 6 === 0) setY(); // recheck floor on scroll
-
-      if (state === 'walk' || state === 'run') {
-        cx += speed * facing;
-        // bounce off edges
-        if (cx <= 0)               { cx = 0;                    setFacing(1);  }
-        if (cx >= innerWidth - SIZE){ cx = innerWidth - SIZE;    setFacing(-1); }
-      }
-
-      el.style.left = cx + 'px';
-      if (zzz && state === 'sleep') {
-        zzz.style.left = (cx + SIZE * 0.6) + 'px';
-      }
-    };
-    requestAnimationFrame(tick);
-    window.addEventListener('resize', setY);
   }
   initCursor() {
     if (this._cursorInit) return;
