@@ -40,7 +40,16 @@
     @media (min-width: 860px) { .vc-doodle { display: block !important; } }
     @media (max-width: 860px) {
       .vc-hero-grid { grid-template-columns: 1fr !important; }
-      .vc-hero-photo { display: none !important; }
+      .vc-hero-photo { display: flex !important; justify-content: center; margin-top: 40px; }
+      #vc-holo-card { width: min(290px, 88vw) !important; }
+      .vc-about-grid { grid-template-columns: 1fr !important; }
+      .vc-exp-grid { grid-template-columns: 1fr !important; }
+      .vc-skills-grid { grid-template-columns: 1fr !important; }
+      nav .vc-nav-links { display: none !important; }
+      #vc-mini-me { display: none !important; }
+    }
+    @media (max-width: 540px) {
+      #vc-holo-card { width: 92vw !important; }
     }
     @media (prefers-reduced-motion: reduce) { * { animation-duration: 0.001ms !important; } }
     @media (hover: none) { #vc-cursor, #vc-cursor-ring { display: none; } }
@@ -69,7 +78,7 @@
         <img src="assets/portal-mark.svg" alt="" style="width: 34px; height: 34px; filter: drop-shadow(0 0 10px rgba(25,227,255,0.5));">
         <span style="font-family: var(--font-display); font-weight: 800; font-size: 15px; letter-spacing: -0.02em; color: var(--ink-1); line-height: 1.05;">MANASI&rsquo;S<br><span style="color: var(--cyan);">VIRTUAL CREATIONS</span></span>
       </a>
-      <div style="display: flex; align-items: center; gap: 4px;">
+      <div class="vc-nav-links" style="display: flex; align-items: center; gap: 4px;">
         <a href="#work" onClick="{{ goWork }}" style="font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-2); text-decoration: none; padding: 10px 12px; border-radius: var(--r-pill);" style-hover="color: var(--cyan);">Work</a>
         <a href="#about" onClick="{{ goAbout }}" style="font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-2); text-decoration: none; padding: 10px 12px; border-radius: var(--r-pill);" style-hover="color: var(--cyan);">About</a>
         <a href="#experience" onClick="{{ goExperience }}" style="font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-2); text-decoration: none; padding: 10px 12px; border-radius: var(--r-pill);" style-hover="color: var(--cyan);">Experience</a>
@@ -358,7 +367,7 @@
 
     <!-- ===================== ABOUT ===================== -->
     <section id="about" style="padding: var(--section-y) 0; scroll-margin-top: 80px;">
-      <div style="display: grid; grid-template-columns: 0.9fr 1.1fr; gap: clamp(32px, 6vw, 80px); align-items: start;">
+      <div class="vc-about-grid" style="display: grid; grid-template-columns: 0.9fr 1.1fr; gap: clamp(32px, 6vw, 80px); align-items: start;">
         <div style="position: relative;">
           <div style="font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--magenta); margin-bottom: 14px;">About Me</div>
           <h2 style="font-family: var(--font-display); font-weight: 800; font-size: var(--fs-h1); line-height: 0.98; letter-spacing: -0.03em; color: var(--ink-1); margin: 0 0 24px;">I&rsquo;m Manasi Lodha.</h2>
@@ -407,7 +416,7 @@
       <div style="font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--cyan); margin-bottom: 14px; display: flex; align-items: center; gap: 10px;"><span style="display: inline-block; width: 28px; height: 2px; background: var(--cyan); border-radius: 2px;"></span>Experience &amp; Education</div>
       <h2 style="font-family: var(--font-display); font-weight: 800; font-size: var(--fs-h1); line-height: 0.98; letter-spacing: -0.03em; color: var(--ink-1); margin: 0 0 48px; max-width: 18ch;">The path <span style="color: var(--violet);">so far</span></h2>
 
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: clamp(28px, 5vw, 64px);">
+      <div class="vc-exp-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: clamp(28px, 5vw, 64px);">
 
         <!-- work -->
         <div>
@@ -464,7 +473,7 @@
     <section id="skills" style="padding: 0 0 var(--section-y); scroll-margin-top: 80px;">
       <div style="font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--amber); margin-bottom: 14px; display: flex; align-items: center; gap: 10px;"><span style="display: inline-block; width: 28px; height: 2px; background: var(--amber); border-radius: 2px;"></span>Toolkit</div>
       <h2 style="font-family: var(--font-display); font-weight: 800; font-size: var(--fs-h1); line-height: 0.98; letter-spacing: -0.03em; color: var(--ink-1); margin: 0 0 48px; max-width: 18ch;">Technical <span style="color: var(--amber);">skills</span></h2>
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: clamp(24px, 4vw, 56px); align-items: start;">
+      <div class="vc-skills-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: clamp(24px, 4vw, 56px); align-items: start;">
         <sc-for list="{{ skillBarsLeft }}" as="sb" hint-placeholder-count="4">
           <div>
             <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px;">
