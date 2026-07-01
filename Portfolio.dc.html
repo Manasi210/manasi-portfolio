@@ -261,7 +261,7 @@
               </div>
 
               <!-- figure area — cutout floats here, parallaxes on mouse -->
-              <div style="position: relative; height: 340px; overflow: hidden; margin: 8px 0 0;">
+              <div style="position: relative; height: 480px; overflow: hidden; margin: 8px 0 0;">
                 <!-- glow behind figure -->
                 <div style="position: absolute; bottom: 0; left: 10%; right: 10%; height: 60%; background: radial-gradient(ellipse at 50% 80%, rgba(25,227,255,0.2) 0%, rgba(123,91,255,0.12) 45%, transparent 70%); pointer-events: none; z-index: 1;"></div>
                 <!-- sparkle star top-right -->
@@ -569,11 +569,12 @@
           <p style="font-size: var(--fs-lead); line-height: 1.6; color: var(--ink-2); max-width: 52ch; margin: 0 0 36px; text-align: justify;">Have a VR, AR or XR project in mind? I&rsquo;d love to hear about it. Drop me a line and let&rsquo;s talk.</p>
 
           <!-- contact form -->
-          <form onsubmit="(function(e){e.preventDefault();var f=e.target;window.location.href='mailto:manasiylodha@gmail.com?subject=Hello from '+encodeURIComponent(f.cname.value)+'&body=Name: '+encodeURIComponent(f.cname.value)+'%0AEmail: '+encodeURIComponent(f.cemail.value)+'%0A%0A';})(event)" style="display: flex; flex-direction: column; gap: 14px; max-width: 520px; margin-bottom: 32px;">
+          <form onsubmit="(function(e){e.preventDefault();var f=e.target;window.location.href='mailto:manasiylodha@gmail.com?subject=Hello from '+encodeURIComponent(f.cname.value)+'&body=Name: '+encodeURIComponent(f.cname.value)+'%0AEmail: '+encodeURIComponent(f.cemail.value)+'%0A%0A'+encodeURIComponent(f.cmsg.value);})(event)" style="display: flex; flex-direction: column; gap: 14px; max-width: 520px; margin-bottom: 32px;">
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
               <input name="cname" type="text" placeholder="Your name" required style="font-family: var(--font-sans); font-size: 15px; color: var(--ink-1); background: var(--bg-0); border: 1px solid var(--line-2); border-radius: var(--r-md); padding: 14px 18px; outline: none; width: 100%; box-sizing: border-box;">
               <input name="cemail" type="email" placeholder="Your email" required style="font-family: var(--font-sans); font-size: 15px; color: var(--ink-1); background: var(--bg-0); border: 1px solid var(--line-2); border-radius: var(--r-md); padding: 14px 18px; outline: none; width: 100%; box-sizing: border-box;">
             </div>
+            <textarea name="cmsg" placeholder="Your message" required rows="5" style="font-family: var(--font-sans); font-size: 15px; color: var(--ink-1); background: var(--bg-0); border: 1px solid var(--line-2); border-radius: var(--r-md); padding: 14px 18px; outline: none; width: 100%; box-sizing: border-box; resize: vertical; line-height: 1.6;"></textarea>
             <button type="submit" style="display: inline-flex; align-items: center; justify-content: center; gap: 10px; font-family: var(--font-sans); font-weight: 700; font-size: 16px; color: var(--ink-on-bright); padding: 16px 32px; border-radius: var(--r-pill); background: var(--cyan); box-shadow: var(--glow-cyan); border: none; cursor: pointer;" style-hover="box-shadow: var(--glow-cyan-lg); transform: translateY(-2px);">
               <i data-lucide="send" style="width: 18px; height: 18px;"></i> Send message
             </button>
