@@ -72,7 +72,7 @@
   <header style="position: sticky; top: 0; z-index: 50; backdrop-filter: var(--blur-glass); -webkit-backdrop-filter: var(--blur-glass); background: var(--glass-fill); border-bottom: 1px solid var(--line);">
     <nav style="max-width: var(--container); margin: 0 auto; padding: 16px var(--gutter); display: flex; align-items: center; justify-content: space-between; gap: 24px;">
       <a href="#top" onClick="{{ goTop }}" style="display: flex; align-items: center; gap: 12px; text-decoration: none;">
-        <img src="assets/logo-original.png" alt="" style="height: 32px; width: auto; filter: drop-shadow(0 0 8px rgba(25,227,255,0.35));">
+        <div style="width: 44px; height: 44px; border-radius: 50%; overflow: hidden; flex-shrink: 0; filter: drop-shadow(0 0 8px rgba(25,227,255,0.35));"><img src="assets/manasi-chibi-cutout.png" alt="" style="width: 160%; height: 160%; object-fit: cover; object-position: 50% 0%; margin-left: -30%; margin-top: -8%;"></div>
         <span style="font-family: var(--font-display); font-weight: 800; font-size: 15px; letter-spacing: -0.02em; color: var(--ink-1); line-height: 1.05;">MANASI&rsquo;S<br><span style="color: var(--cyan);">VIRTUAL CREATIONS</span></span>
       </a>
       <div class="vc-nav-links" style="display: flex; align-items: center; gap: 4px;">
@@ -423,7 +423,7 @@
 
     <!-- ===================== ABOUT ===================== -->
     <section id="about" style="padding: var(--section-y) 0; scroll-margin-top: 80px;">
-      <div class="vc-about-grid" style="display: grid; grid-template-columns: 0.9fr 1.1fr; gap: clamp(32px, 6vw, 80px); align-items: start;">
+      <div class="vc-about-grid" style="display: grid; grid-template-columns: 1.2fr 1fr; gap: clamp(32px, 6vw, 80px); align-items: start;">
         <div style="position: relative;">
           <div style="font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--magenta); margin-bottom: 14px;">About Me</div>
           <h2 style="font-family: var(--font-display); font-weight: 800; font-size: var(--fs-h1); line-height: 0.98; letter-spacing: -0.03em; color: var(--ink-1); margin: 0 0 24px;">I&rsquo;m Manasi Lodha.</h2>
@@ -588,7 +588,7 @@
 
           <div style="display: flex; flex-wrap: wrap; gap: 24px; font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3);">
             <span style="display: inline-flex; align-items: center; gap: 8px;"><i data-lucide="map-pin" style="width: 15px; height: 15px;"></i> London, UK</span>
-            <a href="mailto:manasiylodha@gmail.com" style="display: inline-flex; align-items: center; gap: 8px; color: var(--ink-3); text-decoration: none;" style-hover="color: var(--cyan);"><i data-lucide="mail" style="width: 15px; height: 15px;"></i> manasiylodha@gmail.com</a>
+            <a href="mailto:manasiylodha@gmail.com" style="display: inline-flex; align-items: center; gap: 8px; color: var(--cyan); text-decoration: none; border-bottom: 1px solid rgba(25,227,255,0.35); padding-bottom: 1px;" style-hover="border-bottom-color: var(--cyan);"><i data-lucide="mail" style="width: 15px; height: 15px;"></i> manasiylodha@gmail.com</a>
           </div>
         </div>
       </div>
