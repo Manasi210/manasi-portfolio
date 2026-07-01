@@ -1055,5 +1055,241 @@ class Component extends DCLogic {
   }
 }
 </script>
+
+<!-- ===================== FAQ CHAT WIDGET ===================== -->
+<style>
+.vc-bot-bubble {
+  position: fixed; bottom: 28px; right: 28px; z-index: 9000;
+  width: 58px; height: 58px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--magenta) 0%, var(--violet) 100%);
+  box-shadow: 0 0 0 0 rgba(255,61,203,0.5);
+  border: none; cursor: pointer; padding: 0; overflow: hidden;
+  animation: vc-bot-pulse 2.8s ease-in-out infinite;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.vc-bot-bubble:hover { transform: scale(1.08); box-shadow: 0 0 32px rgba(255,61,203,0.55); }
+.vc-bot-bubble img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 0%; transform: scale(1.55) translateY(8%); pointer-events: none; }
+@keyframes vc-bot-pulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(255,61,203,0.45); }
+  50%      { box-shadow: 0 0 0 10px rgba(255,61,203,0); }
+}
+
+.vc-bot-panel {
+  position: fixed; bottom: 100px; right: 28px; z-index: 9001;
+  width: clamp(300px, 88vw, 380px);
+  background: var(--glass-fill); backdrop-filter: var(--blur-glass); -webkit-backdrop-filter: var(--blur-glass);
+  border: 1px solid var(--line); border-radius: 20px;
+  display: flex; flex-direction: column; overflow: hidden;
+  transform: translateY(20px) scale(0.96); opacity: 0;
+  pointer-events: none;
+  transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), opacity 0.2s ease;
+  max-height: 80vh;
+}
+.vc-bot-panel.open {
+  transform: translateY(0) scale(1); opacity: 1; pointer-events: all;
+}
+
+.vc-bot-header {
+  display: flex; align-items: center; gap: 12px;
+  padding: 16px 18px; border-bottom: 1px solid var(--line);
+  background: rgba(7,6,14,0.5);
+}
+.vc-bot-avatar {
+  width: 38px; height: 38px; border-radius: 50%; overflow: hidden; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--magenta), var(--violet));
+}
+.vc-bot-avatar img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 0%; transform: scale(1.6) translateY(8%); }
+.vc-bot-header-text { flex: 1; }
+.vc-bot-header-name { font-family: var(--font-display); font-weight: 800; font-size: 14px; color: var(--ink-0); letter-spacing: -0.01em; }
+.vc-bot-header-sub  { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--cyan); margin-top: 2px; }
+.vc-bot-close {
+  background: none; border: none; cursor: pointer; padding: 6px;
+  color: var(--ink-3); border-radius: 8px; line-height: 1; font-size: 18px;
+  transition: color 0.15s;
+}
+.vc-bot-close:hover { color: var(--ink-0); }
+
+.vc-bot-body { overflow-y: auto; padding: 18px; flex: 1; }
+.vc-bot-body::-webkit-scrollbar { width: 4px; }
+.vc-bot-body::-webkit-scrollbar-thumb { background: var(--line-2); border-radius: 4px; }
+
+.vc-bot-welcome {
+  background: rgba(25,227,255,0.07); border: 1px solid rgba(25,227,255,0.18);
+  border-radius: 14px 14px 14px 4px; padding: 13px 15px;
+  font-size: 13.5px; line-height: 1.6; color: var(--ink-1);
+  margin-bottom: 18px;
+}
+.vc-bot-welcome strong { color: var(--cyan); }
+
+.vc-bot-qlabel {
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--ink-3); margin-bottom: 10px;
+}
+.vc-bot-qlist { display: flex; flex-direction: column; gap: 8px; }
+.vc-bot-q {
+  background: var(--bg-1); border: 1px solid var(--line-2);
+  border-radius: var(--r-pill); padding: 10px 16px;
+  font-size: 13px; color: var(--ink-1); cursor: pointer; text-align: left;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+  display: flex; align-items: center; gap: 8px;
+}
+.vc-bot-q:hover { border-color: var(--cyan); color: var(--cyan); background: rgba(25,227,255,0.06); }
+.vc-bot-q-arrow { font-size: 11px; opacity: 0.5; flex-shrink: 0; }
+
+.vc-bot-answer { display: none; }
+.vc-bot-answer.visible { display: block; }
+.vc-bot-answer-bubble {
+  background: rgba(25,227,255,0.07); border: 1px solid rgba(25,227,255,0.18);
+  border-radius: 14px 14px 14px 4px; padding: 14px 16px;
+  font-size: 13.5px; line-height: 1.7; color: var(--ink-1);
+  margin-bottom: 14px;
+}
+.vc-bot-answer-bubble a { color: var(--cyan); text-decoration: none; }
+.vc-bot-answer-bubble a:hover { text-decoration: underline; }
+.vc-bot-answer-bubble ul { margin: 8px 0 0; padding-left: 18px; }
+.vc-bot-answer-bubble li { margin-bottom: 4px; }
+.vc-bot-answer-bubble strong { color: var(--ink-0); }
+
+.vc-bot-back {
+  background: none; border: 1px solid var(--line-2); border-radius: var(--r-pill);
+  padding: 9px 16px; font-size: 12px; color: var(--ink-2); cursor: pointer;
+  display: inline-flex; align-items: center; gap: 6px; margin-bottom: 10px;
+  transition: border-color 0.15s, color 0.15s;
+}
+.vc-bot-back:hover { border-color: var(--ink-1); color: var(--ink-0); }
+
+.vc-bot-more {
+  display: block; margin-top: 6px;
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--magenta); text-decoration: none;
+  text-align: center; padding: 10px;
+  border: 1px solid rgba(255,61,203,0.25); border-radius: var(--r-pill);
+  transition: background 0.15s, border-color 0.15s;
+}
+.vc-bot-more:hover { background: rgba(255,61,203,0.08); border-color: var(--magenta); }
+</style>
+
+<div id="vc-bot-root">
+  <button class="vc-bot-bubble" id="vc-bot-toggle" aria-label="Chat with Manasi's assistant">
+    <img src="assets/manasi-chibi-cutout.png" alt="">
+  </button>
+
+  <div class="vc-bot-panel" id="vc-bot-panel" role="dialog" aria-label="Portfolio assistant">
+    <div class="vc-bot-header">
+      <div class="vc-bot-avatar"><img src="assets/manasi-chibi-cutout.png" alt=""></div>
+      <div class="vc-bot-header-text">
+        <div class="vc-bot-header-name">Manasi's Assistant</div>
+        <div class="vc-bot-header-sub">● Online — ask me anything</div>
+      </div>
+      <button class="vc-bot-close" id="vc-bot-close" aria-label="Close">✕</button>
+    </div>
+
+    <div class="vc-bot-body">
+      <!-- Welcome + question list -->
+      <div id="vc-bot-home">
+        <div class="vc-bot-welcome">
+          Hey there! 👋 I'm Manasi's <strong>virtual assistant</strong>. Pick a question below and I'll tell you all about her — or tap <em>"Something else?"</em> to email her directly.
+        </div>
+        <div class="vc-bot-qlabel">What would you like to know?</div>
+        <div class="vc-bot-qlist" id="vc-bot-qlist"></div>
+      </div>
+
+      <!-- Answer view -->
+      <div id="vc-bot-answer-view" class="vc-bot-answer">
+        <button class="vc-bot-back" id="vc-bot-back">← Back to questions</button>
+        <div class="vc-bot-answer-bubble" id="vc-bot-answer-text"></div>
+        <a class="vc-bot-more" href="mailto:manasiylodha@gmail.com?subject=Question from portfolio visitor" target="_blank">
+          Something else? Email Manasi →
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  var QA = [
+    {
+      q: "Who is Manasi?",
+      a: "I'm Manasi Lodha — a <strong>gameplay and XR developer</strong> based in London. I build immersive experiences in Unreal Engine and Unity: AI-driven NPCs, full-body VR embodiment, haptics, spatial audio, and detailed real-time environments.<br><br>I currently teach Unreal Engine and game development as a <strong>Lecturer at the University Campus of Esports</strong> in London. Before that I was a VR Developer at <strong>ISRO</strong> and completed my <strong>MSc in Virtual Reality</strong> at Swansea University.<br><br>My goal: use immersive tech to tell stories and create experiences that actually mean something."
+    },
+    {
+      q: "What projects have you built?",
+      a: "9+ immersive projects so far:<ul><li><strong>Empathy Machine for Hard to Hear</strong> — VR awareness experience (Unity)</li><li><strong>Vault Raiders: Save Verdantia</strong> — action VR adventure (Unity)</li><li><strong>Harry Potter Magical Mini-Golf</strong> — story-driven VR (Unity)</li><li><strong>Gambling Room</strong> — AI NPC cinematic VR scene (Unity)</li><li><strong>Climate Change Awareness</strong> — educational VR (Unity)</li><li><strong>Festo Mixed Reality Experience</strong> — industrial MR training app (Unity, +50% training efficiency)</li><li><strong>Modern Office Interiors</strong> — high-fidelity 3D environment (Unreal)</li><li><strong>Unreal Animation</strong> — cinematic character scene (Unreal)</li><li><strong>Cafe Design</strong> — interior design study (Unity)</li></ul>Scroll up to the Projects section for full details!"
+    },
+    {
+      q: "What tech & engines do you use?",
+      a: "Core engines:<ul><li><strong>Unity</strong> (95%) and <strong>Unreal Engine</strong> (88%)</li><li><strong>C# / C++</strong>, Blueprints</li><li><strong>XR Interaction Toolkit</strong>, Meta XR SDK, AR Foundation</li><li><strong>VR / Full-Body IK</strong> (93%), Haptics, Spatial Audio</li><li>AI NPC scripting with <strong>Yarn Dialogue</strong></li><li>Mixed Reality, Passthrough, Gesture Recognition</li><li>Environment Art, Real-Time Rendering</li></ul>"
+    },
+    {
+      q: "Where have you worked?",
+      a: "<strong>2024 – Present · Lecturer, Unreal Engine & Game Dev</strong><br>University Campus of Esports, London<br>Delivering UE5 curriculum, Blueprint scripting, real-time environments and interactive systems.<br><br><strong>Jul – Dec 2023 · VR Developer</strong><br>Indian Space Research Organisation (ISRO)<br>Built data-driven, high-fidelity VR simulations with 10+ scientists, deployed on portable VR headsets."
+    },
+    {
+      q: "What's your education?",
+      a: "<strong>2024 – 2025 · MSc Virtual Reality</strong><br>Swansea University, UK · Subject Representative<br>Research focused on real-time XR systems and user interaction design.<br><br><strong>2020 – 2024 · B.E. Artificial Intelligence & Data Science</strong><br>University of Pune, India<br>Built an AI/ML prediction model for urban planning — <strong>copyright registered</strong> with the Government of India (L-148561/2024)."
+    },
+    {
+      q: "Awards & achievements?",
+      a: "<ul><li>🏆 <strong>1st Prize, NASA Space Apps Challenge</strong> (State level) — XR-based space data visualisation</li><li>📜 <strong>Government of India copyright</strong> for original AI/ML urban simulation (No. L-148561/2024)</li><li>🎓 <strong>Subject Representative</strong>, MSc VR at Swansea University</li><li>🚀 <strong>ISRO internship certification</strong> (2023) + recommendation from the ISRO Chair</li></ul>"
+    },
+    {
+      q: "Tell me about the Empathy Machine",
+      a: "<strong>Empathy Machine for Hard to Hear (2024)</strong> is the project I'm most proud of.<br><br>It's a VR experience that drops you into a restaurant where you can't hear a word — built so people can <em>feel</em> the daily reality of hard-of-hearing folks.<br><br>Technical highlights:<ul><li>Full-body <strong>inverse kinematics</strong> for deep presence</li><li><strong>Meta Haptics</strong> simulating stress responses (racing heartbeat)</li><li>NPCs scripted in <strong>Yarn</strong> that react to your gestures</li></ul>Built in Unity. Proof that VR can be a tool for awareness, not just entertainment."
+    },
+    {
+      q: "What is XR / VR development?",
+      a: "<strong>XR (Extended Reality)</strong> is the umbrella term for VR, AR and MR.<br><br><strong>VR (Virtual Reality)</strong> fully immerses you in a digital world via a headset.<br><strong>AR (Augmented Reality)</strong> overlays digital content onto the real world.<br><strong>MR (Mixed Reality)</strong> anchors digital objects into real space so you can interact with both.<br><br>Manasi specialises in all three — from VR embodiment experiences to MR industrial training tools."
+    },
+    {
+      q: "Can you work on my project?",
+      a: "Manasi would love to hear about it! She's open to VR, AR, XR, game-dev and immersive experience projects.<br><br>Drop her a message below 👇 and she'll get back to you."
+    },
+    {
+      q: "How do I contact Manasi?",
+      a: "📧 <a href='mailto:manasiylodha@gmail.com'>manasiylodha@gmail.com</a><br>💼 <a href='https://www.linkedin.com/in/manasi-lodha/' target='_blank' rel='noopener'>linkedin.com/in/manasi-lodha</a><br>📍 London, UK<br><br>Or use the <em>Something else?</em> link below to send her an email right now."
+    }
+  ];
+
+  var panel   = document.getElementById('vc-bot-panel');
+  var toggle  = document.getElementById('vc-bot-toggle');
+  var close   = document.getElementById('vc-bot-close');
+  var home    = document.getElementById('vc-bot-home');
+  var ansView = document.getElementById('vc-bot-answer-view');
+  var ansTxt  = document.getElementById('vc-bot-answer-text');
+  var back    = document.getElementById('vc-bot-back');
+  var qlist   = document.getElementById('vc-bot-qlist');
+
+  // Build question chips
+  QA.forEach(function(item, i) {
+    var btn = document.createElement('button');
+    btn.className = 'vc-bot-q';
+    btn.innerHTML = '<span style="flex:1">' + item.q + '</span><span class="vc-bot-q-arrow">›</span>';
+    btn.addEventListener('click', function() { showAnswer(i); });
+    qlist.appendChild(btn);
+  });
+
+  function showAnswer(i) {
+    ansTxt.innerHTML = QA[i].a;
+    home.style.display = 'none';
+    ansView.classList.add('visible');
+    panel.querySelector('.vc-bot-body').scrollTop = 0;
+  }
+  function showHome() {
+    ansView.classList.remove('visible');
+    home.style.display = '';
+  }
+
+  toggle.addEventListener('click', function() {
+    var open = panel.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', open);
+  });
+  close.addEventListener('click', function() {
+    panel.classList.remove('open');
+    toggle.setAttribute('aria-expanded', false);
+  });
+  back.addEventListener('click', showHome);
+})();
+</script>
 </body>
 </html>
