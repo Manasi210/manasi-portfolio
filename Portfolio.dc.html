@@ -1399,121 +1399,203 @@ class Component extends DCLogic {
 
 <script>
 (function() {
-  /* ── 1. 3D NEON TUNNEL ── */
+  /* ── 1. 3D VIRTUAL ROOM ── */
   function initNebula() {
     if (typeof THREE === 'undefined') return;
     var canvas = document.getElementById('vc-nebula');
     var W = window.innerWidth, H = window.innerHeight;
-    var renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+    var renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: false, antialias: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
     renderer.setSize(W, H);
     renderer.setClearColor(0x07060E, 1);
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 0.85;
 
     var scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x07060E, 0.009);
+    scene.fog = new THREE.Fog(0x07060E, 25, 110);
 
-    var camera = new THREE.PerspectiveCamera(75, W / H, 0.1, 400);
-    camera.position.set(0, 0, 5);
+    var camera = new THREE.PerspectiveCamera(62, W / H, 0.1, 200);
+    camera.position.set(0, 2.2, 12);
 
-    var COLORS = [0x19E3FF, 0xFF3DCB, 0x7B5BFF];
-    var RING_COUNT = 90;
-    var RING_STEP  = 4;
+    /* ── Lighting ── */
+    scene.add(new THREE.AmbientLight(0x0a0820, 4));
+    var cyanPt = new THREE.PointLight(0x19E3FF, 6, 35);
+    cyanPt.position.set(-8, 1, 8);
+    scene.add(cyanPt);
+    var magPt = new THREE.PointLight(0xFF3DCB, 5, 35);
+    magPt.position.set(8, 1, -10);
+    scene.add(magPt);
+    var violPt = new THREE.PointLight(0x7B5BFF, 4, 50);
+    violPt.position.set(0, 10, -30);
+    scene.add(violPt);
 
-    /* Tunnel rings */
-    var rings = [];
-    for (var i = 0; i < RING_COUNT; i++) {
-      var radius = 7 + Math.sin(i * 0.4) * 1.8;
-      var geo  = new THREE.TorusGeometry(radius, 0.018, 6, 90);
-      var mat  = new THREE.MeshBasicMaterial({
-        color: COLORS[i % 3], transparent: true, opacity: 0.28
-      });
-      var mesh = new THREE.Mesh(geo, mat);
-      mesh.position.z = -i * RING_STEP;
-      mesh.rotation.x = Math.PI / 2;
-      scene.add(mesh);
-      rings.push(mesh);
+    /* ── ROOM SURFACES ── */
+    var darkWall = new THREE.MeshStandardMaterial({ color: 0x0c0b1e, roughness: 0.95 });
+    var darkFloor = new THREE.MeshStandardMaterial({ color: 0x060412, roughness: 0.1, metalness: 0.75 });
+
+    // Floor
+    var floor = new THREE.Mesh(new THREE.PlaneGeometry(22, 140), darkFloor);
+    floor.rotation.x = -Math.PI / 2;
+    floor.position.set(0, -1.2, -55);
+    scene.add(floor);
+
+    // Ceiling
+    var ceiling = new THREE.Mesh(new THREE.PlaneGeometry(22, 140), new THREE.MeshStandardMaterial({ color: 0x07050f, roughness: 0.98 }));
+    ceiling.rotation.x = Math.PI / 2;
+    ceiling.position.set(0, 14, -55);
+    scene.add(ceiling);
+
+    // Left wall
+    var leftW = new THREE.Mesh(new THREE.PlaneGeometry(140, 16), darkWall);
+    leftW.rotation.y = Math.PI / 2;
+    leftW.position.set(-11, 6.8, -55);
+    scene.add(leftW);
+
+    // Right wall
+    var rightW = new THREE.Mesh(new THREE.PlaneGeometry(140, 16), darkWall.clone());
+    rightW.rotation.y = -Math.PI / 2;
+    rightW.position.set(11, 6.8, -55);
+    scene.add(rightW);
+
+    // Back wall
+    var backW = new THREE.Mesh(new THREE.PlaneGeometry(22, 16), darkWall.clone());
+    backW.position.set(0, 6.8, -125);
+    scene.add(backW);
+
+    /* ── NEON FLOOR STRIPS (left=cyan, right=magenta) ── */
+    function makeStrip(color, x) {
+      var g = new THREE.BoxGeometry(0.06, 0.06, 140);
+      var m = new THREE.MeshBasicMaterial({ color: color });
+      var s = new THREE.Mesh(g, m);
+      s.position.set(x, -1.16, -55);
+      scene.add(s);
+      // soft glow halo
+      var glow = new THREE.Mesh(
+        new THREE.BoxGeometry(0.4, 0.25, 140),
+        new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: 0.07 })
+      );
+      glow.position.set(x * 0.97, -1.1, -55);
+      scene.add(glow);
     }
+    makeStrip(0x19E3FF, -10.97);
+    makeStrip(0xFF3DCB,  10.97);
 
-    /* Grid floor */
-    var grid = new THREE.GridHelper(300, 80, 0x19E3FF, 0x19E3FF);
-    grid.material.transparent = true;
-    grid.material.opacity = 0.055;
-    grid.position.y = -9;
-    scene.add(grid);
+    /* ── FLOOR GRID ── */
+    var floorGrid = new THREE.GridHelper(22, 22, 0x19E3FF, 0x19E3FF);
+    floorGrid.material.transparent = true;
+    floorGrid.material.opacity = 0.1;
+    floorGrid.position.set(0, -1.18, -55);
+    scene.add(floorGrid);
 
-    /* Floating star particles along tunnel */
-    var pCount = 300;
+    /* ── SECTION PANELS ON WALLS (framed glowing rectangles) ── */
+    var panelData = [
+      { z: -18, side: -1, col: 0x19E3FF },
+      { z: -38, side:  1, col: 0xFF3DCB },
+      { z: -58, side: -1, col: 0x7B5BFF },
+      { z: -78, side:  1, col: 0x19E3FF },
+      { z: -98, side: -1, col: 0xFF3DCB },
+    ];
+    panelData.forEach(function(p) {
+      var pGeo = new THREE.PlaneGeometry(5, 3.5);
+      // dim fill
+      var fill = new THREE.Mesh(pGeo, new THREE.MeshBasicMaterial({ color: p.col, transparent: true, opacity: 0.03, side: THREE.DoubleSide }));
+      fill.position.set(p.side * 10.5, 4.5, p.z);
+      fill.rotation.y = p.side === -1 ? Math.PI / 2 : -Math.PI / 2;
+      scene.add(fill);
+      // bright frame
+      var frame = new THREE.LineSegments(
+        new THREE.EdgesGeometry(new THREE.BoxGeometry(5, 3.5, 0.01)),
+        new THREE.LineBasicMaterial({ color: p.col, transparent: true, opacity: 0.7 })
+      );
+      frame.position.copy(fill.position);
+      frame.rotation.copy(fill.rotation);
+      scene.add(frame);
+    });
+
+    /* ── VR HEADSET (hero centrepiece) ── */
+    var hGroup = new THREE.Group();
+    // Main visor body
+    var visor = new THREE.Mesh(
+      new THREE.BoxGeometry(4, 2, 1.5),
+      new THREE.MeshBasicMaterial({ color: 0x19E3FF, wireframe: true, transparent: true, opacity: 0.55 })
+    );
+    hGroup.add(visor);
+    // Lens rings
+    [-1, 1].forEach(function(x) {
+      var ring = new THREE.Mesh(
+        new THREE.TorusGeometry(0.65, 0.04, 12, 48),
+        new THREE.MeshBasicMaterial({ color: 0xFF3DCB, transparent: true, opacity: 0.9 })
+      );
+      ring.position.set(x, 0, 0.78);
+      hGroup.add(ring);
+      // lens fill
+      var lens = new THREE.Mesh(
+        new THREE.CircleGeometry(0.63, 32),
+        new THREE.MeshBasicMaterial({ color: 0x7B5BFF, transparent: true, opacity: 0.18, side: THREE.DoubleSide })
+      );
+      lens.position.set(x, 0, 0.78);
+      hGroup.add(lens);
+    });
+    // Head strap arc
+    var strap = new THREE.Mesh(
+      new THREE.TorusGeometry(2.6, 0.07, 8, 48, Math.PI),
+      new THREE.MeshBasicMaterial({ color: 0x19E3FF, transparent: true, opacity: 0.4 })
+    );
+    strap.rotation.z = Math.PI / 2;
+    strap.position.set(0, 0, -0.4);
+    hGroup.add(strap);
+
+    hGroup.position.set(0, 2.5, -2);
+    hGroup.scale.setScalar(1.1);
+    scene.add(hGroup);
+
+    /* ── FLOATING PARTICLES ── */
+    var pCount = 250;
     var pPos = new Float32Array(pCount * 3);
     for (var j = 0; j < pCount; j++) {
-      pPos[j*3]   = (Math.random() - 0.5) * 24;
-      pPos[j*3+1] = (Math.random() - 0.5) * 18;
-      pPos[j*3+2] = -Math.random() * RING_COUNT * RING_STEP;
+      pPos[j*3]   = (Math.random() - 0.5) * 20;
+      pPos[j*3+1] = Math.random() * 12;
+      pPos[j*3+2] = -Math.random() * 115 - 2;
     }
-    var pGeo = new THREE.BufferGeometry();
-    pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
-    var pMat = new THREE.PointsMaterial({ size: 0.07, color: 0x19E3FF, transparent: true, opacity: 0.5 });
-    scene.add(new THREE.Points(pGeo, pMat));
+    var pBuf = new THREE.BufferGeometry();
+    pBuf.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+    scene.add(new THREE.Points(pBuf, new THREE.PointsMaterial({ size: 0.06, color: 0x19E3FF, transparent: true, opacity: 0.45 })));
 
-    /* Wireframe 3D objects at section waypoints */
-    var sectionZ = [-50, -110, -170, -230, -295];
-    var shapeDefs = [
-      function() { return new THREE.IcosahedronGeometry(2.0, 0); },
-      function() { return new THREE.OctahedronGeometry(2.2, 0); },
-      function() { return new THREE.TorusGeometry(2, 0.6, 8, 20); },
-      function() { return new THREE.TetrahedronGeometry(2.2, 0); },
-      function() { return new THREE.BoxGeometry(2.5, 2.5, 2.5); }
-    ];
-    var shapes = [];
-    sectionZ.forEach(function(z, i) {
-      var geo  = shapeDefs[i]();
-      var mat  = new THREE.MeshBasicMaterial({ color: COLORS[i % 3], wireframe: true, transparent: true, opacity: 0.55 });
-      var mesh = new THREE.Mesh(geo, mat);
-      mesh.position.set(i % 2 === 0 ? 7 : -7, 1.5, z);
-      scene.add(mesh);
-      shapes.push(mesh);
-    });
-
-    /* Scroll → camera Z */
-    var targetCamZ = 5;
-    var maxTravel  = RING_COUNT * RING_STEP * 0.88;
+    /* ── SCROLL → CAMERA ── */
+    var targetCamZ = 12, maxTravel = 105;
     window.addEventListener('scroll', function() {
       var pct = window.scrollY / Math.max(1, document.body.scrollHeight - window.innerHeight);
-      targetCamZ = 5 - pct * maxTravel;
+      targetCamZ = 12 - pct * maxTravel;
     }, { passive: true });
 
-    /* Mouse tilt */
+    /* ── MOUSE LOOK ── */
     var mxT = 0, myT = 0;
     document.addEventListener('mousemove', function(e) {
-      mxT = (e.clientX / window.innerWidth  - 0.5);
-      myT = (e.clientY / window.innerHeight - 0.5);
+      mxT = (e.clientX / W - 0.5);
+      myT = (e.clientY / H - 0.5);
     });
 
-    var camZ = 5, camRX = 0, camRY = 0, tick = 0;
+    var camZ = 12, camRY = 0, camRX = 0, tick = 0;
     function animate() {
       requestAnimationFrame(animate);
-      tick += 0.006;
+      tick += 0.007;
 
-      /* Smooth fly-through */
       camZ += (targetCamZ - camZ) * 0.055;
       camera.position.z = camZ;
 
-      /* Mouse tilt */
-      camRY += (mxT * 0.18 - camRY) * 0.04;
-      camRX += (-myT * 0.1 - camRX) * 0.04;
+      camRY += (mxT * 0.22 - camRY) * 0.045;
+      camRX += (-myT * 0.1 - camRX) * 0.045;
       camera.rotation.y = camRY;
       camera.rotation.x = camRX;
 
-      /* Spin rings */
-      rings.forEach(function(r, i) {
-        r.rotation.y += 0.004 * (i % 2 === 0 ? 1 : -1);
-      });
+      // Pulse neon lights
+      cyanPt.intensity = 5 + Math.sin(tick * 1.2) * 1.5;
+      magPt.intensity  = 4 + Math.sin(tick * 0.9 + 1) * 1.5;
 
-      /* Float & spin 3D shapes */
-      shapes.forEach(function(s, i) {
-        s.rotation.x += 0.012;
-        s.rotation.y += 0.018;
-        s.position.y = 1.5 + Math.sin(tick + i * 1.4) * 1.8;
-      });
+      // Float & rotate VR headset
+      hGroup.position.y = 2.5 + Math.sin(tick * 0.6) * 0.35;
+      hGroup.rotation.y = Math.sin(tick * 0.4) * 0.35;
+      hGroup.rotation.x = Math.sin(tick * 0.25) * 0.1;
 
       renderer.render(scene, camera);
     }
