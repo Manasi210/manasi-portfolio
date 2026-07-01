@@ -19,7 +19,15 @@
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
   <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
   <style>
-    html, body { margin: 0; background: var(--bg-0); color: var(--ink-2); }
+    html, body { margin: 0; background: #07060E; color: var(--ink-2); }
+    /* Glass sections so 3D tunnel shows through */
+    #work, #about, #experience, #skills, #contact {
+      background: rgba(7,6,14,0.72);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-top: 1px solid rgba(25,227,255,0.07);
+      border-radius: 0;
+    }
     @keyframes vc-rise { from { transform: translateY(40px); } to { transform: none; } }
     @keyframes vc-pop { from { transform: scale(0.92); } to { transform: none; } }
     @keyframes vc-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
@@ -63,10 +71,10 @@
 <div id="vc-cursor"></div>
 <div id="vc-cursor-ring"></div>
 
-<div style="min-height: 100vh; background: var(--grad-void); font-family: var(--font-sans); overflow-x: hidden; position: relative;">
+<div style="min-height: 100vh; background: transparent; font-family: var(--font-sans); overflow-x: hidden; position: relative;">
 
-  <!-- holographic grid backdrop -->
-  <div style="position: fixed; inset: 0; pointer-events: none; z-index: 0; background-image: linear-gradient(var(--grid-line) 1px, transparent 1px), linear-gradient(90deg, var(--grid-line) 1px, transparent 1px); background-size: 44px 44px; mask-image: radial-gradient(120% 80% at 50% 0%, #000 30%, transparent 80%);"></div>
+  <!-- subtle grid overlay on top of 3D canvas -->
+  <div style="position: fixed; inset: 0; pointer-events: none; z-index: 0; background-image: linear-gradient(var(--grid-line) 1px, transparent 1px), linear-gradient(90deg, var(--grid-line) 1px, transparent 1px); background-size: 44px 44px; opacity: 0.35; mask-image: radial-gradient(120% 80% at 50% 0%, #000 30%, transparent 80%);"></div>
 
   <!-- ===================== NAV ===================== -->
   <header style="position: sticky; top: 0; z-index: 50; backdrop-filter: var(--blur-glass); -webkit-backdrop-filter: var(--blur-glass); background: var(--glass-fill); border-bottom: 1px solid var(--line);">
@@ -1292,9 +1300,9 @@ class Component extends DCLogic {
 })();
 </script>
 
-<!-- ===================== IMMERSIVE LAYERS ===================== -->
+<!-- ===================== 3D TUNNEL ===================== -->
 <style>
-/* --- Nebula canvas --- */
+/* --- 3D canvas full background --- */
 #vc-nebula {
   position: fixed; inset: 0; z-index: -1;
   pointer-events: none; width: 100%; height: 100%;
@@ -1391,82 +1399,131 @@ class Component extends DCLogic {
 
 <script>
 (function() {
-  /* ── 1. NEBULA PARTICLE BACKGROUND ── */
+  /* ── 1. 3D NEON TUNNEL ── */
   function initNebula() {
     if (typeof THREE === 'undefined') return;
     var canvas = document.getElementById('vc-nebula');
-    var renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: false });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setClearColor(0x000000, 0);
+    var W = window.innerWidth, H = window.innerHeight;
+    var renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+    renderer.setSize(W, H);
+    renderer.setClearColor(0x07060E, 1);
 
     var scene = new THREE.Scene();
-    var camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 200);
-    camera.position.z = 55;
+    scene.fog = new THREE.FogExp2(0x07060E, 0.009);
 
-    // Build particle geometry
-    var COUNT = 420;
-    var positions = new Float32Array(COUNT * 3);
-    var colors    = new Float32Array(COUNT * 3);
-    var sizes     = new Float32Array(COUNT);
-    var cyan   = new THREE.Color('#19E3FF');
-    var magenta = new THREE.Color('#FF3DCB');
-    var violet  = new THREE.Color('#7B5BFF');
-    var palette = [cyan, magenta, violet];
+    var camera = new THREE.PerspectiveCamera(75, W / H, 0.1, 400);
+    camera.position.set(0, 0, 5);
 
-    for (var i = 0; i < COUNT; i++) {
-      positions[i*3]   = (Math.random() - 0.5) * 100;
-      positions[i*3+1] = (Math.random() - 0.5) * 80;
-      positions[i*3+2] = (Math.random() - 0.5) * 60;
-      var c = palette[Math.floor(Math.random() * palette.length)];
-      colors[i*3]   = c.r;
-      colors[i*3+1] = c.g;
-      colors[i*3+2] = c.b;
-      sizes[i] = Math.random() * 2.2 + 0.4;
+    var COLORS = [0x19E3FF, 0xFF3DCB, 0x7B5BFF];
+    var RING_COUNT = 90;
+    var RING_STEP  = 4;
+
+    /* Tunnel rings */
+    var rings = [];
+    for (var i = 0; i < RING_COUNT; i++) {
+      var radius = 7 + Math.sin(i * 0.4) * 1.8;
+      var geo  = new THREE.TorusGeometry(radius, 0.018, 6, 90);
+      var mat  = new THREE.MeshBasicMaterial({
+        color: COLORS[i % 3], transparent: true, opacity: 0.28
+      });
+      var mesh = new THREE.Mesh(geo, mat);
+      mesh.position.z = -i * RING_STEP;
+      mesh.rotation.x = Math.PI / 2;
+      scene.add(mesh);
+      rings.push(mesh);
     }
 
-    var geo = new THREE.BufferGeometry();
-    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    geo.setAttribute('color',    new THREE.BufferAttribute(colors, 3));
-    geo.setAttribute('size',     new THREE.BufferAttribute(sizes, 1));
+    /* Grid floor */
+    var grid = new THREE.GridHelper(300, 80, 0x19E3FF, 0x19E3FF);
+    grid.material.transparent = true;
+    grid.material.opacity = 0.055;
+    grid.position.y = -9;
+    scene.add(grid);
 
-    var mat = new THREE.PointsMaterial({
-      size: 0.55, vertexColors: true, transparent: true, opacity: 0.55,
-      sizeAttenuation: true, depthWrite: false
+    /* Floating star particles along tunnel */
+    var pCount = 300;
+    var pPos = new Float32Array(pCount * 3);
+    for (var j = 0; j < pCount; j++) {
+      pPos[j*3]   = (Math.random() - 0.5) * 24;
+      pPos[j*3+1] = (Math.random() - 0.5) * 18;
+      pPos[j*3+2] = -Math.random() * RING_COUNT * RING_STEP;
+    }
+    var pGeo = new THREE.BufferGeometry();
+    pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+    var pMat = new THREE.PointsMaterial({ size: 0.07, color: 0x19E3FF, transparent: true, opacity: 0.5 });
+    scene.add(new THREE.Points(pGeo, pMat));
+
+    /* Wireframe 3D objects at section waypoints */
+    var sectionZ = [-50, -110, -170, -230, -295];
+    var shapeDefs = [
+      function() { return new THREE.IcosahedronGeometry(2.0, 0); },
+      function() { return new THREE.OctahedronGeometry(2.2, 0); },
+      function() { return new THREE.TorusGeometry(2, 0.6, 8, 20); },
+      function() { return new THREE.TetrahedronGeometry(2.2, 0); },
+      function() { return new THREE.BoxGeometry(2.5, 2.5, 2.5); }
+    ];
+    var shapes = [];
+    sectionZ.forEach(function(z, i) {
+      var geo  = shapeDefs[i]();
+      var mat  = new THREE.MeshBasicMaterial({ color: COLORS[i % 3], wireframe: true, transparent: true, opacity: 0.55 });
+      var mesh = new THREE.Mesh(geo, mat);
+      mesh.position.set(i % 2 === 0 ? 7 : -7, 1.5, z);
+      scene.add(mesh);
+      shapes.push(mesh);
     });
 
-    var points = new THREE.Points(geo, mat);
-    scene.add(points);
+    /* Scroll → camera Z */
+    var targetCamZ = 5;
+    var maxTravel  = RING_COUNT * RING_STEP * 0.88;
+    window.addEventListener('scroll', function() {
+      var pct = window.scrollY / Math.max(1, document.body.scrollHeight - window.innerHeight);
+      targetCamZ = 5 - pct * maxTravel;
+    }, { passive: true });
 
-    // Mouse parallax target
-    var mx = 0, my = 0;
+    /* Mouse tilt */
+    var mxT = 0, myT = 0;
     document.addEventListener('mousemove', function(e) {
-      mx = (e.clientX / window.innerWidth  - 0.5) * 2;
-      my = (e.clientY / window.innerHeight - 0.5) * 2;
+      mxT = (e.clientX / window.innerWidth  - 0.5);
+      myT = (e.clientY / window.innerHeight - 0.5);
     });
 
-    var targetX = 0, targetY = 0, clock = 0;
+    var camZ = 5, camRX = 0, camRY = 0, tick = 0;
     function animate() {
       requestAnimationFrame(animate);
-      clock += 0.0035;
-      // idle drift
-      points.rotation.y += 0.0008;
-      points.rotation.x += 0.0003;
-      // mouse parallax
-      targetX += (mx * 3 - targetX) * 0.04;
-      targetY += (-my * 2 - targetY) * 0.04;
-      points.position.x = targetX;
-      points.position.y = targetY;
-      // pulse opacity
-      mat.opacity = 0.42 + Math.sin(clock) * 0.08;
+      tick += 0.006;
+
+      /* Smooth fly-through */
+      camZ += (targetCamZ - camZ) * 0.055;
+      camera.position.z = camZ;
+
+      /* Mouse tilt */
+      camRY += (mxT * 0.18 - camRY) * 0.04;
+      camRX += (-myT * 0.1 - camRX) * 0.04;
+      camera.rotation.y = camRY;
+      camera.rotation.x = camRX;
+
+      /* Spin rings */
+      rings.forEach(function(r, i) {
+        r.rotation.y += 0.004 * (i % 2 === 0 ? 1 : -1);
+      });
+
+      /* Float & spin 3D shapes */
+      shapes.forEach(function(s, i) {
+        s.rotation.x += 0.012;
+        s.rotation.y += 0.018;
+        s.position.y = 1.5 + Math.sin(tick + i * 1.4) * 1.8;
+      });
+
       renderer.render(scene, camera);
     }
     animate();
 
     window.addEventListener('resize', function() {
-      camera.aspect = window.innerWidth / window.innerHeight;
+      W = window.innerWidth; H = window.innerHeight;
+      camera.aspect = W / H;
       camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setSize(W, H);
     });
   }
 
