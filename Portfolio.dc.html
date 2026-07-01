@@ -42,9 +42,10 @@
     @media (max-width: 860px) {
       .vc-hero-grid { grid-template-columns: 1fr !important; }
       .vc-hero-photo { display: flex !important; justify-content: center; margin-top: 40px; }
-      #vc-holo-card { width: min(340px, 88vw) !important; }
+      #vc-holo-card { width: min(420px, 88vw) !important; }
       .vc-about-grid { grid-template-columns: 1fr !important; }
-      .vc-exp-grid { grid-template-columns: 1fr !important; }
+      .vc-exp-grid { grid-template-columns: 1fr 1fr !important; }
+      .vc-exp-grid > div:first-child { display: none; }
       .vc-skills-grid { grid-template-columns: 1fr !important; }
       nav .vc-nav-links { display: none !important; }
     }
@@ -71,7 +72,7 @@
   <header style="position: sticky; top: 0; z-index: 50; backdrop-filter: var(--blur-glass); -webkit-backdrop-filter: var(--blur-glass); background: var(--glass-fill); border-bottom: 1px solid var(--line);">
     <nav style="max-width: var(--container); margin: 0 auto; padding: 16px var(--gutter); display: flex; align-items: center; justify-content: space-between; gap: 24px;">
       <a href="#top" onClick="{{ goTop }}" style="display: flex; align-items: center; gap: 12px; text-decoration: none;">
-        <img src="assets/logo-circle.png" alt="" style="width: 38px; height: 38px; border-radius: 50%; object-fit: cover; box-shadow: 0 0 12px rgba(25,227,255,0.4);">
+        <img src="assets/logo-original.png" alt="" style="height: 32px; width: auto; filter: drop-shadow(0 0 8px rgba(25,227,255,0.35));">
         <span style="font-family: var(--font-display); font-weight: 800; font-size: 15px; letter-spacing: -0.02em; color: var(--ink-1); line-height: 1.05;">MANASI&rsquo;S<br><span style="color: var(--cyan);">VIRTUAL CREATIONS</span></span>
       </a>
       <div class="vc-nav-links" style="display: flex; align-items: center; gap: 4px;">
@@ -235,7 +236,7 @@
           <div style="position: absolute; inset: -24px; border-radius: 32px; background: radial-gradient(ellipse at 50% 50%, rgba(25,227,255,0.14) 0%, rgba(123,91,255,0.10) 50%, transparent 75%); filter: blur(24px); pointer-events: none; animation: vc-float 6s ease-in-out infinite;"></div>
 
           <!-- THE CARD -->
-          <div id="vc-holo-card" style="position: relative; width: 340px; border-radius: 22px; transform-style: preserve-3d; will-change: transform; cursor: none;">
+          <div id="vc-holo-card" style="position: relative; width: 420px; border-radius: 22px; transform-style: preserve-3d; will-change: transform; cursor: none;">
 
             <!-- subtle static border glow -->
             <div style="position: absolute; inset: -1px; border-radius: 23px; background: linear-gradient(135deg, rgba(25,227,255,0.5), rgba(123,91,255,0.4), rgba(255,61,203,0.4)); opacity: 0.6; z-index: 0;"></div>
@@ -472,54 +473,57 @@
       <div style="font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--cyan); margin-bottom: 14px; display: flex; align-items: center; gap: 10px;"><span style="display: inline-block; width: 28px; height: 2px; background: var(--cyan); border-radius: 2px;"></span>Experience &amp; Education</div>
       <h2 style="font-family: var(--font-display); font-weight: 800; font-size: var(--fs-h1); line-height: 0.98; letter-spacing: -0.03em; color: var(--ink-1); margin: 0 0 48px; max-width: 18ch;">The path <span style="color: var(--violet);">so far</span></h2>
 
-      <div class="vc-exp-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: clamp(28px, 5vw, 64px);">
+      <!-- 3-column label + unified timeline -->
+      <div style="display: grid; grid-template-columns: 140px 1fr 1fr; gap: 0 clamp(24px,4vw,56px); align-items: start;" class="vc-exp-grid">
 
-        <!-- work -->
-        <div>
-          <div style="font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--magenta); margin-bottom: 22px;">Work</div>
-          <div style="display: flex; flex-direction: column; gap: 6px;">
-            <sc-for list="{{ jobs }}" as="j" hint-placeholder-count="2">
-              <div style="position: relative; padding: 0 0 24px 26px; border-left: 1px solid var(--line-2);">
-                <span style="position: absolute; left: -5px; top: 5px; width: 9px; height: 9px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 10px var(--cyan);"></span>
-                <div style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 8px;">{{ j.period }}</div>
-                <h3 style="font-family: var(--font-display); font-weight: 700; font-size: 19px; line-height: 1.15; letter-spacing: -0.02em; color: var(--ink-1); margin: 0 0 4px;">{{ j.role }}</h3>
-                <div style="font-size: 14px; color: var(--cyan); margin-bottom: 12px;">{{ j.org }}</div>
-                <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px;">
-                  <sc-for list="{{ j.points }}" as="pt" hint-placeholder-count="3">
-                    <li style="position: relative; padding-left: 16px; font-size: 15px; line-height: 1.65; color: var(--ink-2); text-align: justify;">
-                      <span style="position: absolute; left: 0; top: 8px; width: 5px; height: 5px; border-radius: 50%; background: var(--magenta);"></span>{{ pt }}
-                    </li>
-                  </sc-for>
-                </ul>
-              </div>
-            </sc-for>
-          </div>
+        <!-- column labels -->
+        <div></div>
+        <div style="font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--magenta); margin-bottom: 28px; padding-left: 26px;">Work</div>
+        <div style="font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--violet); margin-bottom: 28px; padding-left: 26px;">Education</div>
+
+        <!-- work entries -->
+        <div></div>
+        <div style="display: flex; flex-direction: column; gap: 0;">
+          <sc-for list="{{ jobs }}" as="j" hint-placeholder-count="2">
+            <div style="position: relative; padding: 0 0 32px 26px; border-left: 1px solid var(--line-2);">
+              <span style="position: absolute; left: -5px; top: 5px; width: 9px; height: 9px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 10px var(--cyan);"></span>
+              <div style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 8px;">{{ j.period }}</div>
+              <h3 style="font-family: var(--font-display); font-weight: 700; font-size: 18px; line-height: 1.2; letter-spacing: -0.02em; color: var(--ink-1); margin: 0 0 4px;">{{ j.role }}</h3>
+              <div style="font-size: 14px; color: var(--cyan); margin-bottom: 12px;">{{ j.org }}</div>
+              <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px;">
+                <sc-for list="{{ j.points }}" as="pt" hint-placeholder-count="3">
+                  <li style="position: relative; padding-left: 16px; font-size: 14px; line-height: 1.65; color: var(--ink-2);">
+                    <span style="position: absolute; left: 0; top: 8px; width: 5px; height: 5px; border-radius: 50%; background: var(--magenta);"></span>{{ pt }}
+                  </li>
+                </sc-for>
+              </ul>
+            </div>
+          </sc-for>
         </div>
 
-        <!-- education -->
-        <div>
-          <div style="font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--violet); margin-bottom: 22px;">Education</div>
-          <div style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 40px;">
-            <sc-for list="{{ education }}" as="e" hint-placeholder-count="2">
-              <div style="position: relative; padding: 0 0 24px 26px; border-left: 1px solid var(--line-2);">
-                <span style="position: absolute; left: -5px; top: 5px; width: 9px; height: 9px; border-radius: 50%; background: var(--violet); box-shadow: 0 0 10px var(--violet);"></span>
-                <div style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 8px;">{{ e.period }}</div>
-                <h3 style="font-family: var(--font-display); font-weight: 700; font-size: 19px; line-height: 1.15; letter-spacing: -0.02em; color: var(--ink-1); margin: 0 0 4px;">{{ e.degree }}</h3>
-                <div style="font-size: 14px; color: var(--violet); margin-bottom: 10px;">{{ e.org }}</div>
-                <p style="font-size: 15px; line-height: 1.65; color: var(--ink-2); margin: 0; text-align: justify;">{{ e.note }}</p>
-              </div>
-            </sc-for>
-          </div>
+        <!-- education + achievements -->
+        <div style="display: flex; flex-direction: column; gap: 0;">
+          <sc-for list="{{ education }}" as="e" hint-placeholder-count="2">
+            <div style="position: relative; padding: 0 0 32px 26px; border-left: 1px solid var(--line-2);">
+              <span style="position: absolute; left: -5px; top: 5px; width: 9px; height: 9px; border-radius: 50%; background: var(--violet); box-shadow: 0 0 10px var(--violet);"></span>
+              <div style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 8px;">{{ e.period }}</div>
+              <h3 style="font-family: var(--font-display); font-weight: 700; font-size: 18px; line-height: 1.2; letter-spacing: -0.02em; color: var(--ink-1); margin: 0 0 4px;">{{ e.degree }}</h3>
+              <div style="font-size: 14px; color: var(--violet); margin-bottom: 10px;">{{ e.org }}</div>
+              <p style="font-size: 14px; line-height: 1.65; color: var(--ink-2); margin: 0;">{{ e.note }}</p>
+            </div>
+          </sc-for>
 
-          <!-- achievements -->
-          <div style="font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--lime); margin-bottom: 18px;">Achievements</div>
-          <div style="display: flex; flex-direction: column; gap: 12px;">
-            <sc-for list="{{ achievements }}" as="a" hint-placeholder-count="4">
-              <div style="display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px; border-radius: var(--r-md); background: var(--bg-1); border: 1px solid var(--line);">
-                <span style="flex: none; margin-top: 2px; width: 22px; height: 22px; border-radius: 50%; background: var(--bg-2); display: inline-flex; align-items: center; justify-content: center; color: var(--lime);"><i data-lucide="{{ a.icon }}" style="width: 14px; height: 14px;"></i></span>
-                <span style="font-size: 15px; line-height: 1.6; color: var(--ink-2);">{{ a.text }}</span>
-              </div>
-            </sc-for>
+          <!-- achievements folded into same column -->
+          <div style="padding-left: 26px; margin-top: 8px;">
+            <div style="font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--lime); margin-bottom: 16px;">Achievements</div>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+              <sc-for list="{{ achievements }}" as="a" hint-placeholder-count="4">
+                <div style="display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: var(--r-md); background: var(--bg-1); border: 1px solid var(--line);">
+                  <span style="flex: none; margin-top: 2px; width: 20px; height: 20px; border-radius: 50%; background: var(--bg-2); display: inline-flex; align-items: center; justify-content: center; color: var(--lime);"><i data-lucide="{{ a.icon }}" style="width: 13px; height: 13px;"></i></span>
+                  <span style="font-size: 14px; line-height: 1.6; color: var(--ink-2);">{{ a.text }}</span>
+                </div>
+              </sc-for>
+            </div>
           </div>
         </div>
       </div>
@@ -562,7 +566,7 @@
         <div style="position: relative;">
           <div style="font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--cyan); margin-bottom: 16px;">Let&rsquo;s work together</div>
           <h2 style="font-family: var(--font-display); font-weight: 900; font-size: var(--fs-h1); line-height: 0.96; letter-spacing: -0.03em; color: var(--ink-1); margin: 0 0 20px; max-width: 18ch;">Got an immersive idea? Let&rsquo;s build it.</h2>
-          <p style="font-size: var(--fs-lead); line-height: 1.6; color: var(--ink-2); max-width: 52ch; margin: 0 0 36px; text-align: justify;">I&rsquo;m open to VR, AR and XR projects, collaborations and full-time roles. Drop me a line and let&rsquo;s talk.</p>
+          <p style="font-size: var(--fs-lead); line-height: 1.6; color: var(--ink-2); max-width: 52ch; margin: 0 0 36px; text-align: justify;">Have a VR, AR or XR project in mind? I&rsquo;d love to hear about it. Drop me a line and let&rsquo;s talk.</p>
 
           <!-- contact form -->
           <form onsubmit="(function(e){e.preventDefault();var f=e.target;window.location.href='mailto:manasiylodha@gmail.com?subject=Hello from '+encodeURIComponent(f.cname.value)+'&body=Name: '+encodeURIComponent(f.cname.value)+'%0AEmail: '+encodeURIComponent(f.cemail.value)+'%0A%0A';})(event)" style="display: flex; flex-direction: column; gap: 14px; max-width: 520px; margin-bottom: 32px;">
