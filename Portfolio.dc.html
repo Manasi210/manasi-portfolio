@@ -1291,5 +1291,275 @@ class Component extends DCLogic {
   back.addEventListener('click', showHome);
 })();
 </script>
+
+<!-- ===================== IMMERSIVE LAYERS ===================== -->
+<style>
+/* --- Nebula canvas --- */
+#vc-nebula {
+  position: fixed; inset: 0; z-index: -1;
+  pointer-events: none; width: 100%; height: 100%;
+}
+
+/* --- Cursor trail ghost --- */
+#vc-cursor-trail {
+  position: fixed; top: 0; left: 0;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,61,203,0.45) 0%, transparent 70%);
+  pointer-events: none; transform: translate(-50%,-50%);
+  transition: left 0.14s ease, top 0.14s ease;
+  z-index: 9997; mix-blend-mode: screen;
+  animation: vc-hue-cycle 6s linear infinite;
+}
+@keyframes vc-hue-cycle {
+  0%   { filter: hue-rotate(0deg); }
+  100% { filter: hue-rotate(360deg); }
+}
+@media (hover: none) { #vc-cursor-trail { display: none; } }
+
+/* --- Section reveal transitions --- */
+.vc-section-hidden {
+  opacity: 0;
+  transform: perspective(1000px) translateZ(-60px) scale(0.97);
+  transition: opacity 0.75s cubic-bezier(0.22,1,0.36,1),
+              transform 0.75s cubic-bezier(0.22,1,0.36,1);
+}
+.vc-section-visible {
+  opacity: 1 !important;
+  transform: perspective(1000px) translateZ(0) scale(1) !important;
+}
+
+/* Scan-line flash on reveal */
+@keyframes vc-scanline {
+  0%   { background-position: 0% -100%; opacity: 0.7; }
+  100% { background-position: 0% 200%; opacity: 0; }
+}
+.vc-scanflash::after {
+  content: '';
+  position: absolute; inset: 0; pointer-events: none; z-index: 10;
+  background: linear-gradient(180deg, transparent 40%, rgba(25,227,255,0.12) 50%, transparent 60%);
+  background-size: 100% 200%;
+  animation: vc-scanline 0.7s ease-out forwards;
+}
+
+/* --- Clip-path text reveals --- */
+.vc-clip-hidden {
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 0.65s cubic-bezier(0.22,1,0.36,1);
+}
+.vc-clip-visible {
+  clip-path: inset(0 0% 0 0) !important;
+}
+.vc-fade-hidden {
+  opacity: 0; transform: translateY(18px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.vc-fade-visible {
+  opacity: 1 !important; transform: translateY(0) !important;
+}
+
+/* Scroll rail */
+#vc-rail {
+  position: fixed; right: 22px; top: 50%; transform: translateY(-50%);
+  height: 220px; display: flex; flex-direction: column; align-items: center;
+  gap: 0; z-index: 200; pointer-events: none;
+}
+#vc-rail-line {
+  width: 1px; flex: 1;
+  background: linear-gradient(180deg, transparent, rgba(25,227,255,0.25), transparent);
+}
+#vc-rail-dot {
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+  background: var(--cyan);
+  box-shadow: 0 0 10px 3px rgba(25,227,255,0.6);
+  position: absolute; left: 50%; transform: translateX(-50%);
+  transition: top 0.2s ease;
+}
+@media (max-width: 1199px) { #vc-rail { display: none; } }
+</style>
+
+<!-- Nebula canvas -->
+<canvas id="vc-nebula"></canvas>
+
+<!-- Cursor trail ghost -->
+<div id="vc-cursor-trail"></div>
+
+<!-- Scroll rail -->
+<div id="vc-rail">
+  <div id="vc-rail-line"></div>
+  <div id="vc-rail-dot"></div>
+</div>
+
+<script>
+(function() {
+  /* ── 1. NEBULA PARTICLE BACKGROUND ── */
+  function initNebula() {
+    if (typeof THREE === 'undefined') return;
+    var canvas = document.getElementById('vc-nebula');
+    var renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: false });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0x000000, 0);
+
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 200);
+    camera.position.z = 55;
+
+    // Build particle geometry
+    var COUNT = 420;
+    var positions = new Float32Array(COUNT * 3);
+    var colors    = new Float32Array(COUNT * 3);
+    var sizes     = new Float32Array(COUNT);
+    var cyan   = new THREE.Color('#19E3FF');
+    var magenta = new THREE.Color('#FF3DCB');
+    var violet  = new THREE.Color('#7B5BFF');
+    var palette = [cyan, magenta, violet];
+
+    for (var i = 0; i < COUNT; i++) {
+      positions[i*3]   = (Math.random() - 0.5) * 100;
+      positions[i*3+1] = (Math.random() - 0.5) * 80;
+      positions[i*3+2] = (Math.random() - 0.5) * 60;
+      var c = palette[Math.floor(Math.random() * palette.length)];
+      colors[i*3]   = c.r;
+      colors[i*3+1] = c.g;
+      colors[i*3+2] = c.b;
+      sizes[i] = Math.random() * 2.2 + 0.4;
+    }
+
+    var geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geo.setAttribute('color',    new THREE.BufferAttribute(colors, 3));
+    geo.setAttribute('size',     new THREE.BufferAttribute(sizes, 1));
+
+    var mat = new THREE.PointsMaterial({
+      size: 0.55, vertexColors: true, transparent: true, opacity: 0.55,
+      sizeAttenuation: true, depthWrite: false
+    });
+
+    var points = new THREE.Points(geo, mat);
+    scene.add(points);
+
+    // Mouse parallax target
+    var mx = 0, my = 0;
+    document.addEventListener('mousemove', function(e) {
+      mx = (e.clientX / window.innerWidth  - 0.5) * 2;
+      my = (e.clientY / window.innerHeight - 0.5) * 2;
+    });
+
+    var targetX = 0, targetY = 0, clock = 0;
+    function animate() {
+      requestAnimationFrame(animate);
+      clock += 0.0035;
+      // idle drift
+      points.rotation.y += 0.0008;
+      points.rotation.x += 0.0003;
+      // mouse parallax
+      targetX += (mx * 3 - targetX) * 0.04;
+      targetY += (-my * 2 - targetY) * 0.04;
+      points.position.x = targetX;
+      points.position.y = targetY;
+      // pulse opacity
+      mat.opacity = 0.42 + Math.sin(clock) * 0.08;
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    window.addEventListener('resize', function() {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  }
+
+  /* ── 2. CURSOR TRAIL ── */
+  function initTrail() {
+    var trail = document.getElementById('vc-cursor-trail');
+    if (!trail) return;
+    document.addEventListener('mousemove', function(e) {
+      trail.style.left = e.clientX + 'px';
+      trail.style.top  = e.clientY + 'px';
+    });
+  }
+
+  /* ── 3. SECTION REVEAL + SCANLINE ── */
+  function initReveal() {
+    var sections = document.querySelectorAll('#work, #about, #experience, #skills, #contact');
+    sections.forEach(function(s) {
+      s.classList.add('vc-section-hidden');
+      s.style.position = s.style.position || 'relative';
+    });
+
+    var obs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          var el = entry.target;
+          el.classList.add('vc-section-visible');
+          // scan flash
+          el.classList.remove('vc-scanflash');
+          void el.offsetWidth; // reflow
+          el.classList.add('vc-scanflash');
+          obs.unobserve(el);
+        }
+      });
+    }, { threshold: 0.08 });
+
+    sections.forEach(function(s) { obs.observe(s); });
+  }
+
+  /* ── 4. CLIP-PATH TEXT REVEALS ── */
+  function initTextReveal() {
+    // Select h2 headings and lead paragraphs inside sections
+    var headings = document.querySelectorAll('#work h2, #about h2, #experience h2, #skills h2, #contact h2');
+    var leads    = document.querySelectorAll('#work > div > p:first-of-type, #about p:first-of-type, #contact p:first-of-type');
+
+    headings.forEach(function(el) { el.classList.add('vc-clip-hidden'); });
+    leads.forEach(function(el, i) {
+      el.classList.add('vc-fade-hidden');
+      el.style.transitionDelay = '0.25s';
+    });
+
+    var obs2 = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('vc-clip-visible', 'vc-fade-visible');
+          obs2.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    headings.forEach(function(el) { obs2.observe(el); });
+    leads.forEach(function(el) { obs2.observe(el); });
+  }
+
+  /* ── 5. SCROLL RAIL DOT ── */
+  function initRail() {
+    var dot = document.getElementById('vc-rail-dot');
+    var rail = document.getElementById('vc-rail');
+    if (!dot || !rail) return;
+    function update() {
+      var scrolled = window.scrollY;
+      var total = document.body.scrollHeight - window.innerHeight;
+      var pct = total > 0 ? scrolled / total : 0;
+      var railH = rail.offsetHeight;
+      dot.style.top = (pct * railH) + 'px';
+    }
+    window.addEventListener('scroll', update, { passive: true });
+    update();
+  }
+
+  // Nebula + trail can start immediately; reveals wait for dc-runtime render
+  function bootImmediate() { initNebula(); initTrail(); initRail(); }
+  function bootDeferred()  { initReveal(); initTextReveal(); }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+      bootImmediate();
+      setTimeout(bootDeferred, 120);
+    });
+  } else {
+    bootImmediate();
+    setTimeout(bootDeferred, 120);
+  }
+})();
+</script>
 </body>
 </html>
