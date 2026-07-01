@@ -38,7 +38,7 @@
     #vc-cursor { position: fixed; top: 0; left: 0; width: 28px; height: 28px; border-radius: 50%; background: radial-gradient(circle, rgba(25,227,255,0.55) 0%, transparent 70%); pointer-events: none; transform: translate(-50%,-50%); transition: width 0.25s, height 0.25s, opacity 0.25s; z-index: 9999; mix-blend-mode: screen; }
     #vc-cursor-ring { position: fixed; top: 0; left: 0; width: 44px; height: 44px; border-radius: 50%; border: 1px solid rgba(25,227,255,0.35); pointer-events: none; transform: translate(-50%,-50%); transition: width 0.4s, height 0.4s, opacity 0.4s, border-color 0.3s; z-index: 9998; }
     body:hover #vc-cursor { opacity: 1; }
-    @media (min-width: 860px) { .vc-doodle { display: block !important; } }
+    @media (min-width: 1200px) { .vc-doodle { display: block !important; } }
     @media (max-width: 860px) {
       .vc-hero-grid { grid-template-columns: 1fr !important; }
       .vc-hero-photo { display: flex !important; justify-content: center; margin-top: 40px; }
@@ -71,7 +71,7 @@
   <header style="position: sticky; top: 0; z-index: 50; backdrop-filter: var(--blur-glass); -webkit-backdrop-filter: var(--blur-glass); background: var(--glass-fill); border-bottom: 1px solid var(--line);">
     <nav style="max-width: var(--container); margin: 0 auto; padding: 16px var(--gutter); display: flex; align-items: center; justify-content: space-between; gap: 24px;">
       <a href="#top" onClick="{{ goTop }}" style="display: flex; align-items: center; gap: 12px; text-decoration: none;">
-        <img src="assets/portal-mark.svg" alt="" style="width: 34px; height: 34px; filter: drop-shadow(0 0 10px rgba(25,227,255,0.5));">
+        <img src="assets/logo-circle.png" alt="" style="width: 38px; height: 38px; border-radius: 50%; object-fit: cover; box-shadow: 0 0 12px rgba(25,227,255,0.4);">
         <span style="font-family: var(--font-display); font-weight: 800; font-size: 15px; letter-spacing: -0.02em; color: var(--ink-1); line-height: 1.05;">MANASI&rsquo;S<br><span style="color: var(--cyan);">VIRTUAL CREATIONS</span></span>
       </a>
       <div class="vc-nav-links" style="display: flex; align-items: center; gap: 4px;">
@@ -82,6 +82,66 @@
       </div>
     </nav>
   </header>
+
+  <!-- ── side doodles (only on wide screens) ── -->
+  <div style="position:fixed;left:clamp(4px,1.5vw,20px);top:22%;pointer-events:none;z-index:2;opacity:0.13;display:none;" class="vc-doodle" aria-hidden="true">
+    <!-- VR headset outline -->
+    <svg width="72" height="52" viewBox="0 0 200 140" fill="none" xmlns="http://www.w3.org/2000/svg" style="animation:vc-float 11s ease-in-out infinite;">
+      <rect x="20" y="40" width="160" height="72" rx="28" stroke="#19E3FF" stroke-width="3"/>
+      <rect x="52" y="56" width="38" height="38" rx="10" stroke="#19E3FF" stroke-width="2.5"/>
+      <rect x="110" y="56" width="38" height="38" rx="10" stroke="#19E3FF" stroke-width="2.5"/>
+      <line x1="90" y1="75" x2="110" y2="75" stroke="#19E3FF" stroke-width="2"/>
+      <path d="M20 62 Q10 76 20 90" stroke="#19E3FF" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M180 62 Q190 76 180 90" stroke="#19E3FF" stroke-width="2.5" stroke-linecap="round"/>
+    </svg>
+  </div>
+  <div style="position:fixed;left:clamp(4px,1.5vw,20px);top:50%;pointer-events:none;z-index:2;opacity:0.11;display:none;" class="vc-doodle" aria-hidden="true">
+    <!-- controller outline -->
+    <svg width="48" height="70" viewBox="0 0 110 160" fill="none" xmlns="http://www.w3.org/2000/svg" style="animation:vc-float 8s ease-in-out 1s infinite;">
+      <path d="M30 20 Q55 10 55 40 L55 100 Q55 140 30 145 Q5 140 5 100 L5 60 Q5 25 30 20Z" stroke="#FF3DCB" stroke-width="2.5"/>
+      <circle cx="38" cy="55" r="6" stroke="#FF3DCB" stroke-width="2"/>
+      <circle cx="22" cy="70" r="6" stroke="#FF3DCB" stroke-width="2"/>
+      <line x1="14" y1="38" x2="14" y2="52" stroke="#FF3DCB" stroke-width="2" stroke-linecap="round"/>
+      <line x1="7" y1="45" x2="21" y2="45" stroke="#FF3DCB" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+  </div>
+  <div style="position:fixed;left:clamp(4px,1.5vw,22px);top:74%;pointer-events:none;z-index:2;opacity:0.10;display:none;" class="vc-doodle" aria-hidden="true">
+    <!-- Unity cube outline -->
+    <svg width="52" height="52" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="animation:vc-float 13s ease-in-out 2s infinite;">
+      <polygon points="50,8 90,30 90,70 50,92 10,70 10,30" stroke="#7B5BFF" stroke-width="3" fill="none"/>
+      <line x1="50" y1="8" x2="50" y2="92" stroke="#7B5BFF" stroke-width="1.5" stroke-dasharray="4 4"/>
+      <line x1="10" y1="30" x2="90" y2="70" stroke="#7B5BFF" stroke-width="1.5" stroke-dasharray="4 4"/>
+      <line x1="90" y1="30" x2="10" y2="70" stroke="#7B5BFF" stroke-width="1.5" stroke-dasharray="4 4"/>
+    </svg>
+  </div>
+  <div style="position:fixed;right:clamp(4px,1.5vw,20px);top:30%;pointer-events:none;z-index:2;opacity:0.11;display:none;" class="vc-doodle" aria-hidden="true">
+    <!-- spatial grid / AR planes -->
+    <svg width="60" height="60" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" style="animation:vc-float 9s ease-in-out 0.5s infinite;">
+      <rect x="15" y="50" width="90" height="55" rx="4" stroke="#C1FF3C" stroke-width="2.5"/>
+      <line x1="45" y1="50" x2="45" y2="105" stroke="#C1FF3C" stroke-width="1.5"/>
+      <line x1="75" y1="50" x2="75" y2="105" stroke="#C1FF3C" stroke-width="1.5"/>
+      <line x1="15" y1="72" x2="105" y2="72" stroke="#C1FF3C" stroke-width="1.5"/>
+      <path d="M30 50 L50 20 L70 20 L90 50" stroke="#C1FF3C" stroke-width="2" fill="none"/>
+    </svg>
+  </div>
+  <div style="position:fixed;right:clamp(4px,1.5vw,20px);top:58%;pointer-events:none;z-index:2;opacity:0.10;display:none;" class="vc-doodle" aria-hidden="true">
+    <!-- sparkle / star burst -->
+    <svg width="48" height="48" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="animation:vc-float 7s ease-in-out 3s infinite;">
+      <line x1="50" y1="10" x2="50" y2="90" stroke="#19E3FF" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="10" y1="50" x2="90" y2="50" stroke="#19E3FF" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="22" y1="22" x2="78" y2="78" stroke="#7B5BFF" stroke-width="2" stroke-linecap="round"/>
+      <line x1="78" y1="22" x2="22" y2="78" stroke="#7B5BFF" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="50" cy="50" r="8" stroke="#FF3DCB" stroke-width="2"/>
+    </svg>
+  </div>
+  <div style="position:fixed;right:clamp(4px,1.5vw,20px);top:80%;pointer-events:none;z-index:2;opacity:0.10;display:none;" class="vc-doodle" aria-hidden="true">
+    <!-- XR wrist band / ring -->
+    <svg width="52" height="52" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="animation:vc-float 10s ease-in-out 1.5s infinite;">
+      <ellipse cx="50" cy="50" rx="40" ry="20" stroke="#FF3DCB" stroke-width="2.5"/>
+      <ellipse cx="50" cy="50" rx="40" ry="20" stroke="#FF3DCB" stroke-width="1" stroke-dasharray="6 6" transform="rotate(45 50 50)"/>
+      <circle cx="50" cy="50" r="6" fill="#FF3DCB" opacity="0.5"/>
+    </svg>
+  </div>
 
   <main id="top" style="position: relative; z-index: 1; max-width: var(--container); margin: 0 auto; padding: 0 var(--gutter);">
 
@@ -137,7 +197,6 @@
         <!-- Left: all existing hero text -->
         <div>
           <div style="display: inline-flex; align-items: center; gap: 10px; padding: 8px 16px; border-radius: var(--r-pill); border: 1px solid var(--line-2); background: var(--bg-1); margin-bottom: 28px; animation: vc-pop 0.6s var(--ease-bounce) both;">
-            <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--lime); box-shadow: 0 0 10px var(--lime);"></span>
             <span style="font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-2);">Gameplay &amp; XR Developer &middot; London, UK</span>
           </div>
 
@@ -383,15 +442,15 @@
               <div style="position: absolute; bottom: -1%; left: 15%; right: 15%; height: 32px; background: radial-gradient(ellipse at 50% 0%, rgba(255,61,203,0.22) 0%, transparent 70%); filter: blur(12px); pointer-events: none;"></div>
             </div>
             <!-- location pill -->
-            <div style="margin-top: 16px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-2); padding: 8px 20px; background: rgba(7,6,14,0.6); border: 1px solid var(--line); border-radius: 50px; backdrop-filter: blur(10px);">London, UK &middot; Open to work</div>
+            <div style="margin-top: 16px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-2); padding: 8px 20px; background: rgba(7,6,14,0.6); border: 1px solid var(--line); border-radius: 50px; backdrop-filter: blur(10px);">London, UK</div>
           </div>
         </div>
 
         <div style="padding-top: 8px;">
-          <p style="font-size: var(--fs-lead); line-height: 1.65; color: var(--ink-1); margin: 0 0 22px;">I&rsquo;m a gameplay and XR developer based in London, happiest when I&rsquo;m building interactive worlds that make people feel something.</p>
-          <p style="font-size: 16px; line-height: 1.7; color: var(--ink-2); margin: 0 0 18px;">Most of my work lives in Unreal Engine and Unity. I love the technical side, full-body inverse kinematics, AI-driven NPCs scripted in Yarn, XR interaction, haptics and spatial audio, but what really pulls me in is using all of it to tell a story or get a message across.</p>
-          <p style="font-size: 16px; line-height: 1.7; color: var(--ink-2); margin: 0 0 18px;">Right now I teach Unreal Engine and game development as a Lecturer at the University Campus of Esports in London. Before that I worked as a VR developer at ISRO and finished my MSc in Virtual Reality at Swansea University. Teaching has made me a sharper developer, you really learn a thing once you have to explain it clearly to someone else.</p>
-          <p style="font-size: 16px; line-height: 1.7; color: var(--ink-2); margin: 0 0 32px;">I&rsquo;m always learning, and I&rsquo;m steadily moving deeper into AR, mixed reality and digital twins. My goal is simple: work on projects that have real impact, and use immersive tech to create experiences that actually mean something.</p>
+          <p style="font-size: clamp(17px,1.6vw,20px); line-height: 1.7; color: var(--ink-1); margin: 0 0 22px; text-align: justify;">I&rsquo;m a gameplay and XR developer based in London, happiest when I&rsquo;m building interactive worlds that make people feel something.</p>
+          <p style="font-size: clamp(15px,1.4vw,17px); line-height: 1.8; color: var(--ink-2); margin: 0 0 18px; text-align: justify;">Most of my work lives in Unreal Engine and Unity. I love the technical side &mdash; full-body inverse kinematics, AI-driven NPCs scripted in Yarn, XR interaction, haptics and spatial audio &mdash; but what really pulls me in is using all of it to tell a story or get a message across.</p>
+          <p style="font-size: clamp(15px,1.4vw,17px); line-height: 1.8; color: var(--ink-2); margin: 0 0 18px; text-align: justify;">Right now I teach Unreal Engine and game development as a Lecturer at the University Campus of Esports in London. Before that I worked as a VR developer at ISRO and finished my MSc in Virtual Reality at Swansea University. Teaching has made me a sharper developer &mdash; you really learn a thing once you have to explain it clearly to someone else.</p>
+          <p style="font-size: clamp(15px,1.4vw,17px); line-height: 1.8; color: var(--ink-2); margin: 0 0 32px; text-align: justify;">I&rsquo;m always learning, and steadily moving deeper into AR, mixed reality and digital twins. My goal is simple: work on projects that have real impact, and use immersive tech to create experiences that actually mean something.</p>
 
           <div style="font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 16px;">What I work with</div>
           <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 36px;">
@@ -400,8 +459,9 @@
             </sc-for>
           </div>
 
-          <a href="www.linkedin.com/in/manasi-lodha" onClick="{{ openLinkedIn }}" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-sans); font-weight: 700; font-size: 14px; color: var(--ink-1); text-decoration: none; padding: 13px 22px; border-radius: var(--r-pill); background: var(--bg-1); border: 1px solid var(--line-2);" style-hover="border-color: var(--cyan); color: var(--cyan);">
-            <i data-lucide="external-link" style="width: 18px; height: 18px;"></i> Connect on LinkedIn
+          <a href="https://www.linkedin.com/in/manasi-lodha/" onClick="{{ openLinkedIn }}" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-sans); font-weight: 700; font-size: 15px; color: var(--ink-on-bright); text-decoration: none; padding: 14px 28px; border-radius: var(--r-pill); background: #0A66C2; box-shadow: 0 0 24px rgba(10,102,194,0.45);" style-hover="box-shadow: 0 0 36px rgba(10,102,194,0.65); transform: translateY(-2px);">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="flex:none"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+            Connect on LinkedIn
           </a>
         </div>
       </div>
@@ -426,7 +486,7 @@
                 <div style="font-size: 14px; color: var(--cyan); margin-bottom: 12px;">{{ j.org }}</div>
                 <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px;">
                   <sc-for list="{{ j.points }}" as="pt" hint-placeholder-count="3">
-                    <li style="position: relative; padding-left: 16px; font-size: 14px; line-height: 1.55; color: var(--ink-2);">
+                    <li style="position: relative; padding-left: 16px; font-size: 15px; line-height: 1.65; color: var(--ink-2); text-align: justify;">
                       <span style="position: absolute; left: 0; top: 8px; width: 5px; height: 5px; border-radius: 50%; background: var(--magenta);"></span>{{ pt }}
                     </li>
                   </sc-for>
@@ -446,7 +506,7 @@
                 <div style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 8px;">{{ e.period }}</div>
                 <h3 style="font-family: var(--font-display); font-weight: 700; font-size: 19px; line-height: 1.15; letter-spacing: -0.02em; color: var(--ink-1); margin: 0 0 4px;">{{ e.degree }}</h3>
                 <div style="font-size: 14px; color: var(--violet); margin-bottom: 10px;">{{ e.org }}</div>
-                <p style="font-size: 14px; line-height: 1.55; color: var(--ink-2); margin: 0;">{{ e.note }}</p>
+                <p style="font-size: 15px; line-height: 1.65; color: var(--ink-2); margin: 0; text-align: justify;">{{ e.note }}</p>
               </div>
             </sc-for>
           </div>
@@ -457,7 +517,7 @@
             <sc-for list="{{ achievements }}" as="a" hint-placeholder-count="4">
               <div style="display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px; border-radius: var(--r-md); background: var(--bg-1); border: 1px solid var(--line);">
                 <span style="flex: none; margin-top: 2px; width: 22px; height: 22px; border-radius: 50%; background: var(--bg-2); display: inline-flex; align-items: center; justify-content: center; color: var(--lime);"><i data-lucide="{{ a.icon }}" style="width: 14px; height: 14px;"></i></span>
-                <span style="font-size: 14px; line-height: 1.5; color: var(--ink-2);">{{ a.text }}</span>
+                <span style="font-size: 15px; line-height: 1.6; color: var(--ink-2);">{{ a.text }}</span>
               </div>
             </sc-for>
           </div>
@@ -502,15 +562,28 @@
         <div style="position: relative;">
           <div style="font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--cyan); margin-bottom: 16px;">Let&rsquo;s work together</div>
           <h2 style="font-family: var(--font-display); font-weight: 900; font-size: var(--fs-h1); line-height: 0.96; letter-spacing: -0.03em; color: var(--ink-1); margin: 0 0 20px; max-width: 18ch;">Got an immersive idea? Let&rsquo;s build it.</h2>
-          <p style="font-size: var(--fs-lead); line-height: 1.55; color: var(--ink-2); max-width: 52ch; margin: 0 0 36px;">I&rsquo;m open to VR, AR and XR projects, collaborations and full-time roles. Drop me a line and let&rsquo;s talk.</p>
-          <div style="display: flex; flex-wrap: wrap; gap: 14px; align-items: center;">
-            <a href="mailto:manasiylodha@gmail.com" style="display: inline-flex; align-items: center; gap: 12px; font-family: var(--font-sans); font-weight: 700; font-size: 16px; color: var(--ink-on-bright); text-decoration: none; padding: 17px 32px; border-radius: var(--r-pill); background: var(--cyan); box-shadow: var(--glow-cyan);" style-hover="box-shadow: var(--glow-cyan-lg); transform: translateY(-2px);">
-              <i data-lucide="mail" style="width: 20px; height: 20px;"></i> manasiylodha@gmail.com
-            </a>
-          </div>
-          <div style="display: flex; flex-wrap: wrap; gap: 24px; margin-top: 32px; font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3);">
+          <p style="font-size: var(--fs-lead); line-height: 1.6; color: var(--ink-2); max-width: 52ch; margin: 0 0 36px; text-align: justify;">I&rsquo;m open to VR, AR and XR projects, collaborations and full-time roles. Drop me a line and let&rsquo;s talk.</p>
+
+          <!-- contact form -->
+          <form onsubmit="(function(e){e.preventDefault();var f=e.target;window.location.href='mailto:manasiylodha@gmail.com?subject=Hello from '+encodeURIComponent(f.cname.value)+'&body=Name: '+encodeURIComponent(f.cname.value)+'%0AEmail: '+encodeURIComponent(f.cemail.value)+'%0A%0A';})(event)" style="display: flex; flex-direction: column; gap: 14px; max-width: 520px; margin-bottom: 32px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+              <input name="cname" type="text" placeholder="Your name" required style="font-family: var(--font-sans); font-size: 15px; color: var(--ink-1); background: var(--bg-0); border: 1px solid var(--line-2); border-radius: var(--r-md); padding: 14px 18px; outline: none; width: 100%; box-sizing: border-box;">
+              <input name="cemail" type="email" placeholder="Your email" required style="font-family: var(--font-sans); font-size: 15px; color: var(--ink-1); background: var(--bg-0); border: 1px solid var(--line-2); border-radius: var(--r-md); padding: 14px 18px; outline: none; width: 100%; box-sizing: border-box;">
+            </div>
+            <button type="submit" style="display: inline-flex; align-items: center; justify-content: center; gap: 10px; font-family: var(--font-sans); font-weight: 700; font-size: 16px; color: var(--ink-on-bright); padding: 16px 32px; border-radius: var(--r-pill); background: var(--cyan); box-shadow: var(--glow-cyan); border: none; cursor: pointer;" style-hover="box-shadow: var(--glow-cyan-lg); transform: translateY(-2px);">
+              <i data-lucide="send" style="width: 18px; height: 18px;"></i> Send message
+            </button>
+          </form>
+
+          <!-- LinkedIn prominent CTA -->
+          <a href="https://www.linkedin.com/in/manasi-lodha/" onClick="{{ openLinkedIn }}" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 12px; font-family: var(--font-sans); font-weight: 700; font-size: 16px; color: #fff; text-decoration: none; padding: 15px 28px; border-radius: var(--r-pill); background: #0A66C2; box-shadow: 0 0 24px rgba(10,102,194,0.4); margin-bottom: 32px;" style-hover="box-shadow: 0 0 36px rgba(10,102,194,0.65); transform: translateY(-2px);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="flex:none"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+            Connect on LinkedIn
+          </a>
+
+          <div style="display: flex; flex-wrap: wrap; gap: 24px; font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3);">
             <span style="display: inline-flex; align-items: center; gap: 8px;"><i data-lucide="map-pin" style="width: 15px; height: 15px;"></i> London, UK</span>
-            <a href="https://www.linkedin.com/in/manasi-lodha/" onClick="{{ openLinkedIn }}" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 8px; color: var(--ink-3); text-decoration: none;" style-hover="color: var(--cyan);"><i data-lucide="external-link" style="width: 15px; height: 15px;"></i> LinkedIn</a>
+            <a href="mailto:manasiylodha@gmail.com" style="display: inline-flex; align-items: center; gap: 8px; color: var(--ink-3); text-decoration: none;" style-hover="color: var(--cyan);"><i data-lucide="mail" style="width: 15px; height: 15px;"></i> manasiylodha@gmail.com</a>
           </div>
         </div>
       </div>
