@@ -241,7 +241,7 @@ section{position:relative;z-index:2;padding:clamp(90px,12vw,160px) 32px;}
 .card{
   position:relative;border-radius:24px;overflow:hidden;cursor:pointer;
   background:var(--ink);
-  flex:0 0 clamp(300px,34vw,460px);
+  flex:0 0 clamp(320px,42vw,560px);
   aspect-ratio:4/5;
   scroll-snap-align:start;
   transition:transform 0.45s var(--ease-out),box-shadow 0.45s;
@@ -364,7 +364,7 @@ section{position:relative;z-index:2;padding:clamp(90px,12vw,160px) 32px;}
 .portrait .frame{
   position:relative;overflow:hidden;border-radius:24px;
   background:linear-gradient(160deg,var(--violet),#A78BFF 60%,var(--coral));
-  aspect-ratio:1/1;box-shadow:0 30px 70px rgba(124,92,255,0.3);
+  aspect-ratio:3/4;box-shadow:0 30px 70px rgba(124,92,255,0.3);
   display:flex;align-items:flex-end;justify-content:center;
 }
 .portrait img{
@@ -786,8 +786,8 @@ const PORTRAIT_URI = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAvgAAAH6CAMA
 const BASE = 'https://raw.githubusercontent.com/Manasi210/manasi-portfolio/main/';
 const A = p => BASE + p;
 
-document.getElementById('portraitImg').src = (typeof PORTRAIT_URI !== 'undefined') ? PORTRAIT_URI : A('assets/manasi-3-cutout.png');
-document.getElementById('heroPhoto').src = (typeof PORTRAIT_URI !== 'undefined') ? PORTRAIT_URI : A('assets/manasi-3-cutout.png');
+document.getElementById('portraitImg').src = A('assets/manasi-3-cutout.png');
+document.getElementById('heroPhoto').src = A('assets/manasi-2-cutout.png');
 
 /* ============================================================
    GAME LAYER — XP, levels, toasts
@@ -1107,8 +1107,9 @@ if (!isTouch){
 
   /* click opens case only if it wasn't a drag */
   track.addEventListener('click', e=>{
-    if (moved > 8) return;
+    if (moved > 12) { moved = 0; return; }
     const card = e.target.closest('.card');
+    moved = 0;
     if (card) openCase(+card.dataset.i);
   });
 
