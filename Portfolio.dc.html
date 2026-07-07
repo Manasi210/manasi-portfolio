@@ -1173,16 +1173,20 @@ if (prefersReduced){
   document.querySelectorAll('#heroTitle .row > span').forEach(s=>s.style.transform='none');
 }
 
-document.querySelectorAll('section .rv').forEach(el=>{
-  if (prefersReduced){ el.style.opacity=1; el.style.transform='none'; return; }
-  gsap.to(el, { opacity:1, y:0, duration:1, ease:'power3.out',
-    scrollTrigger:{ trigger: el, start:'top 88%' } });
-});
-document.querySelectorAll('.card').forEach((card,i)=>{
-  if (prefersReduced) return;
-  gsap.from(card, { opacity:0, y:60, duration:1, ease:'power3.out',
-    scrollTrigger:{ trigger: card, start:'top 92%' } });
-});
+/* Use IntersectionObserver for .rv reveals — far less overhead than per-element ScrollTrigger */
+if (prefersReduced){
+  document.querySelectorAll('.rv').forEach(el=>{ el.style.opacity=1; el.style.transform='none'; });
+} else {
+  const rvObs = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if (!entry.isIntersecting) return;
+      const el = entry.target;
+      gsap.to(el, { opacity:1, y:0, duration:0.85, ease:'power3.out', delay: +el.dataset.rvd||0 });
+      rvObs.unobserve(el);
+    });
+  }, { threshold:0.12, rootMargin:'0px 0px -40px 0px' });
+  document.querySelectorAll('.rv').forEach(el=>rvObs.observe(el));
+}
 
 /* ============================================================
    CURSOR + ABERRATION
@@ -1202,11 +1206,14 @@ if (!isTouch){
       el.style.setProperty('--ay', ay.toFixed(2) + 'px');
     });
   });
-  (function ringLoop(){
+  let lastRing = 0;
+  (function ringLoop(ts){
+    requestAnimationFrame(ringLoop);
+    if (ts - lastRing < 16) return; /* cap at ~60fps */
+    lastRing = ts;
     rx += (mx - rx) * 0.16; ry += (my - ry) * 0.16;
     ring.style.transform = `translate(${rx}px,${ry}px) translate(-50%,-50%)`;
-    requestAnimationFrame(ringLoop);
-  })();
+  })(0);
   document.addEventListener('mouseover', e=>{
     if (e.target.closest('[data-view]')) ring.classList.add('view');
     else ring.classList.remove('view');
@@ -1220,30 +1227,36 @@ if (!isTouch){
    ============================================================ */
 (function initCarousel(){
   const track = workTrack;
-  let isDown = false, startX = 0, startY = 0, startScroll = 0, moved = 0, wasDrag = false;
+  let isDown = false, startX = 0, startScroll = 0, didDrag = false;
 
-  track.addEventListener('pointerdown', e=>{
-    isDown = true; moved = 0; wasDrag = false;
-    startX = e.clientX; startY = e.clientY; startScroll = track.scrollLeft;
+  /* desktop mouse drag */
+  track.addEventListener('mousedown', e=>{
+    if (e.button !== 0) return;
+    isDown = true; didDrag = false;
+    startX = e.clientX; startScroll = track.scrollLeft;
     track.classList.add('dragging');
-    track.setPointerCapture(e.pointerId);
+    e.preventDefault();
   });
-  track.addEventListener('pointermove', e=>{
+  window.addEventListener('mousemove', e=>{
     if (!isDown) return;
     const dx = e.clientX - startX;
-    moved = Math.max(moved, Math.abs(dx));
-    if (moved > 6) { wasDrag = true; track.scrollLeft = startScroll - dx; }
+    if (Math.abs(dx) > 5) didDrag = true;
+    track.scrollLeft = startScroll - dx;
   });
-  ['pointerup','pointercancel'].forEach(ev=>track.addEventListener(ev, ()=>{
+  window.addEventListener('mouseup', ()=>{
+    if (!isDown) return;
     isDown = false; track.classList.remove('dragging');
-  }));
-
-  /* click opens case only if it wasn't a drag */
-  track.addEventListener('click', e=>{
-    if (wasDrag) { wasDrag = false; return; }
-    const card = e.target.closest('.card');
-    if (card) openCase(+card.dataset.i);
   });
+
+  /* click directly wired to each card after DOM is built — most reliable */
+  function wireCardClicks(){
+    track.querySelectorAll('.card').forEach(card=>{
+      card.addEventListener('click', ()=>{ if (!didDrag) openCase(+card.dataset.i); });
+      /* touch: reset didDrag on touchstart so taps always work */
+      card.addEventListener('touchstart', ()=>{ didDrag = false; }, { passive:true });
+    });
+  }
+  wireCardClicks();
 
   const step = ()=> (track.querySelector('.card')?.offsetWidth || 380) + 20;
   document.getElementById('cPrev').addEventListener('click', ()=>track.scrollBy({left:-step(), behavior:'smooth'}));
@@ -1423,8 +1436,8 @@ if (!isTouch){
   const camera = new THREE.PerspectiveCamera(50, holder.clientWidth/holder.clientHeight, 0.1, 100);
   camera.position.set(0, 0.4, 8.5);
 
-  const renderer = new THREE.WebGLRenderer({ antialias:true, alpha:true });
-  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  const renderer = new THREE.WebGLRenderer({ antialias: !isTouch, alpha:true, powerPreference:'high-performance' });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, isTouch ? 1 : 1.5));
   renderer.setSize(holder.clientWidth, holder.clientHeight);
   holder.appendChild(renderer.domElement);
 
@@ -1531,7 +1544,7 @@ if (!isTouch){
   scene.add(quest);
 
   /* ---------- particle dust + gizmo ring ---------- */
-  const N = isTouch ? 1800 : 4200;
+  const N = isTouch ? 800 : 2000;
   const pos = new Float32Array(N*3);
   const col = new Float32Array(N*3);
   const cInk = new THREE.Color(0x2a1e33), cV = new THREE.Color(0x7c5cff), cC = new THREE.Color(0xff6b3b);
@@ -1611,7 +1624,9 @@ if (!isTouch){
 
   new IntersectionObserver(entries=>{
     running = entries[0].isIntersecting && !prefersReduced;
-  }).observe(holder);
+    if (!running) renderer.domElement.style.visibility = 'hidden';
+    else renderer.domElement.style.visibility = '';
+  }, { threshold: 0.01 }).observe(holder);
 
   addEventListener('resize', ()=>{
     camera.aspect = holder.clientWidth/holder.clientHeight;
