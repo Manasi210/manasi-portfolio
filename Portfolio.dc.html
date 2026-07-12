@@ -16,15 +16,15 @@
    TOKENS — "daylight VR viewport"
    ============================================================ */
 :root{
-  --bg:        #FFF0E6;
-  --panel:     #FFFFFF;
-  --ink:       #2A1E33;
-  --muted:     #5E4F66;
-  --line:      rgba(42,30,51,0.14);
-  --violet:    #7C5CFF;
-  --coral:     #FF6B3B;
+  --bg:        #0D0D14;
+  --panel:     #16151F;
+  --ink:       #F0EBF8;
+  --muted:     #8B82A0;
+  --line:      rgba(240,235,248,0.10);
+  --violet:    #9B7DFF;
+  --coral:     #FF6B6B;
   --split-r:   rgba(255,60,60,0.75);
-  --split-c:   rgba(40,190,255,0.75);
+  --split-c:   rgba(120,80,255,0.75);
   --font-d: 'Unbounded', sans-serif;
   --font-b: 'Manrope', sans-serif;
   --font-m: 'JetBrains Mono', monospace;
@@ -63,7 +63,7 @@ button{background:none;border:none;cursor:pointer;}
    PRELOADER — headset boot
    ============================================================ */
 #loader{
-  position:fixed;inset:0;z-index:1000;background:var(--ink);color:#FFF4EC;
+  position:fixed;inset:0;z-index:1000;background:var(--ink);color:#F0EBF8;
   display:flex;flex-direction:column;justify-content:space-between;
   padding:32px;transition:transform 0.9s var(--ease-out);
 }
@@ -75,7 +75,7 @@ button{background:none;border:none;cursor:pointer;}
 #loader .count{
   font-family:var(--font-d);font-weight:600;
   font-size:clamp(70px,15vw,180px);line-height:1;align-self:flex-end;
-  background:linear-gradient(90deg,#FFF4EC,var(--violet));
+  background:linear-gradient(90deg,#F0EBF8,var(--violet));
   -webkit-background-clip:text;background-clip:text;color:transparent;
 }
 
@@ -159,7 +159,7 @@ nav .links a:hover{background:var(--violet);border-color:var(--violet);color:#ff
   position:relative;z-index:2;height:100%;
   display:flex;flex-direction:column;justify-content:flex-end;
   padding:0 32px 40px;pointer-events:none;
-  background:linear-gradient(to top, rgba(255,240,230,0.82) 0%, rgba(255,240,230,0.3) 40%, transparent 65%);
+  background:linear-gradient(to top, rgba(13,13,20,0.88) 0%, rgba(13,13,20,0.4) 40%, transparent 65%);
 }
 #hero .inner a,#hero .inner .scroll-cue{pointer-events:auto;}
 .hud{position:absolute;z-index:2;font-family:var(--font-m);font-size:10px;letter-spacing:0.16em;color:var(--muted);text-transform:uppercase;}
@@ -197,7 +197,7 @@ nav .links a:hover{background:var(--violet);border-color:var(--violet);color:#ff
 #playerCard{
   position:absolute;right:clamp(24px,2.5vw,40px);top:50%;transform:translateY(-54%) rotate(3deg);
   z-index:2;width:clamp(180px,16vw,240px);
-  background:#fff;border-radius:20px;padding:10px 10px 14px;
+  background:var(--panel);border-radius:20px;padding:10px 10px 14px;
   box-shadow:0 20px 50px rgba(42,30,51,0.22);
   border:1px solid var(--line);
   transition:transform 0.5s var(--ease-out);
@@ -246,7 +246,7 @@ nav .links a:hover{background:var(--violet);border-color:var(--violet);color:#ff
    ============================================================ */
 .marquee{
   overflow:hidden;padding:16px 0;position:relative;z-index:2;
-  background:var(--ink);color:#FFF4EC;transform:rotate(-1.2deg) scale(1.02);
+  background:var(--ink);color:#F0EBF8;transform:rotate(-1.2deg) scale(1.02);
 }
 .marquee .track{display:flex;gap:52px;width:max-content;animation:scrollX 30s linear infinite;}
 .marquee:hover .track{animation-play-state:paused;}
@@ -402,33 +402,6 @@ section{position:relative;z-index:2;padding:clamp(90px,12vw,160px) 32px;}
 /* ============================================================
    XP HUD + TOASTS — the game layer
    ============================================================ */
-#xp{
-  position:fixed;left:20px;bottom:20px;z-index:90;
-  display:flex;align-items:center;gap:12px;
-  background:var(--ink);color:#FFF4EC;border-radius:99px;
-  padding:10px 18px 10px 12px;
-  box-shadow:0 14px 34px rgba(42,30,51,0.3);
-}
-#xp .lvl{
-  width:34px;height:34px;border-radius:50%;background:var(--violet);
-  display:flex;align-items:center;justify-content:center;
-  font-family:var(--font-d);font-weight:700;font-size:13px;
-}
-#xp .meta{display:flex;flex-direction:column;gap:3px;}
-#xp .meta .mono{font-size:9px;color:#A793A6;}
-#xp .bar{width:110px;height:4px;background:rgba(255,244,236,0.15);border-radius:99px;overflow:hidden;}
-#xp .bar b{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--violet),var(--coral));border-radius:99px;transition:width 0.5s var(--ease-out);}
-@media (max-width:640px){#xp{display:none;}}
-
-#toasts{position:fixed;left:20px;bottom:84px;z-index:91;display:flex;flex-direction:column;gap:8px;pointer-events:none;}
-.toast{
-  font-family:var(--font-m);font-size:11px;letter-spacing:0.12em;text-transform:uppercase;
-  background:var(--violet);color:#fff;padding:10px 16px;border-radius:12px;
-  opacity:0;transform:translateY(14px);
-  animation:toastIn 0.35s var(--ease-out) forwards, toastOut 0.4s ease 2.2s forwards;
-}
-@keyframes toastIn{to{opacity:1;transform:translateY(0);}}
-@keyframes toastOut{to{opacity:0;transform:translateY(-10px);}}
 
 /* ============================================================
    PATH
@@ -454,7 +427,7 @@ section{position:relative;z-index:2;padding:clamp(90px,12vw,160px) 32px;}
    CONTACT — ink block with form
    ============================================================ */
 #contact{
-  background:var(--ink);color:#FFF4EC;
+  background:var(--ink);color:#F0EBF8;
   border-radius:32px;margin:0 20px 20px;padding:clamp(70px,9vw,120px) 32px;
 }
 #contact .cgrid{
@@ -472,7 +445,7 @@ section{position:relative;z-index:2;padding:clamp(90px,12vw,160px) 32px;}
 .form label{font-family:var(--font-m);font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:#A793A6;margin-bottom:-6px;}
 .form input,.form textarea{
   background:rgba(255,244,236,0.06);border:1px solid rgba(255,244,236,0.18);
-  border-radius:14px;padding:16px 18px;font-size:15px;color:#FFF4EC;
+  border-radius:14px;padding:16px 18px;font-size:15px;color:#F0EBF8;
   outline:none;transition:border-color 0.3s,background 0.3s;resize:vertical;
 }
 .form input::placeholder,.form textarea::placeholder{color:#8F7C8E;}
@@ -487,7 +460,7 @@ section{position:relative;z-index:2;padding:clamp(90px,12vw,160px) 32px;}
 }
 .btn.send{background:var(--violet);color:#fff;}
 .btn.send:hover{background:var(--coral);}
-.btn.li{background:transparent;color:#FFF4EC;border:1px solid rgba(255,244,236,0.25);}
+.btn.li{background:transparent;color:#F0EBF8;border:1px solid rgba(255,244,236,0.25);}
 .btn.li:hover{border-color:var(--violet);color:#fff;background:rgba(124,92,255,0.15);}
 .form .hint{font-size:12px;color:#8F7C8E;}
 
@@ -501,7 +474,7 @@ section{position:relative;z-index:2;padding:clamp(90px,12vw,160px) 32px;}
   perspective:600px;
 }
 .key{
-  --keycol:#F7F6FA;
+  --keycol:#1E1D2B;
   position:relative;width:84px;height:84px;border-radius:16px;
   background:var(--keycol);
   border:1px solid var(--line);
@@ -512,7 +485,7 @@ section{position:relative;z-index:2;padding:clamp(90px,12vw,160px) 32px;}
 }
 .key .cap{font-family:var(--font-d);font-weight:600;font-size:20px;line-height:1;}
 .key .sub{font-family:var(--font-m);font-size:8.5px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);}
-.key:hover{background:#fff;}
+.key:hover{background:var(--panel);}
 .key:active,.key.pressed{
   transform:translateY(6px);
   box-shadow:0 1px 0 rgba(42,30,51,0.22), 0 4px 10px rgba(42,30,51,0.12);
@@ -668,14 +641,6 @@ footer a:hover{color:var(--violet);}
 <div id="cursor-ring" aria-hidden="true"><span class="label">ENTER</span></div>
 
 <!-- GAME LAYER -->
-<div id="xp" aria-hidden="true">
-  <span class="lvl" id="xpLvl">1</span>
-  <span class="meta">
-    <span class="mono">PLAYER: VISITOR</span>
-    <span class="bar"><b id="xpBar"></b></span>
-  </span>
-</div>
-<div id="toasts" aria-hidden="true"></div>
 
 <nav>
   <a class="brand" href="#hero">MANASI — VC</a>
@@ -874,42 +839,6 @@ document.getElementById('portraitImg').src = A('assets/manasi-3-cutout.png');
 document.getElementById('heroPhoto').src = A('assets/manasi-2-cutout.png');
 document.getElementById('heroFloatPhoto').src = A('assets/manasi-2-cutout.png');
 
-/* ============================================================
-   GAME LAYER — XP, levels, toasts
-   ============================================================ */
-let xp = 0, lvl = 1;
-const LVL_STEP = 200;
-const xpBar = document.getElementById('xpBar');
-const xpLvl = document.getElementById('xpLvl');
-const toasts = document.getElementById('toasts');
-function addXP(amount, label){
-  xp += amount;
-  const newLvl = 1 + Math.floor(xp / LVL_STEP);
-  if (newLvl > lvl){ lvl = newLvl; toast(`LEVEL UP! → LVL ${lvl}`); }
-  xpLvl.textContent = lvl;
-  xpBar.style.width = ((xp % LVL_STEP) / LVL_STEP * 100) + '%';
-  if (label) toast(`+${amount} XP · ${label}`);
-}
-function toast(msg){
-  const t = document.createElement('div');
-  t.className = 'toast';
-  t.textContent = msg;
-  toasts.appendChild(t);
-  setTimeout(()=>t.remove(), 2800);
-}
-/* XP for exploring sections (once each) */
-const visited = new Set();
-['work','about','path','contact','keypad'].forEach(id=>{
-  const el = document.getElementById(id);
-  if (!el) return;
-  new IntersectionObserver((entries,obs)=>{
-    if (entries[0].isIntersecting && !visited.has(id)){
-      visited.add(id);
-      addXP(40, `${id.toUpperCase()} DISCOVERED`);
-      obs.disconnect();
-    }
-  }, { threshold: 0.25 }).observe(el);
-});
 
 /* ============================================================
    DATA
@@ -1029,7 +958,7 @@ document.getElementById('kit').addEventListener('click', e=>{
   if (!b) return;
   const id = KIT[+b.dataset.kit].proj;
   const idx = PROJECTS.findIndex(p=>p.id===id);
-  if (idx > -1){ openCase(idx); addXP(50, 'SKILL LINK FOLLOWED'); }
+  if (idx > -1){ openCase(idx); }
 });
 
 /* thumbnail source: embedded data URI if present, else remote */
@@ -1212,14 +1141,8 @@ function coverTag(p){
   return `<img src="${T(p)}" alt="${p.title}">`;
 }
 
-const enteredWorlds = new Set();
 function openCase(i){
   const p = PROJECTS[i];
-  if (!enteredWorlds.has(p.id)){
-    enteredWorlds.add(p.id);
-    addXP(100, 'WORLD ENTERED');
-    if (enteredWorlds.size === PROJECTS.length) toast('🏆 ALL 09 WORLDS EXPLORED!');
-  }
   const next = PROJECTS[(i+1) % PROJECTS.length];
   caseIndex.textContent = `WORLD ${String(i+1).padStart(2,'0')} / ${String(PROJECTS.length).padStart(2,'0')}`;
   caseBody.innerHTML = `
@@ -1345,7 +1268,7 @@ if (!isTouch){
   if (!window.THREE) return;
   const holder = document.getElementById('world');
   const scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2(0xfff0e6, 0.045);
+  scene.fog = new THREE.FogExp2(0x0d0d14, 0.045);
   const camera = new THREE.PerspectiveCamera(50, holder.clientWidth/holder.clientHeight, 0.1, 100);
   camera.position.set(0, 0.4, 8.5);
 
@@ -1369,11 +1292,11 @@ if (!isTouch){
   /* ---------- META QUEST 3 built from beveled shapes ---------- */
   const quest = new THREE.Group();
 
-  const white = new THREE.MeshStandardMaterial({ color: 0xf6f5f2, roughness: 0.3, metalness: 0.02 });
-  const grey  = new THREE.MeshStandardMaterial({ color: 0xd9d7d2, roughness: 0.55 });
+  const white = new THREE.MeshStandardMaterial({ color: 0x1a1a28, roughness: 0.3, metalness: 0.02 });
+  const grey  = new THREE.MeshStandardMaterial({ color: 0x2a2838, roughness: 0.55 });
   const dark  = new THREE.MeshStandardMaterial({ color: 0x1a1920, roughness: 0.65 });
   const lensM = new THREE.MeshStandardMaterial({ color: 0x0d0c12, roughness: 0.12, metalness: 0.5 });
-  const strapM= new THREE.MeshStandardMaterial({ color: 0xeceae5, roughness: 0.85 });
+  const strapM= new THREE.MeshStandardMaterial({ color: 0x252335, roughness: 0.85 });
 
   /* rounded-rectangle helper */
   function roundedRect(w, h, r){
