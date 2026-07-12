@@ -267,26 +267,19 @@ section{position:relative;z-index:2;padding:clamp(90px,12vw,160px) 32px;}
 .sec-head .mono{color:var(--muted);}
 
 /* ============================================================
-   WORK — draggable carousel of world cards
+   WORK — responsive grid (no carousel, no drag)
    ============================================================ */
-#work{overflow:visible;}
-#work .carousel{position:relative;overflow:hidden;border-radius:4px;}
+#work .carousel{position:relative;}
 #work .track{
-  display:flex;gap:16px;
-  overflow-x:auto;scroll-snap-type:x proximity;
-  -webkit-overflow-scrolling:touch;
-  padding:6px 0 26px;
-  scrollbar-width:none;
-  touch-action:pan-x;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:20px;
+  padding:4px 0;
 }
-#work .track::-webkit-scrollbar{display:none;}
-#work .track.dragging{scroll-snap-type:none;}
 .card{
   position:relative;border-radius:24px;overflow:hidden;cursor:pointer;
   background:var(--ink);
-  flex:0 0 clamp(260px,32vw,400px);
   aspect-ratio:3/4;
-  scroll-snap-align:start;
   transition:transform 0.45s var(--ease-out),box-shadow 0.45s;
 }
 .card:hover{transform:translateY(-8px);box-shadow:0 26px 60px rgba(42,30,51,0.28);}
@@ -333,24 +326,6 @@ section{position:relative;z-index:2;padding:clamp(90px,12vw,160px) 32px;}
   transition:transform 0.45s var(--ease-out),background 0.3s;
 }
 .card:hover .enter .arr{transform:rotate(-45deg);background:var(--coral);}
-/* carousel controls */
-#work .ctrl{
-  display:flex;justify-content:space-between;align-items:center;margin-top:18px;gap:20px;
-}
-#work .cbtns{display:flex;gap:10px;}
-#work .cbtn{
-  width:56px;height:56px;border-radius:50%;
-  background:var(--panel);border:1px solid var(--line);
-  font-size:20px;display:flex;align-items:center;justify-content:center;
-  transition:background 0.3s,color 0.3s,border-color 0.3s,transform 0.2s;
-}
-#work .cbtn:hover{background:var(--violet);border-color:var(--violet);color:#fff;}
-#work .cbtn:active{transform:scale(0.92);}
-#work .progress{
-  flex:1;height:3px;background:var(--line);border-radius:99px;overflow:hidden;max-width:420px;
-}
-#work .progress b{display:block;height:100%;width:10%;background:var(--violet);border-radius:99px;transition:width 0.2s ease;}
-#work .drag-hint{font-family:var(--font-m);font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);}
 
 /* ============================================================
    CASE OVERLAY — cover-first
@@ -612,7 +587,7 @@ footer a:hover{color:var(--violet);}
   #playerCard{display:none;}
 
   /* work */
-  .card{flex:0 0 clamp(240px,70vw,340px);aspect-ratio:3/4;}
+  #work .track{grid-template-columns:repeat(2,1fr);}
 
   /* about */
   #about .grid{grid-template-columns:1fr;gap:40px;}
@@ -649,8 +624,8 @@ footer a:hover{color:var(--violet);}
   .hud.tl{font-size:9px;left:20px;top:80px;}
 
   /* work cards — full width scroll */
-  .card{flex:0 0 calc(80vw);aspect-ratio:3/4;}
-  #work .ctrl{flex-wrap:wrap;gap:12px;}
+  #work .track{grid-template-columns:repeat(2,1fr);gap:12px;}
+  #work .track{grid-template-columns:repeat(3,1fr);}
 
   /* about */
   .portrait{max-width:300px;}
@@ -786,14 +761,6 @@ footer a:hover{color:var(--violet);}
     </div>
     <div class="carousel">
       <div class="track" id="workTrack"></div>
-      <div class="ctrl">
-        <div class="cbtns">
-          <button class="cbtn" id="cPrev" data-hover aria-label="Previous">←</button>
-          <button class="cbtn" id="cNext" data-hover aria-label="Next">→</button>
-        </div>
-        <div class="progress"><b id="cBar"></b></div>
-        <span class="drag-hint">DRAG OR SWIPE →</span>
-      </div>
     </div>
   </div>
 </section>
@@ -1248,61 +1215,11 @@ if (!isTouch){
 }
 
 /* ============================================================
-   CAROUSEL — drag, arrows, progress (click still opens case)
+   WORK GRID — click card to open case study
    ============================================================ */
-(function initCarousel(){
-  const track = workTrack;
-  let isDown = false, startX = 0, startScroll = 0, didDrag = false;
-
-  /* desktop mouse drag */
-  track.addEventListener('mousedown', e=>{
-    if (e.button !== 0) return;
-    isDown = true; didDrag = false;
-    startX = e.clientX; startScroll = track.scrollLeft;
-    track.classList.add('dragging');
-  });
-  window.addEventListener('mousemove', e=>{
-    if (!isDown) return;
-    const dx = e.clientX - startX;
-    if (Math.abs(dx) > 5) didDrag = true;
-    track.scrollLeft = startScroll - dx;
-  });
-  window.addEventListener('mouseup', ()=>{
-    if (!isDown) return;
-    isDown = false; track.classList.remove('dragging');
-  });
-
-  /* click directly wired to each card after DOM is built — most reliable */
-  function wireCardClicks(){
-    track.querySelectorAll('.card').forEach(card=>{
-      card.addEventListener('click', ()=>{ if (!didDrag) openCase(+card.dataset.i); });
-      /* touch: reset didDrag on touchstart so taps always work */
-      card.addEventListener('touchstart', ()=>{ didDrag = false; }, { passive:true });
-    });
-  }
-  wireCardClicks();
-
-  const step = ()=> (track.querySelector('.card')?.offsetWidth || 380) + 20;
-  document.getElementById('cPrev').addEventListener('click', ()=>track.scrollBy({left:-step(), behavior:'smooth'}));
-  document.getElementById('cNext').addEventListener('click', ()=>track.scrollBy({left: step(), behavior:'smooth'}));
-
-  const bar = document.getElementById('cBar');
-  function updateBar(){
-    const max = track.scrollWidth - track.clientWidth;
-    const p = max > 0 ? track.scrollLeft / max : 0;
-    bar.style.width = (10 + p*90) + '%';
-  }
-  track.addEventListener('scroll', updateBar, { passive:true });
-  updateBar();
-
-  /* horizontal wheel scroll when hovering the track */
-  track.addEventListener('wheel', e=>{
-    if (Math.abs(e.deltaY) > Math.abs(e.deltaX)){
-      e.preventDefault();
-      track.scrollLeft += e.deltaY;
-    }
-  }, { passive:false });
-})();
+workTrack.querySelectorAll('.card').forEach(card=>{
+  card.addEventListener('click', ()=>openCase(+card.dataset.i));
+});
 
 /* ============================================================
    CASE OVERLAY
