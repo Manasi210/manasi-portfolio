@@ -226,6 +226,21 @@ nav .links a:hover{background:var(--violet);border-color:var(--violet);color:#ff
 }
 @media (max-width:1280px){#playerCard{display:none;}}
 
+/* standalone hero photo — shown when player card is hidden */
+#heroFloatImg{
+  position:absolute;right:32px;bottom:0;z-index:2;
+  width:clamp(160px,22vw,280px);
+  pointer-events:none;
+  display:none;
+}
+#heroFloatImg img{
+  width:100%;height:auto;
+  object-fit:contain;object-position:bottom center;
+  filter:drop-shadow(0 8px 24px rgba(42,30,51,0.3));
+}
+@media (max-width:1280px){#heroFloatImg{display:block;}}
+@media (max-width:600px){#heroFloatImg{width:clamp(120px,30vw,180px);right:16px;}}
+
 /* ============================================================
    MARQUEE
    ============================================================ */
@@ -254,21 +269,23 @@ section{position:relative;z-index:2;padding:clamp(90px,12vw,160px) 32px;}
 /* ============================================================
    WORK — draggable carousel of world cards
    ============================================================ */
-#work{overflow:hidden;}
-#work .carousel{position:relative;}
+#work{overflow:visible;}
+#work .carousel{position:relative;overflow:hidden;border-radius:4px;}
 #work .track{
-  display:flex;gap:20px;
-  overflow-x:auto;scroll-snap-type:x mandatory;
-  padding:6px 6px 26px;
+  display:flex;gap:16px;
+  overflow-x:auto;scroll-snap-type:x proximity;
+  -webkit-overflow-scrolling:touch;
+  padding:6px 0 26px;
   scrollbar-width:none;
+  touch-action:pan-x;
 }
 #work .track::-webkit-scrollbar{display:none;}
 #work .track.dragging{scroll-snap-type:none;}
 .card{
   position:relative;border-radius:24px;overflow:hidden;cursor:pointer;
   background:var(--ink);
-  flex:0 0 clamp(320px,42vw,560px);
-  aspect-ratio:4/5;
+  flex:0 0 clamp(260px,32vw,400px);
+  aspect-ratio:3/4;
   scroll-snap-align:start;
   transition:transform 0.45s var(--ease-out),box-shadow 0.45s;
 }
@@ -595,7 +612,7 @@ footer a:hover{color:var(--violet);}
   #playerCard{display:none;}
 
   /* work */
-  .card{flex:0 0 clamp(280px,78vw,440px);aspect-ratio:3/4;}
+  .card{flex:0 0 clamp(240px,70vw,340px);aspect-ratio:3/4;}
 
   /* about */
   #about .grid{grid-template-columns:1fr;gap:40px;}
@@ -632,7 +649,7 @@ footer a:hover{color:var(--violet);}
   .hud.tl{font-size:9px;left:20px;top:80px;}
 
   /* work cards — full width scroll */
-  .card{flex:0 0 calc(100vw - 48px);aspect-ratio:4/5;}
+  .card{flex:0 0 calc(80vw);aspect-ratio:3/4;}
   #work .ctrl{flex-wrap:wrap;gap:12px;}
 
   /* about */
@@ -732,6 +749,7 @@ footer a:hover{color:var(--violet);}
   <div class="hud tl"><span class="dot"></span>HEADSET ON · <b>PASSTHROUGH LIVE</b></div>
   <div class="hud tr">GAMEPLAY &amp; XR DEVELOPER<br>UNITY / UNREAL · LONDON<br>BATTERY 100% · GUARDIAN OFF</div>
 
+  <div id="heroFloatImg" aria-hidden="true"><img id="heroFloatPhoto" alt="Manasi Lodha"></div>
   <div id="playerCard" aria-hidden="true">
     <span class="pc-lvl">LVL 99</span>
     <div class="photo"><img id="heroPhoto" alt="Manasi Lodha"></div>
@@ -910,6 +928,7 @@ const A = p => BASE + p;
 
 document.getElementById('portraitImg').src = A('assets/manasi-3-cutout.png');
 document.getElementById('heroPhoto').src = A('assets/manasi-2-cutout.png');
+document.getElementById('heroFloatPhoto').src = A('assets/manasi-2-cutout.png');
 
 /* ============================================================
    GAME LAYER — XP, levels, toasts
