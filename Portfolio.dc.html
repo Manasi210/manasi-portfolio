@@ -267,65 +267,44 @@ section{position:relative;z-index:2;padding:clamp(90px,12vw,160px) 32px;}
 .sec-head .mono{color:var(--muted);}
 
 /* ============================================================
-   WORK — responsive grid (no carousel, no drag)
+   WORK — simple list
    ============================================================ */
-#work .carousel{position:relative;}
-#work .track{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:20px;
-  padding:4px 0;
-}
+#work .track{display:flex;flex-direction:column;}
 .card{
-  position:relative;border-radius:24px;overflow:hidden;cursor:pointer;
+  display:grid;grid-template-columns:180px 1fr auto;align-items:center;gap:24px;
+  padding:20px 0;border-top:1px solid var(--line);cursor:pointer;
+  transition:background 0.2s;border-radius:0;background:none;overflow:visible;
+}
+.card:last-child{border-bottom:1px solid var(--line);}
+.card:hover{background:rgba(124,92,255,0.04);}
+.card:hover .card-thumb img{transform:scale(1.05);}
+.card-thumb{
+  width:180px;height:120px;border-radius:14px;overflow:hidden;flex-shrink:0;
   background:var(--ink);
-  aspect-ratio:3/4;
-  transition:transform 0.45s var(--ease-out),box-shadow 0.45s;
 }
-.card:hover{transform:translateY(-8px);box-shadow:0 26px 60px rgba(42,30,51,0.28);}
-.card .media{position:absolute;inset:0;}
-.card .media img{width:100%;height:100%;object-fit:cover;transition:transform 0.6s var(--ease-out);pointer-events:none;image-rendering:auto;will-change:transform;}
-.card:hover .media img{transform:scale(1.04);}
-.card .shade{
-  position:absolute;inset:0;
-  background:linear-gradient(185deg,rgba(42,30,51,0.0) 20%,rgba(42,30,51,0.7) 90%);
-}
-.card .top{
-  position:absolute;top:16px;left:16px;right:16px;
-  display:flex;justify-content:space-between;align-items:center;
-}
-.card .chip{
-  font-family:var(--font-m);font-size:10px;letter-spacing:0.14em;text-transform:uppercase;
-  background:rgba(255,244,236,0.92);color:var(--ink);
-  padding:8px 13px;border-radius:99px;font-weight:500;
-}
-.card .chip.year{background:rgba(42,30,51,0.55);color:#fff;backdrop-filter:blur(4px);}
-.card .num{
-  position:absolute;right:16px;bottom:14px;
-  font-family:var(--font-d);font-weight:700;font-size:15px;
-  color:rgba(255,255,255,0.35);
-}
-.card .info{position:absolute;left:20px;right:20px;bottom:18px;color:#fff;}
-.card .info h3{
+.card-thumb img{width:100%;height:100%;object-fit:cover;transition:transform 0.4s var(--ease-out);}
+.card-body{min-width:0;}
+.card-body h3{
   font-family:var(--font-d);font-weight:600;text-transform:uppercase;
-  font-size:clamp(16px,1.6vw,22px);line-height:1.15;margin-bottom:8px;
+  font-size:clamp(15px,1.8vw,22px);line-height:1.2;margin-bottom:8px;color:var(--ink);
 }
-.card .info p{
-  color:rgba(255,255,255,0.75);font-size:13.5px;
-  max-height:0;opacity:0;overflow:hidden;
-  transition:max-height 0.5s var(--ease-out),opacity 0.4s,margin 0.4s;
+.card-body p{color:var(--muted);font-size:14px;line-height:1.5;}
+.card-meta{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
+.card-meta span{
+  font-family:var(--font-m);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;
+  background:var(--panel);border:1px solid var(--line);padding:6px 11px;border-radius:99px;color:var(--muted);
 }
-.card:hover .info p{max-height:80px;opacity:1;margin-bottom:6px;}
-.card .enter{
-  display:inline-flex;align-items:center;gap:8px;
-  font-family:var(--font-m);font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:#fff;
+.card-arr{
+  width:44px;height:44px;border-radius:50%;border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;
+  transition:background 0.3s,border-color 0.3s,transform 0.3s;color:var(--ink);
 }
-.card .enter .arr{
-  width:32px;height:32px;border-radius:50%;background:var(--violet);
-  display:flex;align-items:center;justify-content:center;font-size:14px;
-  transition:transform 0.45s var(--ease-out),background 0.3s;
+.card:hover .card-arr{background:var(--violet);border-color:var(--violet);color:#fff;transform:rotate(-45deg);}
+@media(max-width:600px){
+  .card{grid-template-columns:100px 1fr auto;gap:14px;padding:16px 0;}
+  .card-thumb{width:100px;height:70px;}
+  .card-body p{display:none;}
 }
-.card:hover .enter .arr{transform:rotate(-45deg);background:var(--coral);}
 
 /* ============================================================
    CASE OVERLAY — cover-first
@@ -587,7 +566,7 @@ footer a:hover{color:var(--violet);}
   #playerCard{display:none;}
 
   /* work */
-  #work .track{grid-template-columns:repeat(2,1fr);}
+
 
   /* about */
   #about .grid{grid-template-columns:1fr;gap:40px;}
@@ -624,8 +603,6 @@ footer a:hover{color:var(--violet);}
   .hud.tl{font-size:9px;left:20px;top:80px;}
 
   /* work cards — full width scroll */
-  #work .track{grid-template-columns:repeat(2,1fr);gap:12px;}
-  #work .track{grid-template-columns:repeat(3,1fr);}
 
   /* about */
   .portrait{max-width:300px;}
@@ -1060,19 +1037,14 @@ const T = p => (typeof THUMBS !== 'undefined' && THUMBS[p.id]) ? THUMBS[p.id] : 
 
 const workTrack = document.getElementById('workTrack');
 workTrack.innerHTML = PROJECTS.map((p,i)=>`
-  <article class="card" data-i="${i}" data-view>
-    <div class="media"><img src="${T(p)}" alt="${p.title}" loading="${i<3?'eager':'lazy'}" draggable="false"></div>
-    <div class="shade"></div>
-    <div class="top">
-      <span class="chip">${p.medium} · ${p.engine}</span>
-      <span class="chip year">${p.year}</span>
-    </div>
-    <div class="info">
+  <article class="card rv" data-i="${i}">
+    <div class="card-thumb"><img src="${T(p)}" alt="${p.title}" loading="${i<3?'eager':'lazy'}"></div>
+    <div class="card-body">
       <h3>${p.title}</h3>
       <p>${p.hook}</p>
-      <span class="enter">Enter world <span class="arr">→</span></span>
+      <div class="card-meta"><span>${p.medium}</span><span>${p.engine}</span><span>${p.year}</span></div>
     </div>
-    <span class="num">${String(i+1).padStart(2,'0')}</span>
+    <div class="card-arr">→</div>
   </article>`).join('');
 
 function renderPathItems(arr){ return arr.map(j=>`
