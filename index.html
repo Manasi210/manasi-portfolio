@@ -259,13 +259,13 @@ section{position:relative;z-index:2;padding:clamp(90px,12vw,160px) 32px;}
   scrollbar-width:none;cursor:grab;
 }
 @media(min-width:601px){
-  #work .track{padding-bottom:96px;}
-  .card:nth-child(even){margin-top:72px;}
+  #work .track{padding-bottom:72px;}
+  .card:nth-child(even){margin-top:48px;}
 }
 #work .track::-webkit-scrollbar{display:none;}
 #work .track.dragging{scroll-snap-type:none;cursor:grabbing;user-select:none;}
 .card{
-  position:relative;flex:0 0 min(620px,86vw);aspect-ratio:4/3;
+  position:relative;flex:0 0 min(500px,84vw);aspect-ratio:4/3;
   border-radius:10px;overflow:hidden;scroll-snap-align:center;
   border:1px solid rgba(255,255,255,0.12);background:var(--panel);
   cursor:pointer;transition:border-color 0.35s,box-shadow 0.35s,transform 0.35s;
@@ -1317,10 +1317,10 @@ if (!isTouch){
 
   /* placeholder fallback geometry (shown while GLTF loads) */
   let quest = new THREE.Group();
-  const bodyMat = new THREE.MeshStandardMaterial({color:0x1a1a28,roughness:0.3,metalness:0.02});
+  const bodyMat = new THREE.MeshStandardMaterial({color:0xd9d9df,roughness:0.35,metalness:0.02});
   const darkMat = new THREE.MeshStandardMaterial({color:0x1a1920,roughness:0.65});
   const lensMat = new THREE.MeshStandardMaterial({color:0x0d0c12,roughness:0.12,metalness:0.5});
-  const strapMat= new THREE.MeshStandardMaterial({color:0x252335,roughness:0.85});
+  const strapMat= new THREE.MeshStandardMaterial({color:0xc9c9d2,roughness:0.8});
   function rRect(w,h,r){
     const s=new THREE.Shape(),x=-w/2,y=-h/2;
     s.moveTo(x+r,y);s.lineTo(x+w-r,y);s.quadraticCurveTo(x+w,y,x+w,y+r);
@@ -1409,7 +1409,7 @@ if (!isTouch){
     requestAnimationFrame(frame);
     if(!running) return;
     const t=clock.getElapsedTime();
-    cmx+=(tmx-cmx)*0.05; cmy+=(tmy-cmy)*0.05;
+    cmx+=(tmx-cmx)*0.10; cmy+=(tmy-cmy)*0.10;
 
     /* swap to real model once loaded */
     if(window._questModel){ quest = window._questModel; window._questModel = null; }
@@ -1430,8 +1430,8 @@ if (!isTouch){
 
     /* -- headset rotation --
        idle: gentle sway + cursor; turn: face forward (ry=0); emerge: turn away */
-    const idleRY = (cmx*1.1 + Math.sin(t*0.5)*0.12);
-    const idleRX = (cmy*0.55 + Math.sin(t*0.8)*0.05);
+    const idleRY = (cmx*0.32 + Math.sin(t*0.4)*0.045);
+    const idleRX = (cmy*0.18 + Math.sin(t*0.6)*0.025);
 
     /* ---- compute TARGET values for this frame, then ease toward them ----
        (direct assignment made the motion snap and judder; damped targets
@@ -1457,7 +1457,7 @@ if (!isTouch){
       tFov = 84 - p3*38;  /* narrow back to 46° on pullback */
     }
     tPY = 0.9 + Math.sin(t*1.1)*0.12*(1-p1)*(1-p2);
-    stiff = 0.18; /* hero: tight so the lens dive tracks the scroll */
+    stiff = 0.28; /* hero: tight so idle + lens dive track without trailing */
 
     if(pageBeyond > 0){
       /* showcase mode: ONE slow ~130° turn across the whole page,
