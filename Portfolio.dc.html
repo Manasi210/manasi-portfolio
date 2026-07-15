@@ -59,25 +59,6 @@ button{background:none;border:none;cursor:pointer;}
 }
 .mono{font-family:var(--font-m);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;}
 
-/* ============================================================
-   PRELOADER — headset boot
-   ============================================================ */
-#loader{
-  position:fixed;inset:0;z-index:1000;background:var(--ink);color:#F0EBF8;
-  display:flex;flex-direction:column;justify-content:space-between;
-  padding:32px;transition:transform 0.9s var(--ease-out);
-}
-#loader.done{transform:translateY(-100%);}
-#loader .top{display:flex;justify-content:space-between;color:#A793A6;}
-#loader .lines{color:#A793A6;font-family:var(--font-m);font-size:11px;letter-spacing:0.1em;line-height:2;min-height:66px;}
-#loader .lines span{display:block;opacity:0;animation:lineIn 0.3s forwards;}
-@keyframes lineIn{to{opacity:1;}}
-#loader .count{
-  font-family:var(--font-d);font-weight:600;
-  font-size:clamp(70px,15vw,180px);line-height:1;align-self:flex-end;
-  background:linear-gradient(90deg,#F0EBF8,var(--violet));
-  -webkit-background-clip:text;background-clip:text;color:transparent;
-}
 
 /* ============================================================
    CURSOR — VR gaze reticle
@@ -626,15 +607,6 @@ footer a:hover{color:var(--violet);}
 </head>
 <body>
 
-<!-- PRELOADER -->
-<div id="loader" aria-hidden="true">
-  <div class="top mono">
-    <span>MANASI'S VIRTUAL CREATIONS</span>
-    <span>QUEST OS · LDN 51.5072° N</span>
-  </div>
-  <div class="lines" id="loaderLines"></div>
-  <div class="count" id="loaderCount">0</div>
-</div>
 
 <div class="grid-layer" aria-hidden="true"></div>
 <div id="cursor-dot" aria-hidden="true"></div>
@@ -992,34 +964,7 @@ document.getElementById('eduList').innerHTML = renderPathItems(EDUCATION);
 document.getElementById('achList').innerHTML = ACH.map(a=>`
   <div class="rv"><b>${a.k}</b>${a.t}</div>`).join('');
 
-/* ============================================================
-   PRELOADER — Quest boot
-   ============================================================ */
-const loader = document.getElementById('loader');
-const loaderCount = document.getElementById('loaderCount');
-const loaderLines = document.getElementById('loaderLines');
-const compileMsgs = ['> booting quest os…','> passthrough calibrated','> guardian boundary: skipped ;)','> hand tracking: ON','> spawning player: MANASI'];
-
-function runLoader(){
-  if (prefersReduced){ finishLoader(); return; }
-  let n = 0, li = 0;
-  const t = setInterval(()=>{
-    n = Math.min(100, n + Math.ceil(Math.random()*7));
-    loaderCount.textContent = n;
-    const stage = Math.floor((n/100) * compileMsgs.length);
-    while (li < stage && li < compileMsgs.length){
-      const s = document.createElement('span');
-      s.textContent = compileMsgs[li++];
-      loaderLines.appendChild(s);
-    }
-    if (n >= 100){ clearInterval(t); setTimeout(finishLoader, 350); }
-  }, 60);
-}
-function finishLoader(){
-  loader.classList.add('done');
-  setTimeout(()=>loader.remove(), 1000);
-  introAnim();
-}
+function runLoader(){ introAnim(); }
 
 /* ============================================================
    SMOOTH SCROLL + REVEALS
