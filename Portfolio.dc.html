@@ -3,6 +3,14 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
 <title>Manasi Lodha — XR &amp; Gameplay Developer</title>
 <meta name="description" content="Manasi Lodha builds immersive worlds in Unity and Unreal Engine — full-body VR embodiment, AI-driven NPCs, and mixed reality. London, UK." />
 <link rel="icon" href="https://raw.githubusercontent.com/Manasi210/manasi-portfolio/main/assets/logo-circle.png" />
@@ -134,7 +142,8 @@ nav .links a:hover{background:var(--violet);border-color:var(--violet);color:#ff
 /* ============================================================
    HERO — Quest 3 stage
    ============================================================ */
-#hero{position:relative;height:100svh;min-height:680px;overflow:hidden;}
+#hero{position:relative;height:300svh;min-height:680px;overflow:visible;}
+#hero .sticky-shell{position:sticky;top:0;height:100svh;overflow:hidden;}
 #world{position:absolute;inset:0;z-index:0;}
 #hero .inner{
   position:relative;z-index:2;height:100%;
@@ -633,29 +642,31 @@ footer a:hover{color:var(--violet);}
 
 <!-- HERO -->
 <header id="hero">
-  <div id="world"></div>
+  <div class="sticky-shell">
+    <div id="world"></div>
 
-  <div class="hud tl"><span class="dot"></span>HEADSET ON · <b>PASSTHROUGH LIVE</b></div>
-  <div class="hud tr">GAMEPLAY &amp; XR DEVELOPER<br>UNITY / UNREAL · LONDON<br>BATTERY 100% · GUARDIAN OFF</div>
+    <div class="hud tl"><span class="dot"></span>HEADSET ON · <b>PASSTHROUGH LIVE</b></div>
+    <div class="hud tr">GAMEPLAY &amp; XR DEVELOPER<br>UNITY / UNREAL · LONDON<br>BATTERY 100% · GUARDIAN OFF</div>
 
-  <div id="heroFloatImg" aria-hidden="true"><img id="heroFloatPhoto" alt="Manasi Lodha"></div>
-  <div id="playerCard" aria-hidden="true">
-    <span class="pc-lvl">LVL 99</span>
-    <div class="photo"><img id="heroPhoto" alt="Manasi Lodha"></div>
-    <div class="pc-name">Manasi Lodha</div>
-    <div class="pc-role">Character selected · XR Dev</div>
-  </div>
+    <div id="heroFloatImg" aria-hidden="true"><img id="heroFloatPhoto" alt="Manasi Lodha"></div>
+    <div id="playerCard" aria-hidden="true">
+      <span class="pc-lvl">LVL 99</span>
+      <div class="photo"><img id="heroPhoto" alt="Manasi Lodha"></div>
+      <div class="pc-name">Manasi Lodha</div>
+      <div class="pc-role">Character selected · XR Dev</div>
+    </div>
 
-  <div class="inner">
-    <h1 class="h-title" id="heroTitle">
-      <span class="row"><span class="aberrate">Put the headset on<span style="color:var(--coral)">.</span></span></span>
-      <span class="row indent"><span class="aberrate">I'll build the <span class="accent">world</span>.</span></span>
-    </h1>
-    <div class="h-sub">
-      <p class="rv">Hi, I'm <b>Manasi Lodha</b>. I build immersive experiences in Unreal Engine and Unity — AI-driven NPCs, full-body VR embodiment, and detailed real-time environments. Lecturer in game development in London. I use this tech to tell stories.</p>
-      <div class="scroll-cue rv">
-        <span class="mono">Enter world</span>
-        <div class="bar"></div>
+    <div class="inner">
+      <h1 class="h-title" id="heroTitle">
+        <span class="row"><span class="aberrate">Put the headset on<span style="color:var(--coral)">.</span></span></span>
+        <span class="row indent"><span class="aberrate">I'll build the <span class="accent">world</span>.</span></span>
+      </h1>
+      <div class="h-sub">
+        <p class="rv">Hi, I'm <b>Manasi Lodha</b>. I build immersive experiences in Unreal Engine and Unity — AI-driven NPCs, full-body VR embodiment, and detailed real-time environments. Lecturer in game development in London. I use this tech to tell stories.</p>
+        <div class="scroll-cue rv">
+          <span class="mono">Enter world</span>
+          <div class="bar"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -1207,14 +1218,14 @@ if (!isTouch){
 }
 
 /* ============================================================
-   THREE.JS HERO — stylised META QUEST 3 + particles
+   THREE.JS HERO — real Meta Quest 3 GLTF + 4-phase scroll
    ============================================================ */
 (function initWorld(){
   if (!window.THREE) return;
   const holder = document.getElementById('world');
   const scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2(0x0d0d14, 0.045);
-  const camera = new THREE.PerspectiveCamera(50, holder.clientWidth/holder.clientHeight, 0.1, 100);
+  scene.fog = new THREE.FogExp2(0x0d0d14, 0.032);
+  const camera = new THREE.PerspectiveCamera(50, holder.clientWidth/holder.clientHeight, 0.01, 100);
   camera.position.set(0, 0.4, 8.5);
 
   const renderer = new THREE.WebGLRenderer({ antialias: !isTouch, alpha:true, powerPreference:'high-performance' });
@@ -1222,160 +1233,222 @@ if (!isTouch){
   renderer.setSize(holder.clientWidth, holder.clientHeight);
   holder.appendChild(renderer.domElement);
 
-  /* lights — soft studio */
-  scene.add(new THREE.AmbientLight(0xffffff, 1.15));
-  const key = new THREE.DirectionalLight(0xffffff, 1.6);
-  key.position.set(3, 5, 6);
-  scene.add(key);
-  const rim = new THREE.PointLight(0x7c5cff, 14, 20);
-  rim.position.set(-4, 1, 3);
-  scene.add(rim);
-  const rim2 = new THREE.PointLight(0xff6b3b, 8, 18);
-  rim2.position.set(4, -2, 2);
-  scene.add(rim2);
+  /* lights */
+  scene.add(new THREE.AmbientLight(0xffffff, 1.4));
+  const key = new THREE.DirectionalLight(0xffffff, 2.2);
+  key.position.set(3, 5, 6); scene.add(key);
+  const rim = new THREE.PointLight(0x9b7dff, 18, 22);
+  rim.position.set(-4, 1, 3); scene.add(rim);
+  const rim2 = new THREE.PointLight(0xff6b6b, 10, 18);
+  rim2.position.set(4, -2, 2); scene.add(rim2);
 
-  /* ---------- META QUEST 3 — stylised geometry ---------- */
-  const quest = new THREE.Group();
-
-  const bodyMat  = new THREE.MeshStandardMaterial({ color:0x1a1a28, roughness:0.3, metalness:0.02 });
-  const darkMat  = new THREE.MeshStandardMaterial({ color:0x1a1920, roughness:0.65 });
-  const lensMat  = new THREE.MeshStandardMaterial({ color:0x0d0c12, roughness:0.12, metalness:0.5 });
-  const strapMat = new THREE.MeshStandardMaterial({ color:0x252335, roughness:0.85 });
-
+  /* placeholder fallback geometry (shown while GLTF loads) */
+  let quest = new THREE.Group();
+  const bodyMat = new THREE.MeshStandardMaterial({color:0x1a1a28,roughness:0.3,metalness:0.02});
+  const darkMat = new THREE.MeshStandardMaterial({color:0x1a1920,roughness:0.65});
+  const lensMat = new THREE.MeshStandardMaterial({color:0x0d0c12,roughness:0.12,metalness:0.5});
+  const strapMat= new THREE.MeshStandardMaterial({color:0x252335,roughness:0.85});
   function rRect(w,h,r){
-    const s=new THREE.Shape(), x=-w/2, y=-h/2;
-    s.moveTo(x+r,y); s.lineTo(x+w-r,y); s.quadraticCurveTo(x+w,y,x+w,y+r);
-    s.lineTo(x+w,y+h-r); s.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
-    s.lineTo(x+r,y+h); s.quadraticCurveTo(x,y+h,x,y+h-r);
-    s.lineTo(x,y+r); s.quadraticCurveTo(x,y,x+r,y); return s;
+    const s=new THREE.Shape(),x=-w/2,y=-h/2;
+    s.moveTo(x+r,y);s.lineTo(x+w-r,y);s.quadraticCurveTo(x+w,y,x+w,y+r);
+    s.lineTo(x+w,y+h-r);s.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+    s.lineTo(x+r,y+h);s.quadraticCurveTo(x,y+h,x,y+h-r);
+    s.lineTo(x,y+r);s.quadraticCurveTo(x,y,x+r,y);return s;
   }
-
-  const visor = new THREE.Mesh(
-    (() => { const g=new THREE.ExtrudeGeometry(rRect(2.5,1.05,0.5),{depth:0.45,bevelEnabled:true,bevelThickness:0.28,bevelSize:0.16,bevelSegments:6,curveSegments:12}); g.center(); return g; })(),
-    bodyMat);
+  const visor=new THREE.Mesh((()=>{const g=new THREE.ExtrudeGeometry(rRect(2.5,1.05,0.5),{depth:0.45,bevelEnabled:true,bevelThickness:0.28,bevelSize:0.16,bevelSegments:6,curveSegments:12});g.center();return g;})(),bodyMat);
   quest.add(visor);
-
-  const gasket = new THREE.Mesh(
-    (() => { const g=new THREE.ExtrudeGeometry(rRect(2.3,0.95,0.42),{depth:0.16,bevelEnabled:true,bevelThickness:0.07,bevelSize:0.06,bevelSegments:3}); g.center(); return g; })(),
-    darkMat);
-  gasket.position.z = -0.5; quest.add(gasket);
-
+  const gasket=new THREE.Mesh((()=>{const g=new THREE.ExtrudeGeometry(rRect(2.3,0.95,0.42),{depth:0.16,bevelEnabled:true,bevelThickness:0.07,bevelSize:0.06,bevelSegments:3});g.center();return g;})(),darkMat);
+  gasket.position.z=-0.5;quest.add(gasket);
   [[-0.75,0.02],[0,0.06],[0.75,0.02]].forEach(([x,y])=>{
-    const pill = new THREE.Mesh(new THREE.CapsuleGeometry(0.085,0.3,4,12), lensMat);
-    pill.position.set(x,y,0.55); quest.add(pill);
-    const dot = new THREE.Mesh(new THREE.SphereGeometry(0.045,10,10),
-      new THREE.MeshStandardMaterial({color:0x3a3660,roughness:0.1,metalness:0.7}));
-    dot.position.set(x,y+0.12,0.62); quest.add(dot);
+    quest.add(Object.assign(new THREE.Mesh(new THREE.CapsuleGeometry(0.085,0.3,4,12),lensMat),{position:new THREE.Vector3(x,y,0.55)}));
   });
-
-  const wheel = new THREE.Mesh(new THREE.CylinderGeometry(0.09,0.09,0.06,16),
-    new THREE.MeshStandardMaterial({color:0x2a2838,roughness:0.55}));
-  wheel.rotation.x=Math.PI/2; wheel.position.set(0.55,-0.62,0.1); quest.add(wheel);
-
-  const armGeo = (() => { const g=new THREE.ExtrudeGeometry(rRect(0.95,0.3,0.14),{depth:0.1,bevelEnabled:true,bevelThickness:0.03,bevelSize:0.03,bevelSegments:2}); g.center(); return g; })();
-  const armL = new THREE.Mesh(armGeo,strapMat); armL.position.set(-1.6,0.12,-0.4); armL.rotation.y=0.55; quest.add(armL);
-  const armR = armL.clone(); armR.position.x=1.6; armR.rotation.y=-0.55; quest.add(armR);
-
-  const band = new THREE.Mesh(new THREE.TorusGeometry(1.4,0.1,12,48,Math.PI),strapMat);
-  band.rotation.x=Math.PI/2; band.rotation.z=Math.PI; band.position.set(0,0.12,-0.55); band.scale.set(1.2,1.6,0.55); quest.add(band);
-
-  const topStrap = new THREE.Mesh(new THREE.TorusGeometry(1.15,0.07,10,40,Math.PI),strapMat);
-  topStrap.rotation.z=Math.PI; topStrap.position.set(0,0.35,-0.85); topStrap.scale.set(0.6,1.15,1); quest.add(topStrap);
-
+  const armGeo=(()=>{const g=new THREE.ExtrudeGeometry(rRect(0.95,0.3,0.14),{depth:0.1,bevelEnabled:true,bevelThickness:0.03,bevelSize:0.03,bevelSegments:2});g.center();return g;})();
+  const armL=new THREE.Mesh(armGeo,strapMat);armL.position.set(-1.6,0.12,-0.4);armL.rotation.y=0.55;quest.add(armL);
+  const armR=armL.clone();armR.position.x=1.6;armR.rotation.y=-0.55;quest.add(armR);
+  const band=new THREE.Mesh(new THREE.TorusGeometry(1.4,0.1,12,48,Math.PI),strapMat);
+  band.rotation.x=Math.PI/2;band.rotation.z=Math.PI;band.position.set(0,0.12,-0.55);band.scale.set(1.2,1.6,0.55);quest.add(band);
   quest.scale.setScalar(1.45);
-  quest.position.set(0, 0.9, 0);
+  quest.position.set(0,0.9,0);
   scene.add(quest);
 
-  /* ---------- particle dust + gizmo ring ---------- */
-  const N = isTouch ? 800 : 2000;
-  const pos = new Float32Array(N*3);
-  const col = new Float32Array(N*3);
-  const cInk = new THREE.Color(0x2a1e33), cV = new THREE.Color(0x7c5cff), cC = new THREE.Color(0xff6b3b);
-  for (let i=0;i<N;i++){
-    pos[i*3]   = (Math.random()-0.5)*22;
-    pos[i*3+1] = (Math.random()-0.5)*12;
-    pos[i*3+2] = (Math.random()-0.5)*14 - 3;
-    const rn = Math.random();
-    const c = rn < 0.06 ? cC : (rn < 0.3 ? cV : cInk);
-    col[i*3]=c.r; col[i*3+1]=c.g; col[i*3+2]=c.b;
+  /* ---------- particles ---------- */
+  const N = isTouch ? 600 : 1800;
+  const pos = new Float32Array(N*3), col = new Float32Array(N*3);
+  const cInk=new THREE.Color(0x2a1e33),cV=new THREE.Color(0x9b7dff),cC=new THREE.Color(0xff6b6b);
+  for(let i=0;i<N;i++){
+    pos[i*3]=(Math.random()-0.5)*24;pos[i*3+1]=(Math.random()-0.5)*14;pos[i*3+2]=(Math.random()-0.5)*16-3;
+    const rn=Math.random(),c=rn<0.06?cC:(rn<0.3?cV:cInk);
+    col[i*3]=c.r;col[i*3+1]=c.g;col[i*3+2]=c.b;
   }
-  const geo = new THREE.BufferGeometry();
-  geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-  geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
-  const pmat = new THREE.PointsMaterial({ size:0.03, vertexColors:true, transparent:true, opacity:0.6, depthWrite:false });
-  const dust = new THREE.Points(geo, pmat);
-  scene.add(dust);
+  const geo=new THREE.BufferGeometry();
+  geo.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  geo.setAttribute('color',new THREE.BufferAttribute(col,3));
+  const pmat=new THREE.PointsMaterial({size:0.032,vertexColors:true,transparent:true,opacity:0.6,depthWrite:false});
+  const dust=new THREE.Points(geo,pmat);scene.add(dust);
 
-  const ring3d = new THREE.Mesh(
-    new THREE.TorusGeometry(2.6, 0.006, 8, 120),
-    new THREE.MeshBasicMaterial({ color: 0x7c5cff, transparent:true, opacity:0.45 })
-  );
-  ring3d.rotation.x = Math.PI/2.4;
-  ring3d.position.y = 0.85;
-  scene.add(ring3d);
+  const ring3d=new THREE.Mesh(new THREE.TorusGeometry(2.6,0.006,8,120),
+    new THREE.MeshBasicMaterial({color:0x9b7dff,transparent:true,opacity:0.45}));
+  ring3d.rotation.x=Math.PI/2.4;ring3d.position.y=0.85;scene.add(ring3d);
 
-  /* ---------- motion: fly THROUGH the headset on scroll ---------- */
-  let tmx = 0, tmy = 0, cmx = 0, cmy = 0, scrollP = 0;
-  if (!isTouch){
-    addEventListener('mousemove', e=>{
-      tmx = (e.clientX/innerWidth - 0.5);
-      tmy = (e.clientY/innerHeight - 0.5);
-    });
-  }
-  const heroInner = document.querySelector('#hero .inner');
-  const heroHuds = document.querySelectorAll('#hero .hud, #playerCard');
-  addEventListener('scroll', ()=>{ scrollP = Math.min(1, scrollY / (innerHeight*0.9)); }, { passive:true });
+  /* vignette overlay for "eyesight" phase */
+  const vigEl = document.createElement('div');
+  Object.assign(vigEl.style,{
+    position:'fixed',inset:'0',pointerEvents:'none',zIndex:'3',
+    background:'radial-gradient(ellipse 55% 42% at 50% 50%, transparent 0%, #000 100%)',
+    opacity:'0',transition:'opacity 0.1s'
+  });
+  document.body.appendChild(vigEl);
 
-  const clock = new THREE.Clock();
-  let running = true;
+  /* ---------- scroll animation setup ---------- */
+  let tmx=0,tmy=0,cmx=0,cmy=0,scrollP=0;
+  if(!isTouch) addEventListener('mousemove',e=>{
+    tmx=(e.clientX/innerWidth-0.5); tmy=(e.clientY/innerHeight-0.5);
+  });
+  const heroInner=document.querySelector('#hero .inner');
+  const heroHuds=document.querySelectorAll('#hero .hud, #playerCard');
+
+  /* scroll zone = hero height minus one viewport (the sticky visible part) */
+  function getScrollZone(){ return Math.max(1, (document.getElementById('hero').offsetHeight - innerHeight)); }
+  addEventListener('scroll',()=>{ scrollP=Math.min(1, scrollY/getScrollZone()); },{passive:true});
+
+  /* ── 4 PHASES (each covers 0.25 of scrollP 0→1) ─────────────────
+     Phase 0–0.25  HERO      headset floats, cursor-follow, gentle bob
+     Phase 0.25–0.5 TURN     headset rotates to face camera (front-on)
+     Phase 0.5–0.75 DIVE     camera flies through lenses — eyesight vignette
+     Phase 0.75–1.0 EMERGE   camera pulls back out the other side, headset turns away
+  ──────────────────────────────────────────────────────────────────── */
+  function sm(x){return x*x*(3-2*x);} /* smoothstep */
+  function remap(v,a,b){return Math.max(0,Math.min(1,(v-a)/(b-a)));} /* remap + clamp */
+
+  const clock=new THREE.Clock();
+  let running=true;
+
   function frame(){
     requestAnimationFrame(frame);
-    if (!running) return;
-    const t = clock.getElapsedTime();
-    cmx += (tmx - cmx)*0.05; cmy += (tmy - cmy)*0.05;
+    if(!running) return;
+    const t=clock.getElapsedTime();
+    cmx+=(tmx-cmx)*0.05; cmy+=(tmy-cmy)*0.05;
 
-    /* ease scroll for the dive */
-    const s = scrollP*scrollP*(3-2*scrollP); /* smoothstep */
+    /* swap to real model once loaded */
+    if(window._questModel){ quest = window._questModel; window._questModel = null; }
 
-    /* the headset squares up to face you as you approach it,
-       cursor-follow fades out during the dive */
-    const follow = 1 - s;
-    quest.rotation.y = (cmx * 1.1 + Math.sin(t*0.5)*0.12) * follow;
-    quest.rotation.x = (cmy * 0.55 + Math.sin(t*0.8)*0.05) * follow;
-    quest.position.y = 0.9 + Math.sin(t*1.1)*0.12 * follow;
+    const p=scrollP; /* 0→1 across full scroll zone */
 
-    /* camera dives from the studio right through the visor */
-    camera.position.z = 8.5 - s*9.6;
-    camera.position.y = 0.4 + s*0.5;
-    camera.fov = 50 + s*28;
+    /* ── PHASE 0: idle hero (0→0.25) */
+    const p0=sm(remap(p,0,0.25));   /* 0→1 as p goes 0→0.25 */
+
+    /* ── PHASE 1: turn to face (0.25→0.5) */
+    const p1=sm(remap(p,0.25,0.5));
+
+    /* ── PHASE 2: dive through lenses (0.5→0.75) */
+    const p2=sm(remap(p,0.5,0.75));
+
+    /* ── PHASE 3: emerge + pull back (0.75→1.0) */
+    const p3=sm(remap(p,0.75,1.0));
+
+    /* -- headset rotation --
+       idle: gentle sway + cursor; turn: face forward (ry=0); emerge: turn away */
+    const idleRY = (cmx*1.1 + Math.sin(t*0.5)*0.12);
+    const idleRX = (cmy*0.55 + Math.sin(t*0.8)*0.05);
+
+    if(p < 0.5){
+      /* phases 0+1: sway fades as headset turns to face */
+      quest.rotation.y = idleRY * (1-p1);
+      quest.rotation.x = idleRX * (1-p1);
+    } else {
+      /* phases 2+3: facing forward during dive, then turn 90° away on emerge */
+      quest.rotation.y = p3 * Math.PI * 0.6;
+      quest.rotation.x = 0;
+    }
+
+    /* bob only in phases 0-1 */
+    quest.position.y = 0.9 + Math.sin(t*1.1)*0.12*(1-p1)*(1-p2);
+
+    /* -- camera --
+       phase 0-1: stays back at z=8.5
+       phase 2: dives from z=8.5 → z=-0.3 (through visor)
+       phase 3: pulls back to z=4.0 */
+    const camZ_base  = 8.5;
+    const camZ_inside = -0.3;
+    const camZ_back   = 4.0;
+
+    if(p < 0.5){
+      camera.position.z = camZ_base;
+      camera.position.y = 0.4;
+      camera.fov = 50;
+    } else if(p < 0.75){
+      camera.position.z = camZ_base + (camZ_inside - camZ_base)*p2;
+      camera.position.y = 0.4 + p2*0.5;
+      camera.fov = 50 + p2*34;  /* widen as you pass through */
+    } else {
+      camera.position.z = camZ_inside + (camZ_back - camZ_inside)*p3;
+      camera.position.y = 0.9 - p3*0.5;
+      camera.fov = 84 - p3*38;  /* narrow back to 46° on pullback */
+    }
     camera.updateProjectionMatrix();
 
+    /* -- eyesight vignette: peaks at center of phase 2 -- */
+    const vigPeak = p<0.5 ? 0 : (p<0.75 ? Math.sin(p2*Math.PI) : 0);
+    vigEl.style.opacity = vigPeak * 0.92;
+
+    /* -- ring + dust -- */
     ring3d.rotation.z = t*0.1;
     ring3d.position.y = quest.position.y;
-    ring3d.material.opacity = 0.45 * follow;
+    const ringFade = 1-sm(remap(p,0.4,0.6));
+    ring3d.material.opacity = 0.45*ringFade;
     dust.rotation.y = t*0.02 + cmx*0.2;
-    pmat.opacity = 0.6 * follow;
+    pmat.opacity = 0.6*ringFade;
 
-    /* hero text + HUD fade as you enter the headset */
-    if (heroInner) heroInner.style.opacity = Math.max(0, 1 - s*1.6);
-    heroHuds.forEach(h=>h.style.opacity = Math.max(0, 1 - s*1.6));
+    /* -- hero text fades as scroll starts -- */
+    const textFade = Math.max(0, 1 - sm(remap(p,0,0.18))*1.2);
+    if(heroInner) heroInner.style.opacity = textFade;
+    heroHuds.forEach(h=>h.style.opacity=textFade);
 
-    renderer.render(scene, camera);
+    renderer.render(scene,camera);
   }
-  if (prefersReduced){ renderer.render(scene, camera); }
+
+  if(prefersReduced){ renderer.render(scene,camera); }
   else frame();
 
   new IntersectionObserver(entries=>{
-    running = entries[0].isIntersecting && !prefersReduced;
-    if (!running) renderer.domElement.style.visibility = 'hidden';
-    else renderer.domElement.style.visibility = '';
-  }, { threshold: 0.01 }).observe(holder);
+    running=entries[0].isIntersecting&&!prefersReduced;
+    renderer.domElement.style.visibility=running?'':'hidden';
+  },{threshold:0.01}).observe(holder);
 
-  addEventListener('resize', ()=>{
-    camera.aspect = holder.clientWidth/holder.clientHeight;
+  addEventListener('resize',()=>{
+    camera.aspect=holder.clientWidth/holder.clientHeight;
     camera.updateProjectionMatrix();
-    renderer.setSize(holder.clientWidth, holder.clientHeight);
+    renderer.setSize(holder.clientWidth,holder.clientHeight);
   });
+
+  /* load real GLTF model — replaces placeholder when ready */
+  window._threeScene = scene;
+  window._questPlaceholder = quest;
+})();
+
+/* load real Meta Quest 3 GLTF via ES module */
+(async function loadQuestModel(){
+  try {
+    const { GLTFLoader } = await import('three/addons/loaders/GLTFLoader.js');
+    new GLTFLoader().load(
+      BASE + 'assets/Meta%20Headset/scene.gltf',
+      (gltf) => {
+        const model = gltf.scene;
+        model.scale.setScalar(0.018);
+        model.position.set(0, 0.9, 0);
+        model.rotation.y = 0;
+        model.traverse(c => { if(c.isMesh){ c.castShadow=false; c.receiveShadow=false; }});
+        if(window._threeScene && window._questPlaceholder){
+          window._threeScene.remove(window._questPlaceholder);
+          window._threeScene.add(model);
+          /* re-point quest reference so animation loop picks it up */
+          window._questModel = model;
+        }
+      },
+      undefined,
+      () => { /* silently keep placeholder on error */ }
+    );
+  } catch(e){ /* importmap not supported — placeholder stays */ }
 })();
 
 runLoader();
