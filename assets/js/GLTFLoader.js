@@ -37,9 +37,7 @@ var __GLTF = (() => {
   // ../../../tmp/three-proxy.js
   var require_three_proxy = __commonJS({
     "../../../tmp/three-proxy.js"(exports, module) {
-      module.exports = new Proxy({}, { get(_, k) {
-        return window.THREE[k];
-      } });
+      module.exports = window.THREE;
     }
   });
 
