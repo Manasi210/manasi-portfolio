@@ -135,7 +135,7 @@ nav .links a:hover{background:var(--violet);border-color:var(--violet);color:#ff
 /* ============================================================
    HERO — Quest 3 stage
    ============================================================ */
-#hero{position:relative;height:300svh;min-height:680px;overflow:visible;}
+#hero{position:relative;height:420svh;min-height:680px;overflow:visible;}
 #hero .sticky-shell{position:sticky;top:0;height:100svh;overflow:hidden;}
 #world{position:fixed;inset:0;z-index:0;pointer-events:none;}
 #hero .inner{
@@ -151,7 +151,31 @@ nav .links a:hover{background:var(--violet);border-color:var(--violet);color:#ff
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,107,59,0.45);}50%{box-shadow:0 0 0 8px rgba(255,107,59,0);}}
 .hud.tl{top:92px;left:32px;}
 .hud.tr{top:92px;right:32px;text-align:right;}
-.hud.bl{bottom:32px;left:32px;display:none;}
+.hud.bl{bottom:30px;left:50%;transform:translateX(-50%);text-align:center;}
+
+/* ambient glow + floating glass tags — hero depth */
+.h-glow{position:absolute;border-radius:50%;pointer-events:none;z-index:-1;}
+.h-glow.a{width:58vw;height:58vw;left:50%;top:44%;transform:translate(-50%,-50%);
+  background:radial-gradient(circle, rgba(155,125,255,0.15) 0%, transparent 62%);
+  animation:glowPulse 8s ease-in-out infinite;}
+.h-glow.b{width:36vw;height:36vw;left:63%;top:62%;transform:translate(-50%,-50%);
+  background:radial-gradient(circle, rgba(0,255,194,0.09) 0%, transparent 62%);
+  animation:glowPulse 11s ease-in-out 2s infinite;}
+@keyframes glowPulse{0%,100%{opacity:0.7;}50%{opacity:1;}}
+.h-tag{
+  position:absolute;z-index:2;font-family:var(--font-m);font-size:10px;letter-spacing:0.15em;
+  color:var(--ink);padding:7px 12px;border-radius:4px;white-space:nowrap;
+  border:1px solid rgba(255,255,255,0.14);background:rgba(22,21,31,0.35);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  animation:tagFloat 7s ease-in-out infinite;
+}
+.h-tag i{font-style:normal;color:var(--mint);margin-right:7px;}
+.h-tag.t1{top:16%;left:5%;animation-delay:0s;}
+.h-tag.t2{top:52%;left:3%;animation-delay:1.8s;}
+.h-tag.t3{top:20%;right:21%;animation-delay:3.6s;}
+.h-tag.t4{top:72%;right:5%;animation-delay:5.4s;}
+@keyframes tagFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-13px);}}
+@media(max-width:900px){.h-tag{display:none;}}
 
 .h-title{
   font-family:var(--font-d);font-weight:600;
@@ -254,18 +278,18 @@ section{position:relative;z-index:2;padding:clamp(90px,12vw,160px) 32px;}
    ============================================================ */
 .carousel{position:relative;}
 #work .track{
-  display:flex;align-items:flex-start;gap:24px;overflow-x:auto;overscroll-behavior-x:contain;
+  display:flex;align-items:flex-start;gap:18px;overflow-x:auto;overscroll-behavior-x:contain;
   scroll-snap-type:x mandatory;padding:12px 4px 26px;
   scrollbar-width:none;cursor:grab;
 }
 @media(min-width:601px){
-  #work .track{padding-bottom:72px;}
-  .card:nth-child(even){margin-top:48px;}
+  #work .track{padding-bottom:56px;}
+  .card:nth-child(even){margin-top:32px;}
 }
 #work .track::-webkit-scrollbar{display:none;}
 #work .track.dragging{scroll-snap-type:none;cursor:grabbing;user-select:none;}
 .card{
-  position:relative;flex:0 0 min(500px,84vw);aspect-ratio:4/3;
+  position:relative;flex:0 0 min(360px,78vw);aspect-ratio:4/3;
   border-radius:10px;overflow:hidden;scroll-snap-align:center;
   border:1px solid rgba(255,255,255,0.12);background:var(--panel);
   cursor:pointer;transition:border-color 0.35s,box-shadow 0.35s,transform 0.35s;
@@ -299,7 +323,7 @@ section{position:relative;z-index:2;padding:clamp(90px,12vw,160px) 32px;}
 .card:hover .card-arr{background:var(--mint);border-color:var(--mint);color:#062018;transform:rotate(45deg);}
 .card-glass{
   position:absolute;left:0;right:0;bottom:0;z-index:2;
-  padding:18px 20px 20px;
+  padding:12px 14px 14px;
   background:rgba(9,8,14,0.42);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
   border-top:1px solid rgba(255,255,255,0.12);
 }
@@ -311,9 +335,9 @@ section{position:relative;z-index:2;padding:clamp(90px,12vw,160px) 32px;}
 }
 .card-glass h3{
   font-family:var(--font-d);font-weight:600;text-transform:uppercase;
-  font-size:clamp(16px,1.6vw,22px);line-height:1.2;margin-bottom:6px;color:var(--ink);
+  font-size:clamp(14px,1.2vw,17px);line-height:1.25;margin-bottom:5px;color:var(--ink);
 }
-.card-glass p{color:var(--muted);font-size:13px;line-height:1.5;font-family:var(--font-m);}
+.card-glass p{color:var(--muted);font-size:11px;line-height:1.5;font-family:var(--font-m);}
 .car-ui{display:flex;align-items:center;gap:24px;margin-top:18px;}
 .car-progress{flex:1;height:2px;background:var(--line);overflow:hidden;}
 .car-progress span{
@@ -558,7 +582,7 @@ footer a:hover{color:var(--violet);}
 
   /* hero */
   #hero{min-height:100svh;}
-  .hud.tr{display:none;}
+  .hud.tr,.hud.bl{display:none;}
   .h-title{font-size:clamp(32px,9vw,72px);}
   .h-sub{flex-direction:column;align-items:flex-start;gap:20px;}
   .h-sub p{max-width:100%;font-size:15px;}
@@ -685,6 +709,13 @@ footer a:hover{color:var(--violet);}
 
     <div class="hud tl"><span class="dot"></span>HEADSET ON · <b>PASSTHROUGH LIVE</b></div>
     <div class="hud tr">GAMEPLAY &amp; XR DEVELOPER<br>UNITY / UNREAL · LONDON<br>BATTERY 100% · GUARDIAN OFF</div>
+    <div class="hud bl">LAT 51.5072° N · LON 0.1276° W<br>// SYS_STATUS: WORLD-BUILDING</div>
+    <div class="h-glow a" aria-hidden="true"></div>
+    <div class="h-glow b" aria-hidden="true"></div>
+    <span class="h-tag t1" aria-hidden="true"><i>◆</i>UNITY</span>
+    <span class="h-tag t2" aria-hidden="true"><i>◆</i>UNREAL ENGINE</span>
+    <span class="h-tag t3" aria-hidden="true"><i>◆</i>FULL-BODY IK</span>
+    <span class="h-tag t4" aria-hidden="true"><i>◆</i>AI NPCS</span>
 
     <div id="heroFloatImg" aria-hidden="true"><img id="heroFloatPhoto" alt="Manasi Lodha"></div>
     <div id="playerCard" aria-hidden="true">
@@ -1028,7 +1059,7 @@ function runLoader(){ introAnim(); }
    ============================================================ */
 let lenis = null;
 if (!prefersReduced && window.Lenis){
-  lenis = new Lenis({ lerp: 0.09 });
+  lenis = new Lenis({ lerp: 0.07 });
   function raf(time){ lenis.raf(time); requestAnimationFrame(raf); }
   requestAnimationFrame(raf);
 }
@@ -1127,7 +1158,7 @@ workTrack.querySelectorAll('.card').forEach(card=>{
 });
 function carStep(){
   const c = workTrack.querySelector('.card');
-  return c ? c.getBoundingClientRect().width + 24 : 400;
+  return c ? c.getBoundingClientRect().width + 18 : 320;
 }
 document.getElementById('carPrev').addEventListener('click', ()=>workTrack.scrollBy({left:-carStep(),behavior:'smooth'}));
 document.getElementById('carNext').addEventListener('click', ()=>workTrack.scrollBy({left:carStep(),behavior:'smooth'}));
@@ -1380,7 +1411,7 @@ if (!isTouch){
     tmx=(e.clientX/innerWidth-0.5); tmy=(e.clientY/innerHeight-0.5);
   });
   const heroInner=document.querySelector('#hero .inner');
-  const heroHuds=document.querySelectorAll('#hero .hud, #playerCard');
+  const heroHuds=document.querySelectorAll('#hero .hud, #playerCard, .h-tag, .h-glow');
 
   /* scroll zone = hero height minus one viewport (the sticky visible part) */
   function getScrollZone(){ return Math.max(1, (document.getElementById('hero').offsetHeight - innerHeight)); }
@@ -1430,8 +1461,8 @@ if (!isTouch){
 
     /* -- headset rotation --
        idle: gentle sway + cursor; turn: face forward (ry=0); emerge: turn away */
-    const idleRY = (cmx*0.32 + Math.sin(t*0.4)*0.045);
-    const idleRX = (cmy*0.18 + Math.sin(t*0.6)*0.025);
+    const idleRY = (cmx*0.28 + Math.sin(t*0.28)*0.04);
+    const idleRX = (cmy*0.15 + Math.sin(t*0.45)*0.02);
 
     /* ---- compute TARGET values for this frame, then ease toward them ----
        (direct assignment made the motion snap and judder; damped targets
@@ -1457,20 +1488,20 @@ if (!isTouch){
       tFov = 84 - p3*38;  /* narrow back to 46° on pullback */
     }
     tPY = 0.9 + Math.sin(t*1.1)*0.12*(1-p1)*(1-p2);
-    stiff = 0.28; /* hero: tight so idle + lens dive track without trailing */
+    stiff = 0.16; /* hero: soft but still tracking the lens dive */
 
     if(pageBeyond > 0){
       /* showcase mode: ONE slow ~130° turn across the whole page,
          cursor adds a little life, camera rests farther back with a
          barely-there breathing — no scroll-frequency wobble */
-      tRY  = Math.PI*0.6 + pageQ*2.3 + cmx*0.45 + Math.sin(t*0.22)*0.05;
+      tRY  = Math.PI*0.6 + pageQ*1.8 + cmx*0.4 + Math.sin(t*0.18)*0.05;
       tRX  = Math.sin(pageQ*Math.PI)*0.10 + cmy*0.18;
       tPX  = cmx*0.5;
       tPY  = 0.75 + Math.sin(t*0.55)*0.07;
       tCZ  = 6.2 - Math.sin(pageQ*Math.PI)*1.1; /* eases in, then back out */
       tCY  = 0.4;
       tFov = 46;
-      stiff = 0.045; /* floaty */
+      stiff = 0.038; /* floaty */
     }
 
     quest.rotation.y  += (tRY  - quest.rotation.y )*stiff;
