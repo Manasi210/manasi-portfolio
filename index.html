@@ -137,7 +137,7 @@ nav .links a:hover{background:var(--violet);border-color:var(--violet);color:#ff
    ============================================================ */
 #hero{position:relative;height:300svh;min-height:680px;overflow:visible;}
 #hero .sticky-shell{position:sticky;top:0;height:100svh;overflow:hidden;}
-#world{position:absolute;inset:0;z-index:0;}
+#world{position:fixed;inset:0;z-index:0;pointer-events:none;}
 #hero .inner{
   position:relative;z-index:2;height:100%;
   display:flex;flex-direction:column;justify-content:flex-end;
@@ -254,14 +254,18 @@ section{position:relative;z-index:2;padding:clamp(90px,12vw,160px) 32px;}
    ============================================================ */
 .carousel{position:relative;}
 #work .track{
-  display:flex;gap:24px;overflow-x:auto;overscroll-behavior-x:contain;
-  scroll-snap-type:x mandatory;padding:4px 4px 26px;
+  display:flex;align-items:flex-start;gap:24px;overflow-x:auto;overscroll-behavior-x:contain;
+  scroll-snap-type:x mandatory;padding:12px 4px 26px;
   scrollbar-width:none;cursor:grab;
+}
+@media(min-width:601px){
+  #work .track{padding-bottom:96px;}
+  .card:nth-child(even){margin-top:72px;}
 }
 #work .track::-webkit-scrollbar{display:none;}
 #work .track.dragging{scroll-snap-type:none;cursor:grabbing;user-select:none;}
 .card{
-  position:relative;flex:0 0 min(520px,84vw);aspect-ratio:4/3;
+  position:relative;flex:0 0 min(620px,86vw);aspect-ratio:4/3;
   border-radius:10px;overflow:hidden;scroll-snap-align:center;
   border:1px solid rgba(255,255,255,0.12);background:var(--panel);
   cursor:pointer;transition:border-color 0.35s,box-shadow 0.35s,transform 0.35s;
@@ -652,6 +656,7 @@ footer a:hover{color:var(--violet);}
 
 
 <div class="grid-layer" aria-hidden="true"></div>
+<div id="world"></div>
 <div id="cursor-dot" aria-hidden="true"></div>
 <div id="cursor-ring" aria-hidden="true"><span class="label">ENTER</span></div>
 
@@ -677,7 +682,6 @@ footer a:hover{color:var(--violet);}
 <!-- HERO -->
 <header id="hero">
   <div class="sticky-shell">
-    <div id="world"></div>
 
     <div class="hud tl"><span class="dot"></span>HEADSET ON · <b>PASSTHROUGH LIVE</b></div>
     <div class="hud tr">GAMEPLAY &amp; XR DEVELOPER<br>UNITY / UNREAL · LONDON<br>BATTERY 100% · GUARDIAN OFF</div>
@@ -824,7 +828,7 @@ footer a:hover{color:var(--violet);}
 </footer>
 
 <!-- CASE OVERLAY -->
-<div id="case" role="dialog" aria-modal="true" aria-label="Project case study">
+<div id="case" role="dialog" aria-modal="true" aria-label="Project case study" data-lenis-prevent>
   <div class="bar">
     <span class="mono" id="caseIndex" style="color:var(--muted)"></span>
     <button class="close" id="caseClose" data-hover>Exit world ✕</button>
@@ -1371,7 +1375,7 @@ if (!isTouch){
   document.body.appendChild(vigEl);
 
   /* ---------- scroll animation setup ---------- */
-  let tmx=0,tmy=0,cmx=0,cmy=0,scrollP=0;
+  let tmx=0,tmy=0,cmx=0,cmy=0,scrollP=0,pageBeyond=0;
   if(!isTouch) addEventListener('mousemove',e=>{
     tmx=(e.clientX/innerWidth-0.5); tmy=(e.clientY/innerHeight-0.5);
   });
@@ -1380,7 +1384,11 @@ if (!isTouch){
 
   /* scroll zone = hero height minus one viewport (the sticky visible part) */
   function getScrollZone(){ return Math.max(1, (document.getElementById('hero').offsetHeight - innerHeight)); }
-  addEventListener('scroll',()=>{ scrollP=Math.min(1, scrollY/getScrollZone()); },{passive:true});
+  addEventListener('scroll',()=>{
+    const zone = getScrollZone();
+    scrollP = Math.min(1, scrollY/zone);
+    pageBeyond = Math.max(0, scrollY - zone);
+  },{passive:true});
 
   /* ── 4 PHASES (each covers 0.25 of scrollP 0→1) ─────────────────
      Phase 0–0.25  HERO      headset floats, cursor-follow, gentle bob
@@ -1456,6 +1464,18 @@ if (!isTouch){
       camera.position.y = 0.9 - p3*0.5;
       camera.fov = 84 - p3*38;  /* narrow back to 46° on pullback */
     }
+
+    /* -- past the hero: headset keeps rotating and zooms in/out with scroll -- */
+    if(pageBeyond > 0){
+      quest.rotation.y = Math.PI*0.6 + pageBeyond*0.0022 + Math.sin(t*0.35)*0.06;
+      quest.rotation.x = Math.sin(pageBeyond*0.0011)*0.16;
+      quest.position.y = 0.9 + Math.sin(pageBeyond*0.0009)*0.35;
+      camera.position.z = 6.5 + Math.sin(pageBeyond*0.0014)*1.6;
+      camera.position.y = 0.4;
+      camera.fov = 46;
+    }
+    /* fade the canvas back so page content stays readable */
+    holder.style.opacity = pageBeyond>0 ? (1 - 0.55*Math.min(1,pageBeyond/600)).toFixed(3) : '1';
     camera.updateProjectionMatrix();
 
     /* -- eyesight vignette: peaks at center of phase 2 -- */
@@ -1481,10 +1501,7 @@ if (!isTouch){
   if(prefersReduced){ renderer.render(scene,camera); }
   else frame();
 
-  new IntersectionObserver(entries=>{
-    running=entries[0].isIntersecting&&!prefersReduced;
-    renderer.domElement.style.visibility=running?'':'hidden';
-  },{threshold:0.01}).observe(holder);
+  running = !prefersReduced;
 
   addEventListener('resize',()=>{
     camera.aspect=holder.clientWidth/holder.clientHeight;
