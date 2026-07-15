@@ -1384,10 +1384,13 @@ if (!isTouch){
 
   /* scroll zone = hero height minus one viewport (the sticky visible part) */
   function getScrollZone(){ return Math.max(1, (document.getElementById('hero').offsetHeight - innerHeight)); }
+  let pageQ = 0; /* 0→1 progress through the page after the hero */
   addEventListener('scroll',()=>{
     const zone = getScrollZone();
     scrollP = Math.min(1, scrollY/zone);
     pageBeyond = Math.max(0, scrollY - zone);
+    const rest = document.documentElement.scrollHeight - innerHeight - zone;
+    pageQ = rest > 0 ? Math.min(1, pageBeyond/rest) : 0;
   },{passive:true});
 
   /* ── 4 PHASES (each covers 0.25 of scrollP 0→1) ─────────────────
@@ -1430,52 +1433,57 @@ if (!isTouch){
     const idleRY = (cmx*1.1 + Math.sin(t*0.5)*0.12);
     const idleRX = (cmy*0.55 + Math.sin(t*0.8)*0.05);
 
-    if(p < 0.5){
-      /* phases 0+1: sway fades as headset turns to face */
-      quest.rotation.y = idleRY * (1-p1);
-      quest.rotation.x = idleRX * (1-p1);
-    } else {
-      /* phases 2+3: facing forward during dive, then turn 90° away on emerge */
-      quest.rotation.y = p3 * Math.PI * 0.6;
-      quest.rotation.x = 0;
-    }
-
-    /* bob only in phases 0-1 */
-    quest.position.y = 0.9 + Math.sin(t*1.1)*0.12*(1-p1)*(1-p2);
-
-    /* -- camera --
-       phase 0-1: stays back at z=8.5
-       phase 2: dives from z=8.5 → z=-0.3 (through visor)
-       phase 3: pulls back to z=4.0 */
+    /* ---- compute TARGET values for this frame, then ease toward them ----
+       (direct assignment made the motion snap and judder; damped targets
+        give the slow, deliberate showcase feel) */
     const camZ_base  = 8.5;
     const camZ_inside = -0.3;
     const camZ_back   = 4.0;
+    let tRY, tRX, tPX = 0, tPY, tCZ, tCY, tFov, stiff;
 
     if(p < 0.5){
-      camera.position.z = camZ_base;
-      camera.position.y = 0.4;
-      camera.fov = 50;
+      tRY = idleRY * (1-p1);
+      tRX = idleRX * (1-p1);
+      tCZ = camZ_base; tCY = 0.4; tFov = 50;
     } else if(p < 0.75){
-      camera.position.z = camZ_base + (camZ_inside - camZ_base)*p2;
-      camera.position.y = 0.4 + p2*0.5;
-      camera.fov = 50 + p2*34;  /* widen as you pass through */
+      tRY = 0; tRX = 0;
+      tCZ = camZ_base + (camZ_inside - camZ_base)*p2;
+      tCY = 0.4 + p2*0.5;
+      tFov = 50 + p2*34;  /* widen as you pass through */
     } else {
-      camera.position.z = camZ_inside + (camZ_back - camZ_inside)*p3;
-      camera.position.y = 0.9 - p3*0.5;
-      camera.fov = 84 - p3*38;  /* narrow back to 46° on pullback */
+      tRY = p3 * Math.PI * 0.6; tRX = 0;
+      tCZ = camZ_inside + (camZ_back - camZ_inside)*p3;
+      tCY = 0.9 - p3*0.5;
+      tFov = 84 - p3*38;  /* narrow back to 46° on pullback */
+    }
+    tPY = 0.9 + Math.sin(t*1.1)*0.12*(1-p1)*(1-p2);
+    stiff = 0.18; /* hero: tight so the lens dive tracks the scroll */
+
+    if(pageBeyond > 0){
+      /* showcase mode: ONE slow ~130° turn across the whole page,
+         cursor adds a little life, camera rests farther back with a
+         barely-there breathing — no scroll-frequency wobble */
+      tRY  = Math.PI*0.6 + pageQ*2.3 + cmx*0.45 + Math.sin(t*0.22)*0.05;
+      tRX  = Math.sin(pageQ*Math.PI)*0.10 + cmy*0.18;
+      tPX  = cmx*0.5;
+      tPY  = 0.75 + Math.sin(t*0.55)*0.07;
+      tCZ  = 6.2 - Math.sin(pageQ*Math.PI)*1.1; /* eases in, then back out */
+      tCY  = 0.4;
+      tFov = 46;
+      stiff = 0.045; /* floaty */
     }
 
-    /* -- past the hero: headset keeps rotating and zooms in/out with scroll -- */
-    if(pageBeyond > 0){
-      quest.rotation.y = Math.PI*0.6 + pageBeyond*0.0022 + Math.sin(t*0.35)*0.06;
-      quest.rotation.x = Math.sin(pageBeyond*0.0011)*0.16;
-      quest.position.y = 0.9 + Math.sin(pageBeyond*0.0009)*0.35;
-      camera.position.z = 6.5 + Math.sin(pageBeyond*0.0014)*1.6;
-      camera.position.y = 0.4;
-      camera.fov = 46;
-    }
+    quest.rotation.y  += (tRY  - quest.rotation.y )*stiff;
+    quest.rotation.x  += (tRX  - quest.rotation.x )*stiff;
+    quest.position.x  += (tPX  - quest.position.x )*stiff;
+    quest.position.y  += (tPY  - quest.position.y )*stiff;
+    camera.position.z += (tCZ  - camera.position.z)*stiff;
+    camera.position.y += (tCY  - camera.position.y)*stiff;
+    camera.fov        += (tFov - camera.fov       )*stiff;
+
     /* fade the canvas back so page content stays readable */
-    holder.style.opacity = pageBeyond>0 ? (1 - 0.55*Math.min(1,pageBeyond/600)).toFixed(3) : '1';
+    const fadeT = pageBeyond>0 ? (1 - 0.55*Math.min(1,pageBeyond/600)) : 1;
+    holder.style.opacity = (+holder.style.opacity || 1) + (fadeT - (+holder.style.opacity || 1))*0.1;
     camera.updateProjectionMatrix();
 
     /* -- eyesight vignette: peaks at center of phase 2 -- */
