@@ -92,19 +92,29 @@ button{background:none;border:none;cursor:pointer;}
 nav{
   position:fixed;top:0;left:0;right:0;z-index:100;
   display:flex;justify-content:space-between;align-items:center;
-  padding:20px 32px;
+  padding:20px 32px;pointer-events:none;
 }
+nav > *{pointer-events:auto;}
 nav .brand{
   font-family:var(--font-d);font-weight:600;font-size:13px;letter-spacing:0.04em;
   background:var(--ink);color:#fff;padding:10px 16px;border-radius:99px;
 }
-nav .links{display:flex;gap:8px;}
-nav .links a{
-  font-size:12px;letter-spacing:0.08em;text-transform:uppercase;font-family:var(--font-m);
-  background:var(--panel);border:1px solid var(--line);padding:10px 18px;border-radius:99px;
-  transition:background 0.3s,color 0.3s,border-color 0.3s;
+
+/* vertical side-navigation rail */
+.side-nav{
+  position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:100;
+  display:flex;flex-direction:column;align-items:flex-end;gap:6px;padding-right:8px;
 }
-nav .links a:hover{background:var(--violet);border-color:var(--violet);color:#fff;}
+.side-nav a{
+  writing-mode:vertical-rl;text-orientation:mixed;
+  font-family:var(--font-m);font-size:11px;letter-spacing:0.22em;text-transform:uppercase;
+  color:var(--muted);padding:15px 9px;border-radius:99px;
+  border:1px solid transparent;
+  transition:color 0.3s,background 0.3s,border-color 0.3s,transform 0.3s;
+}
+.side-nav a:hover{
+  color:#fff;background:var(--violet);border-color:var(--violet);transform:translateX(-5px);
+}
 
 /* mobile nav toggle */
 #navMenu{
@@ -140,7 +150,7 @@ nav .links a:hover{background:var(--violet);border-color:var(--violet);color:#ff
 #hero .inner{
   position:relative;z-index:2;height:100%;
   display:flex;flex-direction:column;justify-content:flex-end;
-  padding:0 32px 40px;pointer-events:none;
+  padding:0 clamp(280px,24vw,360px) 46px 32px;pointer-events:none;
   background:linear-gradient(to top, rgba(13,13,20,0.88) 0%, rgba(13,13,20,0.4) 40%, transparent 65%);
 }
 #hero .inner a,#hero .inner .scroll-cue{pointer-events:auto;}
@@ -170,7 +180,7 @@ nav .links a:hover{background:var(--violet);border-color:var(--violet);color:#ff
 }
 .h-tag i{font-style:normal;color:var(--mint);margin-right:7px;}
 .h-tag.t1{top:16%;left:5%;animation-delay:0s;}
-.h-tag.t2{top:52%;left:3%;animation-delay:1.8s;}
+.h-tag.t2{top:70%;left:4%;animation-delay:1.8s;}
 .h-tag.t3{top:20%;right:21%;animation-delay:3.6s;}
 .h-tag.t4{top:72%;right:5%;animation-delay:5.4s;}
 @keyframes tagFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-13px);}}
@@ -178,8 +188,8 @@ nav .links a:hover{background:var(--violet);border-color:var(--violet);color:#ff
 
 .h-title{
   font-family:var(--font-d);font-weight:600;
-  font-size:clamp(38px,8.8vw,136px);
-  line-height:1.0;letter-spacing:-0.01em;text-transform:uppercase;
+  font-size:clamp(36px,7.4vw,112px);
+  line-height:1.02;letter-spacing:-0.01em;text-transform:uppercase;
 }
 .h-title .row{display:block;overflow:hidden;padding-bottom:0.08em;}
 .h-title .row > span{display:inline-block;transform:translateY(115%);}
@@ -201,7 +211,7 @@ nav .links a:hover{background:var(--violet);border-color:var(--violet);color:#ff
 
 /* hero player card — her photo, character-select style */
 #playerCard{
-  position:absolute;right:clamp(24px,2.5vw,40px);top:50%;transform:translateY(-54%) rotate(3deg);
+  position:absolute;right:clamp(56px,5vw,78px);top:50%;transform:translateY(-54%) rotate(3deg);
   z-index:2;width:clamp(180px,16vw,240px);
   background:var(--panel);border-radius:20px;padding:10px 10px 14px;
   box-shadow:0 20px 50px rgba(42,30,51,0.22);
@@ -230,11 +240,9 @@ nav .links a:hover{background:var(--violet);border-color:var(--violet);color:#ff
   padding:9px 15px;box-shadow:0 8px 20px rgba(255,107,59,0.4);
   transform:rotate(-8deg);
 }
-@media (max-width:1280px){#playerCard{display:none;}}
-
 /* standalone hero photo — shown when player card is hidden */
 #heroFloatImg{
-  position:absolute;right:32px;bottom:0;z-index:2;
+  position:absolute;right:64px;bottom:0;z-index:2;
   width:clamp(160px,22vw,280px);
   pointer-events:none;
   display:none;
@@ -244,8 +252,6 @@ nav .links a:hover{background:var(--violet);border-color:var(--violet);color:#ff
   object-fit:contain;object-position:bottom center;
   filter:drop-shadow(0 8px 24px rgba(42,30,51,0.3));
 }
-@media (max-width:1280px){#heroFloatImg{display:block;}}
-@media (max-width:600px){#heroFloatImg{width:clamp(120px,30vw,180px);right:16px;}}
 
 /* ============================================================
    MARQUEE
@@ -562,6 +568,12 @@ footer a:hover{color:var(--violet);}
 
 .rv{opacity:0;transform:translateY(46px);}
 
+/* reserve a right gutter for the fixed side-nav rail (desktop/tablet) */
+@media (min-width:901px){
+  section, footer{padding-right:64px;}
+  #contact{padding-right:0;}
+}
+
 /* ============================================================
    RESPONSIVE
    ============================================================ */
@@ -570,9 +582,9 @@ footer a:hover{color:var(--violet);}
 @media (max-width:900px){
   section{padding:clamp(60px,10vw,100px) 28px;}
 
-  /* nav — hide links, show mobile menu */
+  /* nav — hide side rail, show mobile menu */
   nav{padding:16px 24px;}
-  nav .links{display:none;}
+  .side-nav{display:none;}
   nav .brand{font-size:12px;padding:9px 14px;}
   #navMenu{display:flex;}
 
@@ -582,12 +594,18 @@ footer a:hover{color:var(--violet);}
   /* hero */
   #hero{min-height:100svh;}
   .hud.tr,.hud.bl{display:none;}
+  #hero .inner{padding:0 24px 40px;}
   .h-title{font-size:clamp(32px,9vw,72px);}
   .h-sub{flex-direction:column;align-items:flex-start;gap:20px;}
   .h-sub p{max-width:100%;font-size:15px;}
 
-  /* player card hidden */
+  /* portrait — clean, fully-visible slot in the upper-right */
   #playerCard{display:none;}
+  #heroFloatImg{
+    display:block;top:clamp(70px,11vh,110px);bottom:auto;right:0;
+    width:auto;height:clamp(170px,32vh,300px);
+  }
+  #heroFloatImg img{height:100%;width:auto;}
 
   /* work */
 
@@ -622,9 +640,11 @@ footer a:hover{color:var(--violet);}
   nav{padding:14px 20px;}
 
   /* hero text */
-  .h-title{font-size:clamp(28px,11vw,56px);line-height:1.05;}
+  #hero .inner{padding:0 20px 36px;}
+  .h-title{font-size:clamp(28px,10.5vw,52px);line-height:1.05;}
   .h-title .indent{padding-left:clamp(16px,6vw,60px);}
   .hud.tl{font-size:9px;left:20px;top:80px;}
+  #heroFloatImg{top:clamp(64px,10vh,96px);height:clamp(150px,26vh,230px);}
 
   /* work cards — full width scroll */
 
@@ -686,14 +706,14 @@ footer a:hover{color:var(--violet);}
 
 <nav>
   <a class="brand" href="#hero">MANASI — VC</a>
-  <div class="links">
-    <a href="#work" data-hover>Worlds</a>
-    <a href="#about" data-hover>About</a>
-    <a href="#path" data-hover>Path</a>
-    <a href="#contact" data-hover>Contact</a>
-  </div>
   <button id="navMenu" aria-label="Menu"><span></span><span></span><span></span></button>
 </nav>
+<div class="side-nav">
+  <a href="#work" data-hover>Worlds</a>
+  <a href="#about" data-hover>About</a>
+  <a href="#path" data-hover>Path</a>
+  <a href="#contact" data-hover>Contact</a>
+</div>
 <div id="mobileNav" aria-hidden="true">
   <a href="#work">Worlds</a>
   <a href="#about">About</a>
@@ -1067,7 +1087,7 @@ function goTo(sel){
   if (!el) return;
   if (lenis) lenis.scrollTo(el, { offset: 0 }); else el.scrollIntoView({behavior:'smooth'});
 }
-document.querySelectorAll('nav .links a, nav .brand, #mobileNav a').forEach(a=>{
+document.querySelectorAll('.side-nav a, nav .brand, #mobileNav a').forEach(a=>{
   a.addEventListener('click', e=>{
     const id = a.getAttribute('href');
     if (id && id.startsWith('#')){ e.preventDefault(); closeMobileNav(); goTo(id); }
